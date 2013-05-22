@@ -1,0 +1,57 @@
+eeschema (2013-mar-25)-stable  >> Creation date: Saturday, May 18, 2013 05:49:18 PM
+#Cmp ( order = Reference )
+| C1         0.1uF       
+| C2         0.1uF       
+| C3         0.1uF       
+| C4         0.1uF       
+| C5         0.1uF       
+| C7         1uF         
+| C8         1uF         
+| C9         1uF         
+| C10        1uF         
+| C11        1uF         
+| C12        10F         
+| C13        10F         
+| C14        10F         
+| C15        10F         
+| C16        10F         
+| C17        10F         
+| C18        10uF        
+| C19        33pF        
+| C20        33pF        
+| D1         MUR410      
+| D2         MUR410      
+| D3         MUR410      
+| D4         MUR410      
+| D5         MUR410      
+| FB1        1kOhm@100MHz
+| J1         LCD         
+| J2         DB9         
+| J3         MTN         
+| J4         39910-0102  
+| J6         ISP Hdr     
+| J7         Keypad      
+| J8         Scew terminals
+| J9         +5V PSU     
+| J10        ADC         
+| K1         CB1aH-P-12V 
+| Q1         RFD14N05    
+| Q2         RFD14N05    
+| Q3         RFD14N05    
+| Q4         RFD14N05    
+| R1         3.4k        
+| R2         10.2k       
+| R3         56.2k       
+| R5         1k          
+| R6         10k         
+| R7         5k          
+| R8         5k          
+| R9         5k          
+| U1         CPC1002N    
+| U2         ATMEGA164PA-P
+| U3         ACS755      
+| U4         MAX232      
+| X1         18.432 MHz  
+#End Cmp
+
+#End List

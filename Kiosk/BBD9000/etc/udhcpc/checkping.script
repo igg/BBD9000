@@ -1,0 +1,140 @@
+#!/bin/sh
+
+# based on udhcpc script edited by Tim Riker <Tim@Rikers.org>
+
+[ -z "$1" ] && echo "Error: should be called from udhcpc" && exit 1
+
+RESOLV_CONF="/etc/resolv.conf"
+[ -n "$broadcast" ] && BROADCAST="broadcast $broadcast"
+[ -n "$subnet" ] && NETMASK="netmask $subnet"
+
+max_good_IPs=1
+
+check_WAN_IPs ()
+{
+
+	# These are not valid WAN addresses:
+	# 10.0.0.0 through 10.255.255.255
+	# 169.254.0.0 through 169.254.255.255 (APIPA only)
+	# 172.16.0.0 through 172.31.255.255
+	# 192.168.0.0 through 192.168.255.255
+	# Google DNS servers: 8.8.8.8 and 8.8.4.4.
+	# Level 3 DNS servers: 4.2.2.1 and 4.2.2.2
+	# OpenDNS DNS servers: 208.67.222.222 and 208.67.220.220
+	IPs=$@" 8.8.4.4 4.2.2.1 208.67.222.222"
+	
+	good_IPs=""
+	n_good_IPs=0
+	for IP in $IPs ; do
+		bad_ip=""
+		IP1=`expr "$IP" : '\([0-9]*\)\.[0-9]*.[0-9]*.[0-9]*'`
+		IP2=`expr "$IP" : '[0-9]*\.\([0-9]*\).[0-9]*.[0-9]*'`
+		if [ "$IP" = "127.0.0.1" ] ; then bad_ip=1 ; fi
+		if [ "$IP" = "0.0.0.0" ] ; then bad_ip=1 ; fi
+		if [ ! -n "$IP1" -o ! -n "$IP2" ] ; then bad_ip=1 ; fi
+		if [ "$IP1" -eq 10 ] ; then bad_ip=1 ; fi
+		if [ "$IP1" -eq 169 -a "$IP2" -eq 254 ] ; then bad_ip=1 ; fi
+		if [ "$IP1" -eq 172 -a "$IP2" -ge 16 -a "$IP2" -le 31 ] ; then bad_ip=1 ; fi
+		if [ "$IP1" -eq 192 -a "$IP2" -eq 168 ] ; then bad_ip=1 ; fi
+
+		if [ ! $bad_ip ] ; then 
+			# Add a route just for this IP
+			route add -host $IP netmask 255.255.255.255 gw $firstRouter
+			/bin/ping -W 1 -I $interface -c 1 -n $IP >/dev/null 2>&1
+			if [ $? -eq 0 ] ; then
+				good_IPs="$good_IPs $IP"
+				n_good_IPs=`expr $n_good_IPs + 1`
+			fi
+			route del -net $IP netmask 255.255.255.255 gw $firstRouter
+		fi
+		
+		if [ $n_good_IPs -ge $max_good_IPs ] ; then
+			break
+		fi
+		
+	done
+	return $n_good_IPs
+}
+
+
+
+case "$1" in
+	deconfig)
+		/sbin/ifconfig $interface 0.0.0.0
+		;;
+
+	renew|bound)
+		/sbin/ifconfig $interface $ip $BROADCAST $NETMASK
+
+		if [ -n "$router" ] ; then
+			for i in $router ; do
+				if [ -n "$i" ] ; then
+					firstRouter=$i
+					break
+				fi
+			done
+		fi
+		
+		if [ -n "$firstRouter" ] ; then
+			check_WAN_IPs # These go out over an IP-specific route to $interface
+			n_good_IPs=$?
+			echo "$n_good_IPs good WAN IPs: $good_IPs"
+			if [ $n_good_IPs -gt 0 ] ; then
+				echo "deleting routers"
+ 				while route del default gw 0.0.0.0 dev $interface \
+ 				  2>/dev/null; do
+ 					:
+ 				done
+			# We have WAN IPs going out over the $interface to $firstRouter,
+			# So we remove all default routes regardless of gateway or interface
+ 			#	while route del default \
+ 			#	  2>/dev/null; do
+ 			#		:
+ 			#	done
+
+				for i in $router ; do
+					echo "adding default gateway $i"
+					route add default gw $i dev $interface
+				done
+
+				echo -n > $RESOLV_CONF
+				[ -n "$domain" ] && echo search $domain >> $RESOLV_CONF
+				for i in $dns ; do
+					/bin/ping -W 1 -I $interface -c 1 -n $i >/dev/null 2>&1
+					if [ $? -eq 0 ] ; then
+						echo adding dns $i
+						echo nameserver $i >> $RESOLV_CONF
+						if [ -z "$firstDNS" -a -n "$i" ] ; then firstDNS=$i ; fi
+					fi
+				done
+			fi
+		fi
+
+		if [ -n "$firstRouter" ] ; then
+			echo -n "Router: $firstRouter "
+		else
+			echo -n "Router: None "
+		fi
+
+		if [ -n "$domain" ] ; then
+			echo -n "Domain: $domain "
+		else
+			echo -n "Domain: None "
+		fi
+
+		if [ -n "$firstDNS" ] ; then
+			echo -n "DNS: OK "
+		else
+			echo -n "DNS: None "
+		fi
+
+		if [ $n_good_IPs -gt 0 ] ; then
+			echo "WAN: OK"
+		else
+			echo "WAN: offline"
+		fi
+
+		;;
+esac
+
+exit 0

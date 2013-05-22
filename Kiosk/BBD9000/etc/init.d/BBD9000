@@ -1,0 +1,127 @@
+#!/bin/sh
+# from kill -l
+SIGTERM=15
+SIGUSR1=10
+SIGUSR2=12
+SIGKILL=9
+SIGPWRALRM=$SIGUSR1
+SIGPWROK=$SIGUSR2
+
+
+
+OPTIONS=""
+BBD9000ROOT='/BBD9000'
+# Note that this is for debugging the timer
+echo /mnt/cf/root/BBD9000/core > /proc/sys/kernel/core_pattern
+echo "1" > /proc/sys/kernel/core_uses_pid
+ulimit -c 0
+# ulimit -c unlimited
+
+
+
+BBD9000_start() {
+
+	if [ -e /var/ramfs/BBD9000MEM ] ; then
+		echo "BBD9000 already running"
+		exit 1
+	fi
+
+	# truncate the log to 500 lines
+	if [ -e $BBD9000ROOT/BBD9000.log ] ; then
+		echo "Logfile reset on "`date` > $BBD9000ROOT/BBD9000.log~
+		tail -500 $BBD9000ROOT/BBD9000.log >> $BBD9000ROOT/BBD9000.log~
+		cat $BBD9000ROOT/BBD9000.log~ > $BBD9000ROOT/BBD9000.log
+		rm $BBD9000ROOT/BBD9000.log~
+	fi
+	
+	# Get the modem device (this has so far been in /dev/tts/, but the # can change based on address)
+	dev_num=`ls /dev/tts`
+	dev=""
+	if [ "$dev_num" != "" ]; then
+		dev="/dev/tts/${dev_num}"
+	fi
+	has_dev=`sed -n 's_\(Modemdev[^"]*"\)\('${dev}'"\)_\1'$dev'"_p' ${BBD9000ROOT}/BBD9000.conf`
+	if [ "$has_dev" = "" ]; then
+		sed 's_\(Modemdev[^"]*"\)\([^"]*\)_\1'${dev}'_' ${BBD9000ROOT}/BBD9000.conf > ${BBD9000ROOT}/BBD9000.conf~
+		mv ${BBD9000ROOT}/BBD9000.conf~ ${BBD9000ROOT}/BBD9000.conf
+		echo "Updated modem device in ${BBD9000ROOT}/BBD9000.conf"
+	fi
+
+	$BBD9000ROOT/BBD9000init $BBD9000ROOT/BBD9000.conf
+	if [ $? -ne 0 ] ; then
+		echo "Failed to initialize BBD9000"
+		exit 1
+	fi
+	$BBD9000ROOT/BBD9000twilight
+	echo "0 1 * * * $BBD9000ROOT/BBD9000twilight" > /etc/crontabs/root
+	/etc/init.d/crond restart
+
+	start-stop-daemon  --start --pidfile /var/run/BBD9000SmartIO.pid --background --make-pidfile --exec $BBD9000ROOT/BBD9000SmartIO
+	start-stop-daemon  --start --pidfile /var/run/BBD9000server.pid --background --make-pidfile --exec $BBD9000ROOT/BBD9000server
+	start-stop-daemon  --start --pidfile /var/run/BBD9000authorizeDotNet.pid --background --make-pidfile --exec $BBD9000ROOT/BBD9000authorizeDotNet
+	start-stop-daemon  --start --pidfile /var/run/BBD9000temp.pid --background --make-pidfile --exec $BBD9000ROOT/BBD9000temp
+	start-stop-daemon  --start --pidfile /var/run/BBD9000fsm.pid --background --make-pidfile --exec $BBD9000ROOT/BBD9000fsm
+	start-stop-daemon  --start --pidfile /var/run/BBD9000timer.pid --background --make-pidfile --exec $BBD9000ROOT/BBD9000timer
+}
+
+BBD9000_stop() {
+	SIG=$1
+	if [ "$SIG" = "" ] ; then
+		SIG=$SIGTERM
+	fi
+
+	start-stop-daemon --signal $SIG --stop --exec $BBD9000ROOT/BBD9000fsm
+	sleep 1
+	start-stop-daemon --signal $SIG --stop --exec $BBD9000ROOT/BBD9000SmartIO
+	# This has to be killed with SIGKILL to avoid a reboot.
+	if [ $SIG -eq $SIGTERM ] ; then
+		start-stop-daemon --signal $SIGKILL --stop --exec $BBD9000ROOT/BBD9000timer
+	else
+		start-stop-daemon --signal $SIG --stop --exec $BBD9000ROOT/BBD9000timer
+	fi
+
+	start-stop-daemon --signal $SIG --stop --exec $BBD9000ROOT/BBD9000authorizeDotNet
+	start-stop-daemon --signal $SIG --stop --exec $BBD9000ROOT/BBD9000server
+	start-stop-daemon --signal $SIG --stop --exec $BBD9000ROOT/BBD9000temp
+	
+	if [ $SIG -eq $SIGTERM ] ; then
+		rm /var/ramfs/BBD9000MEM
+		echo "" > /etc/crontabs/root
+		/etc/init.d/crond restart
+	fi
+
+}
+
+
+case "$1" in
+	start)
+		echo "Starting BBD9000..."
+		BBD9000_start
+		;;
+
+	restart)
+		echo "Restarting BBD9000..."
+		BBD9000_stop $SIGTERM
+		BBD9000_start
+		;;
+ 
+	stop)
+		echo "Stopping BBD9000..."
+		BBD9000_stop $SIGTERM
+		;;
+ 
+	power-alrm)
+		echo "Sending Power Alarm signals..."
+		BBD9000_stop $SIGPWRALRM
+		;;
+
+	power-ok)
+		echo "Sending Power Alarm Cancelation signals..."
+		BBD9000_stop $SIGPWROK
+		;;
+    
+	*)
+		echo "usage: start|restart|stop|power-alrm|power-ok"
+		;;
+ esac
+ 

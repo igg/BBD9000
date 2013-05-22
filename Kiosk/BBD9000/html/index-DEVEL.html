@@ -1,0 +1,353 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title>BBD9000-2</title>
+</head>
+<body bgcolor="#FFFFFF" text="#000000" onLoad="javascript:doReload()">
+<script type="text/javascript" language="JavaScript"> <!--
+	
+	// Global
+	var req_url = "/cgi-bin/BBD9000_JSON";
+	var CPUinterval;
+	var REFRESH = 1500;
+
+	function JSONrequest(url) {
+		var request = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+		if (request) {
+			request.open('GET', url, false) //get page synchronously 
+			request.send(null)
+			if (request.status==200) {
+				return (eval('('+request.responseText+')'));
+			} else {
+				return (0)
+			}
+		} else {
+			return (0)
+		}
+	}
+
+	function POSTrequest(url,key,val) {
+		var request = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+		if (request) {
+			request.open('POST', url, false) //get page synchronously
+			var postContent = key+'='+val;
+			request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+			request.setRequestHeader("Content-Length", postContent.length);
+ 			request.send(postContent)
+			if (request.status==200) {
+				return (eval('('+request.responseText+')'));
+			} else {
+				return (0)
+			}
+		} else {
+			return (0)
+		}
+	}
+	// ISO: yyyy-mm-dd hh:MM:ss.mmm
+	function toISOstring (d) {
+		var m = d.getMilliseconds();
+		if (m < 1) {
+			m = '000';
+		} else if (m < 10) {
+			m = '00'+m;
+		} else if (m < 100) {
+			m = '0'+m;
+		}
+		return (
+			d.getFullYear()+'-'+
+			(d.getMonth()+1 < 10 ? '0'+(d.getMonth()+1) : d.getMonth()+1) +'-'+
+			(d.getDate() < 10 ? '0'+d.getDate() : d.getDate()) +' '+
+			(d.getHours() < 10 ? '0'+d.getHours() : d.getHours()) +':'+
+			(d.getMinutes() < 10 ? '0'+d.getMinutes() : d.getMinutes()) +':'+
+			(d.getSeconds() < 10 ? '0'+d.getSeconds() : d.getSeconds()) +'.'+m
+		);
+	}
+	// ISO: hh:MM
+	function toISO_HMstring (d) {
+		return (
+			(d.getHours() < 10 ? '0'+d.getHours() : d.getHours()) +':'+
+			(d.getMinutes() < 10 ? '0'+d.getMinutes() : d.getMinutes())
+		);
+	}
+
+	// ISO: hh:MM:ss.mmm
+	function toISO_HMSstring (d) {
+		var m = d.getMilliseconds();
+		if (m < 1) {
+			m = '000';
+		} else if (m < 10) {
+			m = '00'+m;
+		} else if (m < 100) {
+			m = '0'+m;
+		}
+		return (
+			(d.getHours() < 10 ? '0'+d.getHours() : d.getHours()) +':'+
+			(d.getMinutes() < 10 ? '0'+d.getMinutes() : d.getMinutes()) +':'+
+			(d.getSeconds() < 10 ? '0'+d.getSeconds() : d.getSeconds()) +'.'+m
+		);
+	}
+
+	function doReload() {
+		CPUinterval = setInterval(do_CPU, REFRESH);
+	}
+
+	function doJSON (resp) {
+			document.getElementById ("BBD9000ID").innerHTML = "BBD9000-"+resp.BBD9000ID;
+			document.getElementById ("StartTime").innerHTML = toISOstring (new Date (resp.StartTime));
+			document.getElementById ("SystemTime").innerHTML = toISOstring (new Date (resp.SystemTime));
+			document.getElementById ("UpdateTime").innerHTML = toISO_HMSstring (new Date (resp.UpdateTime));
+			document.getElementById ("Status").innerHTML = resp.Status;
+			document.getElementById ("TwilightStart").innerHTML = toISO_HMstring (new Date (resp.TwilightStart));
+			document.getElementById ("TwilightEnd").innerHTML = toISO_HMstring (new Date (resp.TwilightEnd));
+			document.getElementById ("CPU_Load1").innerHTML = resp.CPU_Load1;
+			document.getElementById ("Keypad").innerHTML = resp.Keypad;
+			document.getElementById ("CC_Name").innerHTML = resp.CC_Name;
+			document.getElementById ("Motion").innerHTML = resp.Motion ? 'Detected' : 'None';
+			document.getElementById ("Temp_C").innerHTML = resp.Temp_C;
+			document.getElementById ("Temp_F").innerHTML = resp.Temp_F;
+			document.getElementById ("Vin").innerHTML = resp.Vin;
+			document.getElementById ("Current").innerHTML = resp.Current;
+			document.getElementById ("avail_gallons").value = resp.avail_gallons;
+			document.getElementById ("LCD1").value = resp.LCD1;
+			document.getElementById ("LCD2").value = resp.LCD2;
+			document.getElementById ("LightsRly").checked = resp.LightsRly;
+			document.getElementById ("StrikeRly").checked = resp.StrikeRly;
+			document.getElementById ("PumpRly").checked = resp.PumpRly;
+			document.getElementById ("AuxRly").checked = resp.AuxRly;
+			for (var i = 0; i < 20; i++) {
+				if (i < resp.Events.length) {
+					document.getElementById ("EVT_"+i+"_T").innerHTML = toISOstring (new Date (resp.Events[i].Time));
+					document.getElementById ("EVT_"+i+"_N").innerHTML = resp.Events[i].Name;
+					document.getElementById ("EVT_"+i+"_V").innerHTML = resp.Events[i].Value;
+				} else {
+					document.getElementById ("EVT_"+i+"_T").innerHTML = "";
+					document.getElementById ("EVT_"+i+"_N").innerHTML = "";
+					document.getElementById ("EVT_"+i+"_V").innerHTML = "";
+				}
+			}
+	}
+
+
+	function do_CPU() {
+		resp = JSONrequest(req_url); // returns a remote JavaScript object
+		if(resp) {
+			doJSON (resp);
+		}
+
+	}
+
+	function doChange (what) {
+		clearInterval(CPUinterval);
+//		resp = POSTrequest(req_url,what.id,what.value);
+		resp = JSONrequest(req_url+'?'+what.id+'='+what.value);
+
+		if(resp) {
+			doJSON (resp);
+		}
+		CPUinterval = setInterval(do_CPU, REFRESH);
+		
+		return (true);
+	}
+	
+
+//-->
+
+</script>
+<img src="Banner.gif" alt="">
+<h1 id="BBD9000ID">BBD9000</h1>
+<h4>System time: <span id="SystemTime"></span>, Started on <span id="StartTime"></span><br></h4>
+<h4>Last status update at <span id="UpdateTime"></span>:</h4>
+<!-- two side-by side tables using a nested table -->
+<table cellpadding="30">
+<tr valign="top"><td>
+<!-- left table -->
+<table>
+	<tr align="right" bgcolor="#FFFFFF">
+		<td>Status:</td>
+		<td><span id="Status"></span></td><td align="left"></td>
+	</tr>
+	<tr align="right" bgcolor="#FFFFFF">
+		<td>Civil twilight start:</td>
+		<td><span id="TwilightStart"></span></td><td align="left"></td>
+	</tr>
+	<tr align="right" bgcolor="#FFFFFF">
+		<td>Civil twilight end:</td>
+		<td><span id="TwilightEnd"></span></td><td align="left"></td>
+	</tr>
+	<tr align="right" bgcolor="#FFFFFF">
+		<td>CPU Load:</td>
+		<td><span id="CPU_Load1"></span></td><td align="left">%</td>
+	</tr>
+	<tr align="right" bgcolor="#FFFFFF">
+		<td>Keypad Buffer:</td>
+		<td></td><td align="left"><span id="Keypad"></span></td>
+	</tr>
+	<tr align="right" bgcolor="#FFFFFF">
+		<td>MSR:</td>
+		<td></td><td align="left"><span id="CC_Name"></span><br>
+	</tr>
+	<tr align="right" bgcolor="#FFFFFF">
+		<td>Motion:</td>
+		<td></td><td align="left"><span id="Motion"></span></td>
+	</tr>
+	<tr align="right" bgcolor="#FFFFFF">
+		<td>Board Temp:</td>
+		<td><span id="Temp_C"></span></td><td align="left">&deg;C</td>
+	</tr>
+	<tr align="right" bgcolor="#FFFFFF">
+		<td>Board Temp:</td>
+		<td><span id="Temp_F"></span></td><td align="left">&deg;F</td>
+	</tr>
+	<tr align="right" bgcolor="#FFFFFF">
+		<td>Input Voltage:</td>
+		<td><span id="Vin"></span></td><td align="left">V</td>
+	</tr>
+	<tr align="right" bgcolor="#FFFFFF">
+		<td>Current:</td>
+		<td><span id="Current"></span></td><td align="left">A</td>
+	</tr>
+</table>
+<table>
+	<tr align="right" bgcolor="#FFFFFF">
+		<td>Available Fuel:</td>
+		<td align="left">
+		<input name="avail_gallons" id="avail_gallons" type="text" size="6" maxlength="20" onkeyup="javascript:doChange(this);">
+		gallons
+		</td>
+	</tr>
+	<tr align="right" bgcolor="#FFFFFF">
+		<td>LCD 1:</td>
+		<td><span id="LCD1"></span></td><td align="left"></td>
+	</tr>
+	<tr align="right" bgcolor="#FFFFFF">
+		<td>LCD 2:</td>
+		<td><span id="LCD2"></span></td><td align="left"></td>
+	</tr>
+	<tr align="right" bgcolor="#FFFFFF">
+		<td>Relays:</td>
+		<td align="left">
+		<input name="LightsRly" id="LightsRly" type="checkbox" onClick="javascript:this.value = this.checked ? '1' : '0'; doChange(this);">Lights<br>
+		<input name="StrikeRly" id="StrikeRly" type="checkbox" onClick="javascript:this.value = this.checked ? '1' : '0'; doChange(this);">Door<br>
+		<input name="PumpRly" id="PumpRly" type="checkbox" onClick="javascript:this.value = this.checked ? '1' : '0'; doChange(this);">Pump<br>
+		<input name="AuxRly" id="AuxRly" type="checkbox" onClick="javascript:this.value = this.checked ? '1' : '0'; doChange(this);">Auxiliary
+		</td>
+	</tr>
+</table>
+
+</td><td>
+<!-- right table -->
+<table valign="top" border="1" cellspacing="0" cellpadding="2">
+	<tr>
+		<th border="0" colspan = "3" align="center" bgcolor="#FFFFFF">Event Queue</th>
+	</tr>
+	<tr align="center" bgcolor="#FFFFFF">
+		<th>Time</th><th>Name</th><th>Value</th>
+	</tr>
+	<tr align="left" bgcolor="#FFFFFF">
+		<td><span id="EVT_0_T"></span></td>
+		<td><span id="EVT_0_N"></span></td>
+		<td><span id="EVT_0_V"></span></td>
+	</tr>
+	<tr align="left" bgcolor="#FFFFFF">
+		<td><span id="EVT_1_T"></span></td>
+		<td><span id="EVT_1_N"></span></td>
+		<td><span id="EVT_1_V"></span></td>
+	</tr>
+	<tr align="left" bgcolor="#FFFFFF">
+		<td><span id="EVT_2_T"></span></td>
+		<td><span id="EVT_2_N"></span></td>
+		<td><span id="EVT_2_V"></span></td>
+	</tr>
+	<tr align="left" bgcolor="#FFFFFF">
+		<td><span id="EVT_3_T"></span></td>
+		<td><span id="EVT_3_N"></span></td>
+		<td><span id="EVT_3_V"></span></td>
+	</tr>
+	<tr align="left" bgcolor="#FFFFFF">
+		<td><span id="EVT_4_T"></span></td>
+		<td><span id="EVT_4_N"></span></td>
+		<td><span id="EVT_4_V"></span></td>
+	</tr>
+	<tr align="left" bgcolor="#FFFFFF">
+		<td><span id="EVT_5_T"></span></td>
+		<td><span id="EVT_5_N"></span></td>
+		<td><span id="EVT_5_V"></span></td>
+	</tr>
+	<tr align="left" bgcolor="#FFFFFF">
+		<td><span id="EVT_6_T"></span></td>
+		<td><span id="EVT_6_N"></span></td>
+		<td><span id="EVT_6_V"></span></td>
+	</tr>
+	<tr align="left" bgcolor="#FFFFFF">
+		<td><span id="EVT_7_T"></span></td>
+		<td><span id="EVT_7_N"></span></td>
+		<td><span id="EVT_7_V"></span></td>
+	</tr>
+	<tr align="left" bgcolor="#FFFFFF">
+		<td><span id="EVT_8_T"></span></td>
+		<td><span id="EVT_8_N"></span></td>
+		<td><span id="EVT_8_V"></span></td>
+	</tr>
+	<tr align="left" bgcolor="#FFFFFF">
+		<td><span id="EVT_9_T"></span></td>
+		<td><span id="EVT_9_N"></span></td>
+		<td><span id="EVT_9_V"></span></td>
+	</tr>
+	<tr align="left" bgcolor="#FFFFFF">
+		<td><span id="EVT_10_T"></span></td>
+		<td><span id="EVT_10_N"></span></td>
+		<td><span id="EVT_10_V"></span></td>
+	</tr>
+	<tr align="left" bgcolor="#FFFFFF">
+		<td><span id="EVT_11_T"></span></td>
+		<td><span id="EVT_11_N"></span></td>
+		<td><span id="EVT_11_V"></span></td>
+	</tr>
+	<tr align="left" bgcolor="#FFFFFF">
+		<td><span id="EVT_12_T"></span></td>
+		<td><span id="EVT_12_N"></span></td>
+		<td><span id="EVT_12_V"></span></td>
+	</tr>
+	<tr align="left" bgcolor="#FFFFFF">
+		<td><span id="EVT_13_T"></span></td>
+		<td><span id="EVT_13_N"></span></td>
+		<td><span id="EVT_13_V"></span></td>
+	</tr>
+	<tr align="left" bgcolor="#FFFFFF">
+		<td><span id="EVT_14_T"></span></td>
+		<td><span id="EVT_14_N"></span></td>
+		<td><span id="EVT_14_V"></span></td>
+	</tr>
+	<tr align="left" bgcolor="#FFFFFF">
+		<td><span id="EVT_15_T"></span></td>
+		<td><span id="EVT_15_N"></span></td>
+		<td><span id="EVT_15_V"></span></td>
+	</tr>
+	<tr align="left" bgcolor="#FFFFFF">
+		<td><span id="EVT_16_T"></span></td>
+		<td><span id="EVT_16_N"></span></td>
+		<td><span id="EVT_16_V"></span></td>
+	</tr>
+	<tr align="left" bgcolor="#FFFFFF">
+		<td><span id="EVT_17_T"></span></td>
+		<td><span id="EVT_17_N"></span></td>
+		<td><span id="EVT_17_V"></span></td>
+	</tr>
+	<tr align="left" bgcolor="#FFFFFF">
+		<td><span id="EVT_18_T"></span></td>
+		<td><span id="EVT_18_N"></span></td>
+		<td><span id="EVT_18_V"></span></td>
+	</tr>
+	<tr align="left" bgcolor="#FFFFFF">
+		<td><span id="EVT_19_T"></span></td>
+		<td><span id="EVT_19_N"></span></td>
+		<td><span id="EVT_19_V"></span></td>
+	</tr>
+</table>
+<!-- End of side-by-side tables -->
+</td></tr></table>
+
+
+</body>
+</html>

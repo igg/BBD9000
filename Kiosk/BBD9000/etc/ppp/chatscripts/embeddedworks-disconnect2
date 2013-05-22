@@ -1,0 +1,12 @@
+ABORT           'BUSY'
+ABORT           'ERROR'
+ABORT           'NO DIALTONE'
+TIMEOUT         30
+''              '+++\c'
+SAY             " + sending break"
+'NO CARRIER'    'ATH'
+SAY             "\n + dropping data connection"
+OK              'AT+CGATT=0'
+SAY             "\n + disconnecting from GPRS"
+OK              '\c'
+SAY             "\n + disconnected."

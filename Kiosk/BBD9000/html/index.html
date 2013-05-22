@@ -1,0 +1,208 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title>BBD9000-2</title>
+</head>
+<body bgcolor="#FFFFFF" text="#000000" onLoad="javascript:doReload()">
+<script type="text/javascript" language="JavaScript"> <!--
+	
+	// Global
+	var req_url = "/cgi-bin/BBD9000_JSON";
+	var CPUinterval;
+
+	function JSONrequest(url) {
+		var request = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+		if (request) {
+			request.open('GET', url, false) //get page synchronously 
+			request.send(null)
+			if (request.status==200) {
+				return (eval('('+request.responseText+')'));
+			} else {
+				return (0)
+			}
+		} else {
+			return (0)
+		}
+	}
+
+	// ISO: yyyy-mm-dd hh:MM:ss.mmm
+	function toISOstring (d) {
+		var m = d.getMilliseconds();
+		if (m < 1) {
+			m = '000';
+		} else if (m < 10) {
+			m = '00'+m;
+		} else if (m < 100) {
+			m = '0'+m;
+		}
+		return (
+			d.getFullYear()+'-'+
+			(d.getMonth()+1 < 10 ? '0'+(d.getMonth()+1) : d.getMonth()+1) +'-'+
+			(d.getDate() < 10 ? '0'+d.getDate() : d.getDate()) +' '+
+			(d.getHours() < 10 ? '0'+d.getHours() : d.getHours()) +':'+
+			(d.getMinutes() < 10 ? '0'+d.getMinutes() : d.getMinutes()) +':'+
+			(d.getSeconds() < 10 ? '0'+d.getSeconds() : d.getSeconds()) +'.'+m
+		);
+	}
+	// ISO: hh:MM
+	function toISO_HMstring (d) {
+		return (
+			(d.getHours() < 10 ? '0'+d.getHours() : d.getHours()) +':'+
+			(d.getMinutes() < 10 ? '0'+d.getMinutes() : d.getMinutes())
+		);
+	}
+
+	// ISO: hh:MM:ss.mmm
+	function toISO_HMSstring (d) {
+		var m = d.getMilliseconds();
+		if (m < 1) {
+			m = '000';
+		} else if (m < 10) {
+			m = '00'+m;
+		} else if (m < 100) {
+			m = '0'+m;
+		}
+		return (
+			(d.getHours() < 10 ? '0'+d.getHours() : d.getHours()) +':'+
+			(d.getMinutes() < 10 ? '0'+d.getMinutes() : d.getMinutes()) +':'+
+			(d.getSeconds() < 10 ? '0'+d.getSeconds() : d.getSeconds()) +'.'+m
+		);
+	}
+
+	function doReload() {
+		do_CPU();
+		CPUinterval = setInterval(do_CPU, 350000);
+	}
+
+	function doJSON (resp) {
+			document.getElementById ("BBD9000ID").innerHTML = "BBD9000-"+resp.BBD9000ID;
+			document.getElementById ("StartTime").innerHTML = toISOstring (new Date (resp.StartTime));
+			document.getElementById ("SystemTime").innerHTML = toISOstring (new Date (resp.SystemTime));
+			document.getElementById ("UpdateTime").innerHTML = toISO_HMSstring (new Date (resp.UpdateTime));
+			document.getElementById ("Status").innerHTML = resp.Status;
+			document.getElementById ("TwilightStart").innerHTML = toISO_HMstring (new Date (resp.TwilightStart));
+			document.getElementById ("TwilightEnd").innerHTML = toISO_HMstring (new Date (resp.TwilightEnd));
+			document.getElementById ("CPU_Load1").innerHTML = resp.CPU_Load1;
+			document.getElementById ("Keypad").innerHTML = resp.Keypad;
+			document.getElementById ("MSR_Name").innerHTML = resp.MSR_Name;
+			document.getElementById ("Motion").innerHTML = resp.Motion ? 'Detected' : 'None';
+			document.getElementById ("Door").innerHTML = resp.Door ? 'Open' : 'Closed';
+			document.getElementById ("Temp_C").innerHTML = resp.Temp_C;
+			document.getElementById ("Temp_F").innerHTML = resp.Temp_F;
+			document.getElementById ("Vin").innerHTML = resp.Vin;
+			document.getElementById ("Current").innerHTML = resp.Current;
+			document.getElementById ("avail_gallons").innerHTML = resp.avail_gallons;
+			document.getElementById ("LCD1").innerHTML = resp.LCD1;
+			document.getElementById ("LCD2").innerHTML = resp.LCD2;
+			document.getElementById ("LightsRly").checked = resp.LightsRly;
+			document.getElementById ("StrikeRly").checked = resp.StrikeRly;
+			document.getElementById ("PumpRly").checked = resp.PumpRly;
+			document.getElementById ("AuxRly").checked = resp.AuxRly;
+	}
+
+
+	function do_CPU() {
+		resp = JSONrequest(req_url); // returns a remote JavaScript object
+		if(resp) {
+			doJSON (resp);
+		}
+
+	}
+	
+
+//-->
+
+</script>
+<img src="Banner.gif" alt="">
+<h1 id="BBD9000ID">BBD9000</h1>
+<h4>System time: <span id="SystemTime"></span>, Started on <span id="StartTime"></span><br></h4>
+<h4>Last status update at <span id="UpdateTime"></span>:</h4>
+<!-- two side-by side tables using a nested table -->
+<table cellpadding="30">
+<tr valign="top"><td>
+<!-- left table -->
+<table>
+	<tr align="right" bgcolor="#FFFFFF">
+		<td>Status:</td>
+		<td><span id="Status"></span></td><td align="left"></td>
+	</tr>
+	<tr align="right" bgcolor="#FFFFFF">
+		<td>Civil twilight start:</td>
+		<td><span id="TwilightStart"></span></td><td align="left"></td>
+	</tr>
+	<tr align="right" bgcolor="#FFFFFF">
+		<td>Civil twilight end:</td>
+		<td><span id="TwilightEnd"></span></td><td align="left"></td>
+	</tr>
+	<tr align="right" bgcolor="#FFFFFF">
+		<td>CPU Load:</td>
+		<td><span id="CPU_Load1"></span></td><td align="left">%</td>
+	</tr>
+	<tr align="right" bgcolor="#FFFFFF">
+		<td>Keypad Buffer:</td>
+		<td></td><td align="left"><span id="Keypad"></span></td>
+	</tr>
+	<tr align="right" bgcolor="#FFFFFF">
+		<td>MSR:</td>
+		<td></td><td align="left"><span id="MSR_Name"></span><br>
+	</tr>
+	<tr align="right" bgcolor="#FFFFFF">
+		<td>Motion:</td>
+		<td></td><td align="left"><span id="Motion"></span></td>
+	</tr>
+	<tr align="right" bgcolor="#FFFFFF">
+		<td>Door:</td>
+		<td></td><td align="left"><span id="Door"></span></td>
+	</tr>
+	<tr align="right" bgcolor="#FFFFFF">
+		<td>Board Temp:</td>
+		<td><span id="Temp_C"></span></td><td align="left">&deg;C</td>
+	</tr>
+	<tr align="right" bgcolor="#FFFFFF">
+		<td>Board Temp:</td>
+		<td><span id="Temp_F"></span></td><td align="left">&deg;F</td>
+	</tr>
+	<tr align="right" bgcolor="#FFFFFF">
+		<td>Input Voltage:</td>
+		<td><span id="Vin"></span></td><td align="left">V</td>
+	</tr>
+	<tr align="right" bgcolor="#FFFFFF">
+		<td>Current:</td>
+		<td><span id="Current"></span></td><td align="left">A</td>
+	</tr>
+</table>
+<table>
+	<tr align="right" bgcolor="#FFFFFF">
+		<td>Available Fuel:</td>
+		<td><span id="avail_gallons"></span></td><td align="left">g</td>
+	</tr>
+	<tr align="right" bgcolor="#FFFFFF">
+		<td>LCD 1:</td>
+		<td><span id="LCD1"></span></td><td align="left"></td>
+	</tr>
+	<tr align="right" bgcolor="#FFFFFF">
+		<td>LCD 2:</td>
+		<td><span id="LCD2"></span></td><td align="left"></td>
+	</tr>
+	<tr align="right" bgcolor="#FFFFFF">
+		<td>Relays:</td>
+		<td align="left">
+		<input name="LightsRly" id="LightsRly" type="checkbox" disabled>Lights<br>
+		<input name="StrikeRly" id="StrikeRly" type="checkbox" disabled>Door<br>
+		<input name="PumpRly" id="PumpRly" type="checkbox" disabled>Pump<br>
+		<input name="AuxRly" id="AuxRly" type="checkbox" disabled>Auxiliary
+		</td>
+	</tr>
+</table>
+
+</td><td>
+<!-- right table -->
+<table valign="top" border="1" cellspacing="0" cellpadding="2">
+</table>
+<!-- End of side-by-side tables -->
+</td></tr></table>
+
+
+</body>
+</html>

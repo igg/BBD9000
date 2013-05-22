@@ -1,0 +1,20 @@
+TIMEOUT 10
+#ECHO ON
+ABORT "NO ANSWER"
+ABORT "NO CARRIER"
+SAY "Starting GPRS Connection\n\n"
+ABORT "ERROR"
+"" ATZ
+# GPRS Attach
+OK AT+CGATT=1
+#OK ATE1
+#Make sure we have a good cell connection
+#The following will check for cell connection on Multitech modem
+#OK AT+CPIN?          #If your modem doesn't support this, replace the "READY" below with "OK" and delete this line.
+#SET THE APN
+#READY AT+CGDCONT=1,"IP","internet"
+OK AT+CGDCONT=1,"IP","embeddedworks.globalm2m.net"
+#DIAL INTO THE NETWORK
+OK ATD*99***1#
+#CONNECT 'c'
+CONNECT

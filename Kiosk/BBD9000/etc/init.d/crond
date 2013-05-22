@@ -1,0 +1,25 @@
+#!/bin/sh
+# Start/stop the cron daemon.
+
+test -f /usr/sbin/crond || exit 0
+
+CRON_FLAGS='-f -L /dev/null -c /etc/crontabs'
+case "$1" in
+start)	echo -n "Starting periodic command scheduler: crond"
+		start-stop-daemon  --start --background --pidfile /var/run/crond.pid --make-pidfile --exec /usr/sbin/crond -- $CRON_FLAGS
+		echo "." 
+	;;
+stop)	echo -n "Stopping periodic command scheduler: crond"
+		start-stop-daemon --stop --exec /usr/sbin/crond
+		echo "."
+        ;;
+restart) echo -n "Restarting periodic command scheduler: crond"
+		start-stop-daemon --stop --exec /usr/sbin/crond
+		start-stop-daemon  --start --background --pidfile /var/run/crond.pid --make-pidfile --exec /usr/sbin/crond -- $CRON_FLAGS
+		echo "."
+        ;;
+*)	echo "Usage: /etc/init.d/cron start|stop|restart"
+        exit 1 
+        ;;
+esac
+exit 0

@@ -1,0 +1,37 @@
+#!/bin/sh
+ROOT=$1
+if [ "$ROOT" -eq "" ]; then
+    ROOT="/BBD9000"
+fi
+
+if [ ! -d $ROOT/SmartIO ]; then
+    mkdir -p $ROOT/SmartIO
+fi
+
+if [ ! -d $ROOT/patches ]; then
+    mkdir -p $ROOT/patches
+fi
+
+cp BBD9000init BBD9000temp BBD9000SmartIO BBD9000twilight BBD9000server BBD9000authorizeDotNet BBD9000timer BBD9000fsm BBD9000cell serial8N1 $ROOT/
+# scripts
+cp netlink BBD9000patch $ROOT/
+cp BBD9000.conf  $ROOT/
+
+cp html/index.html /www/apache/htdocs/
+cp BBD9000_JSON /www/apache/cgi-bin/
+
+cp SmartIO.hex reflash bootloader/bootloader bootloader/devices.txt $ROOT/SmartIO
+
+
+# N.B.: do not use shell wildcards for files because they won't be expanded over nfs!
+cp TS7260_5vOFF /etc/init.d/
+cp etc/init.d/BBD9000  etc/init.d/adjtimex  etc/init.d/crond  etc/init.d/dumpdate\
+	etc/init.d/loadUSBflash.sh  etc/init.d/netlink  etc/init.d/random  etc/init.d/setlastdate\
+	/etc/init.d/
+
+cp etc/ppp/chap-secrets  etc/ppp/pap-secrets  etc/ppp/ppp-off  etc/ppp/ppp-on /etc/ppp/
+cp etc/ppp/peers/embeddedworks /etc/ppp/peers/
+cp etc/ppp/chatscripts/embeddedworks-connect  etc/ppp/chatscripts/embeddedworks-disconnect /etc/ppp/chatscripts/
+
+cp etc/udhcpc/checkping.script /etc/udhcpc/
+

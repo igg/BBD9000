@@ -1,0 +1,43 @@
+######################################################################
+#!/bin/sh
+#
+# Determine the device to be terminated.
+#
+if [ "$1" = "" ]; then
+DEVICE=ppp0
+else
+DEVICE=$1
+fi
+
+######################################################################
+#
+# If the ppp0 pid file is present then the program is running.
+
+killall -0 pppd >/dev/null 2>&1
+if [ $? -eq 0 ]; then
+	echo "pppd is already running"
+	exit 1
+fi
+
+if [ -r /var/run/$DEVICE.pid ]; then
+	kill -0 `cat /var/run/$DEVICE.pid` >/dev/null 2>&1
+	#
+	# If the kill 0 did not work then there is no process running for this
+	# pid. It may also mean that the lock file will be left. You may wish
+	# to delete the lock file at the same time.
+	if [ ! $? -eq 0 ]; then
+		rm -f /var/run/$DEVICE.pid
+		echo "ERROR: Removed stale pid file"
+	else
+		echo "ERROR: PPP link is already active on $DEVICE"
+		exit 1
+	fi
+fi
+
+
+
+killall ntpd >/dev/null 2>&1
+
+# start ppp
+/usr/sbin/pppd call embeddedworks
+

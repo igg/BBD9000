@@ -1,0 +1,30 @@
+#!/bin/sh
+# On Jan 1, 2009 00:00:00, the epoch was 1230786000
+minepoch=1230768000
+mindate=010100002009
+epoch=`date -u +%s`
+last_date=`cat /etc/last-date 2> /dev/null`
+
+if [ "$epoch" -lt "$minepoch" ]
+then
+	if [ "$last_date" ]
+	then
+		echo "Date set to /etc/last-date"
+		date -u $last_date
+		date
+	else
+		echo "Date set to mindate"
+		date -u $mindate
+		date
+	fi
+else
+	echo "Date not reset"
+	date
+fi
+
+drift=`cat /etc/ntp.drift 2> /dev/null`
+if [ "$drift" ]
+then
+	ntptime -f $drift >/dev/null 2>&1
+fi
+

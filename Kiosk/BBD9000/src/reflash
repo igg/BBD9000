@@ -1,0 +1,3 @@
+#!/bin/sh
+#avrdude -c stk500v2 -P /dev/ttyAM1 -p atmega164p  -b 115200 -D -u -U flash:w:main.hex:i
+./bootloader -p SmartIO.hex -d /dev/ttyAM1 -b 115200 -r '\n\nRESET\n'

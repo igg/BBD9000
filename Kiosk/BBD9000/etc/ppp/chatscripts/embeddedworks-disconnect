@@ -1,0 +1,8 @@
+ABORT           "ERROR"
+ABORT           "BUSY"
+ABORT           "NO DIALTONE"
+SAY             "\nSending break to the modem\n"
+""              "\K"
+""              "+++AT"
+OK              "ATH"
+SAY             "\nPDP context detached\n"

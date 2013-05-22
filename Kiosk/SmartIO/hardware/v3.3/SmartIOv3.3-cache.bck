@@ -1,0 +1,19 @@
+EESchema-DOCLIB  Version 2.0  Date: Wed 15 May 2013 06:05:22 PM EDT
+#
+$CMP PHOTORESISTOR
+D Photo resistor
+$ENDCMP
+#
+$CMP POT
+D Potentiometer
+$ENDCMP
+#
+$CMP POT2
+D Potentiometer
+$ENDCMP
+#
+$CMP R2
+D Potentiometer
+$ENDCMP
+#
+#End Doc Library

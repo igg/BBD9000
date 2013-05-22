@@ -1,0 +1,43 @@
+#!/bin/sh
+# This doesn't do anything fancy.
+# Its mainly in init.d so we shutdown the modem when we shutdown the computer
+# and start the network when we start the computer.
+
+OPTIONS=""
+BBD9000ROOT='/BBD9000'
+
+
+do_start() {
+	
+	$BBD9000ROOT/netlink start &
+}
+
+do_stop() {
+	$BBD9000ROOT/netlink stop
+}
+
+do_restart() {
+	$BBD9000ROOT/netlink restart &
+}
+
+case "$1" in
+	start)
+		echo "Starting netlink..."
+		do_start
+		;;
+
+	restart)
+		echo "Restarting netlink..."
+		do_restart
+		;;
+ 
+	stop)
+		echo "Stopping netlink..."
+		do_stop
+		;;
+    
+	*)
+		echo "usage: start|restart|stop|idle"
+		;;
+ esac
+ 

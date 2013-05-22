@@ -1,0 +1,26 @@
+/dev/tts/5 # this is the modem (com6 header)
+115200     # baud rate.
+crtscts    # Use hardware flow ocntrol
+#lock       # lock the modem port
+# Using hardware carrier detect causes extra text to be caught
+# in the buffer.  Use the local option to avoid this.
+local      # Don't use modem control lines for carrier detect
+logfile /dev/null  # Set to /dev/null or /root/ppp.log
+#logfile /root/ppp.log  # Set to /dev/null or /root/ppp.log
+connect '/usr/sbin/chat -v -s -f /etc/ppp/chatscripts/embeddedworks-connect'
+disconnect '/usr/sbin/chat -v -s -f /etc/ppp/chatscripts/embeddedworks-disconnect'
+#debug     # Sent to logfile
+nopersist    # exit on error. ignores maxfail.
+#persist    # Keep connection alive
+#maxfail 3  # consecutive failures.
+#nodetach   # Don't fork.  nopersist & nodetach & maxfail (def: 10)
+noauth     # No authentication
+asyncmap 0 # Sometimes this is needed, sometimes not.
+#novj      # Sometimes this compression needs to be disabled by force
+#noccp     # Sometimes this compression needs to be disabled by force
+ipcp-accept-local  # Let the remote peer give us a local IP address
+ipcp-accept-remote # Let the remote peer also give us its IP address
+noipdefault        # Don't send a default local IP
+# The default route will not be set if one already exists
+defaultroute       # Let pppd add a default route
+usepeerdns         # Ask the remote host to provide us with DNS servers
