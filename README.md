@@ -4,6 +4,7 @@
 and provide self-service credit-card purchases to coop/fleet members.
 * The Coop Management Software runs on a remote hosted server and manages coop/fleet accounts,
 communicates with kiosks, etc.
+* This software and hardware has been in operation at the [Baltimore Biodiesel Coop] (http://baltimorebiodiesel.org/) since 2009
 
 ### Kiosk Hardware:
 * SmartIO: An interface board with an 8-bit AVR microcontroller that interfaces to
