@@ -1,3 +1,9 @@
+##### The "fast tiny & mega UART bootloader" in this directory was contributed to AVR Freaks by danni 
+[fast tiny & mega UART bootloader on AVR Freaks] (http://www.avrfreaks.net/index.php?module=Freaks%20Academy&func=viewItem&item_id=1008&item_type=project)
+##### The POSIX-compatible host executable for danni's bootloader was contributed to AVR Freaks by iggie01
+[linux bootloader uploader on AVR Freaks] (http://www.avrfreaks.net/index.php?module=Freaks%20Academy&func=viewItem&item_type=project&item_id=1927)  
+The source code is also part of this repository in `Kiosk/BBD9000/src/bootloader/`
+
 #### Flash bootloader onto AVR using avrdude, AVR ISP MkII, and ISP header on SmartIO
 AVR ISP MkII connected to PC USB and plugged into ISP header on SmartIO board
 
