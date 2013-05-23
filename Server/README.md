@@ -14,7 +14,8 @@
       * These are meant to be read and commands executed manually for now depending on OS setup!
       * Please assume that these will completely and irreversibly buggeer your OS if blindly executed!!!
 
-##### A missing directory is required in deployment `Server/priv`, containing the following files:
+##### A missing directory (`priv/`) is required for deployment at the same level as the `web/`, `tmpl/` and `bin/` directories.
+* **This directory contains sensitive private files and must be inacessible from the web server**
 * `DB_CONF.cnf`: Database access credentials for server scripts. A file in the following format:
 
         # DB_CONF.cnf
