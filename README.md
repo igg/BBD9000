@@ -23,5 +23,6 @@ Coop Management Software.
 * Hosted software that communicates with kiosks, coop/fleet members and administrators using HTML/HTTP.
     * Maintains per-member account, balance, sales and contact information
     * Administrative pages to keep track of inventory levels at kiosks, consolidated sales, etc.
-    * Credit Card gateway communications for financial transactions
-    * Perl/MySQL
+    * Member pages to update contact info, track purchases, add family members, credit-cards, etc.
+    * Credit Card Gateway communications for financial transactions (currently Authorize.net Card Present protocol)
+    * Implemented using Perl/MySQL
