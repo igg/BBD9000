@@ -1,0 +1,32 @@
+#!/bin/bash
+# Fancy way of determining the directory of this script
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
+  BIN_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ $SOURCE != /* ]] && SOURCE="$BIN_DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+done
+BIN_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+date=`date '+%F'`
+
+
+BBD_CNF=$( dirname "$BIN_DIR" )"/priv/DB_BACKUP.cnf"
+EMPTY_DB=$( dirname "$BIN_DIR" )"/setup/Schema-bbd_members.sql"
+BACKUP_DB=$( dirname "$BIN_DIR" )"/backups/DB-bbd_members-$(date '+%F-%T').sql.bz2"
+tables=$(mysql --defaults-extra-file="$BBD_CNF" bbd_members -e 'show tables')
+if [ -n "$tables" ]; then
+	echo "Database bbd_members already exists and has defined tables!"
+	read -p "Destroy existing contents and create an empty database? (y/N)?" choice
+	case "$choice" in 
+		y|Y )
+			echo "Existing bbd_members database will be backed up to ${BACKUP_DB}"
+			/usr/bin/mysqldump --defaults-extra-file=priv/DB_BACKUP.cnf --single-transaction bbd_members | bzip2 > "$BACKUP_DB"
+#			mysql --defaults-extra-file="$BBD_CNF" bbd_members < "$EMPTY_DB"
+		;;
+		* ) echo "Skipping making an empty database";;
+	esac
+else
+	echo "Making empty bbd_members database"
+#	mysql --defaults-extra-file="$BBD_CNF" bbd_members < "$EMPTY_DB"	
+fi
+#

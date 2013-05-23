@@ -1,0 +1,190 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title>Baltimore Biodiesel Coop - Coop Memberships</title>
+	<link href="/CSS/bbd.css" rel="stylesheet" type="text/css">
+	<script language="JavaScript" type="text/javascript" src="/JavaScript/calendar/calendar3.js"></script>
+</head>
+<body>
+
+<div id="wrapper">
+<div class="box">
+</div>
+<!-- TMPL_INCLUDE NAME="role-nav.tmpl" -->
+
+<div id="full_width">
+
+<form action="BBD-memberships.pl" method="post" name="primary">
+<input type="hidden" name="CGISESSID" value="<!-- TMPL_VAR ESCAPE=HTML NAME=CGISESSID -->" >
+<!-- TMPL_IF NAME=ERROR -->
+	<div id="error">
+	<!-- TMPL_VAR ESCAPE=HTML NAME=ERROR -->
+	</div>
+<!-- /TMPL_IF -->
+<table width="100%"> <!-- Outer table to make two side-by-side tables -->
+<thead>
+	<tr>
+		<td>Add a membership</td>
+		<td>Edit membership</td>
+	</tr>
+</thead>
+<tr>
+<td valign = "top"> <!-- Left table - Add a membership -->
+<table>
+	<tr>
+		<td align="right">Name</td>
+		<td align="left"><input name="new_name" type="text" size="20" value="<!-- TMPL_VAR NAME=new_name -->"></td>
+	</tr><tr>
+		<td align="right">Email</td>
+		<td align="left"><input name="new_email" type="text" size="25" value="<!-- TMPL_VAR NAME=new_email -->"></td>
+	</tr><tr>
+		<td align="right">Start</td>
+		<td align="left"><input name="new_start" type="text" size="15" value="<!-- TMPL_VAR NAME=new_start -->"
+			onclick="javascript:new_start_cal.popup();" readonly>
+			<a href="javascript:new_start_cal.popup();"><img src="/JavaScript/calendar/img/cal.gif" width="16" height="16" border="0" title="Pick date and time" alt="Pick date + time"></a>
+		</td>
+	</tr><tr>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+	</tr><tr>
+		<td align="right">Type</td>
+		<td align="left"> <!-- TMPL_VAR NAME=new_type_popup --> </td>
+	</tr><tr>
+		<td align="right">Status</td>
+		<td align="left"> <!-- TMPL_VAR NAME=new_status_popup --> </td>
+	</tr><tr>
+		<td colspan="2">
+		<input name="add_memb" type="submit" value="Add membership">
+		<br> &nbsp;<br> &nbsp;
+		</td>
+	</tr>
+</table></td>
+
+<td valign = "top"> <!-- Right table - Edit Membership -->
+<!-- TMPL_IF NAME=edit_membership_memb_id -->
+<table>
+	<tr>
+		<td align="right">Name</td>
+		<td align="left"><input name="edit_name" type="text" size="20" value="<!-- TMPL_VAR NAME=edit_name -->"></td>
+	</tr><tr>
+		<td align="right">Email</td>
+		<td align="left"><input name="edit_email" type="text" size="25" value = "<!-- TMPL_VAR NAME=edit_email -->"></td>
+	</tr><tr>
+		<td align="right">Start</td>
+		<td align="left"><input name="edit_start" type="text" size="15" value = "<!-- TMPL_VAR NAME=edit_start -->"
+			onclick="javascript:edit_start_cal.popup();" readonly>
+			<a href="javascript:edit_start_cal.popup();"><img src="/JavaScript/calendar/img/cal.gif" width="16" height="16" border="0" title="Pick date and time" alt="Pick date + time"></a>
+		</td>
+	</tr><tr>
+		<td align="right">Renewal</td>
+		<td align="left"><input name="edit_renew" type="text" size="10" value = "<!-- TMPL_VAR NAME=edit_renew -->"
+			onclick="javascript:edit_renew_cal.popup();" readonly>
+			<a href="javascript:edit_renew_cal.popup();"><img src="/JavaScript/calendar/img/cal.gif" width="16" height="16" border="0" title="Pick date and time" alt="Pick date + time"></a>
+		</td>
+	</tr><tr>
+		<td align="right">Type</td>
+		<td align="left"> <!-- TMPL_VAR NAME=edit_type_popup --> </td>
+	</tr><tr>
+		<td align="right">Status</td>
+		<td align="left"> <!-- TMPL_VAR NAME=edit_status_popup --> </td>
+	</tr><tr>
+		<td colspan="2">
+			<input name="update_memb" type="submit" value="Update">
+			<input name="edit_memb" type="submit" value="Edit contact info.">
+			<input name="edit_family" type="submit" value="Edit Family Memberships">
+			<br><input name="edit_send_email" type="submit" value="Send">  <!-- TMPL_VAR NAME=edit_send_email_popup --> email
+		</td>
+	</tr>
+</table>
+<input name="edit_membership_memb_id" type="hidden" value="<!-- TMPL_VAR NAME=edit_membership_memb_id -->">
+<input name="edit_membership_ms_id" type="hidden" value="<!-- TMPL_VAR NAME=edit_membership_ms_id -->">
+<!-- TMPL_ELSE -->
+<div id="message">
+Select a membership to edit from the list below
+</div>
+<!-- /TMPL_IF -->
+</td>
+</tr> </table> <!-- outer table -->
+
+
+<hr>
+<br>
+<h3>
+Last <input name="last_n_memberships" type="text" size="4" value="<!-- TMPL_VAR NAME=last_n_memberships -->"> memberships <input name="refresh" type="submit" value="Refresh">
+</h3>
+<table class="data">
+<thead class="data">
+	<tr>
+		<td class="data">Name</td>
+		<td class="data">Email</td>
+		<td class="data">Number</td>
+		<td class="data">Start</td>
+		<td class="data">Renewal</td>
+		<td class="data">Type</td>
+		<td class="data">Status</td>
+		<td class="data"></td>
+	</tr>
+</thead>
+	<!-- TMPL_LOOP NAME=last_members -->
+		<tr class="data">
+			<td class="data"><!-- TMPL_VAR ESCAPE=HTML NAME=last_m_name --></td>
+			<td class="data"><!-- TMPL_VAR ESCAPE=HTML NAME=last_m_email --></td>
+			<td class="data"><!-- TMPL_VAR ESCAPE=HTML NAME=last_m_number --></td>
+			<td class="data"><!-- TMPL_VAR ESCAPE=HTML NAME=last_m_start --></td>
+			<td class="data"><!-- TMPL_VAR ESCAPE=HTML NAME=last_m_renew --></td>
+			<td class="data"><!-- TMPL_VAR ESCAPE=HTML NAME=last_m_type --></td>
+			<td class="data"><!-- TMPL_VAR ESCAPE=HTML NAME=last_m_status --></td>
+			<td class="data">
+				<input name="<!-- TMPL_VAR ESCAPE=HTML NAME=last_m_select_id -->" type="submit" value="Edit">
+			</td>
+		</tr>
+	<!-- /TMPL_LOOP -->
+</table>
+
+
+</form>
+
+<script language="JavaScript" type="text/javascript"> <!--
+	var new_start_cal = new calendar3(document.forms['primary'].elements['new_start']);
+	new_start_cal.year_scroll = false;
+	new_start_cal.time_comp = true;
+	document.forms['primary'].elements['new_start'].value = iso_date (new Date());
+//	<!-- TMPL_IF NAME=edit_membership_memb_id -->
+	
+		var edit_start_cal = new calendar3(document.forms['primary'].elements['edit_start']);
+		edit_start_cal.year_scroll = true;
+		edit_start_cal.time_comp = true;
+	
+		var edit_renew_cal = new calendar3(document.forms['primary'].elements['edit_renew']);
+		edit_renew_cal.year_scroll = true;
+		edit_renew_cal.time_comp = false;
+//	<!-- /TMPL_IF -->
+
+	
+	
+	function iso_datetime (dt_datetime) {
+		return (
+			dt_datetime.getFullYear() + "-"
+			+ (dt_datetime.getMonth() < 9 ? '0' : '') + (dt_datetime.getMonth() + 1) + "-"
+			+ (dt_datetime.getDate() < 10 ? '0' : '') + dt_datetime.getDate()
+			+ ' '
+			+ (dt_datetime.getHours() < 10 ? '0' : '') + dt_datetime.getHours() + ":"
+			+ (dt_datetime.getMinutes() < 10 ? '0' : '') + (dt_datetime.getMinutes())
+		);
+	}
+	
+	function iso_date (dt_datetime) {
+		return (
+			dt_datetime.getFullYear() + "-"
+			+ (dt_datetime.getMonth() < 9 ? '0' : '') + (dt_datetime.getMonth() + 1) + "-"
+			+ (dt_datetime.getDate() < 10 ? '0' : '') + dt_datetime.getDate()
+		);
+	}
+//-->
+</script>
+
+</div>
+</div>
+</body>
+</html>

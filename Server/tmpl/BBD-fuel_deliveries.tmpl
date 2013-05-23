@@ -1,0 +1,202 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title>Baltimore Biodiesel Coop - Fuel Deliveries</title>
+	<link href="/CSS/bbd.css" rel="stylesheet" type="text/css">
+	<script language="JavaScript" type="text/javascript" src="/JavaScript/calendar/calendar3.js"></script>
+</head>
+<body>
+
+<div id="wrapper">
+<div class="box">
+</div>
+<!-- TMPL_INCLUDE NAME="role-nav.tmpl" -->
+
+<div id="full_width">
+
+<form action="BBD-fuel_deliveries.pl" method="post" name="primary">
+<input type="hidden" name="CGISESSID" value="<!-- TMPL_VAR ESCAPE=HTML NAME=CGISESSID -->" >
+<!-- TMPL_IF NAME=ERROR -->
+	<div id="error">
+	<!-- TMPL_VAR ESCAPE=HTML NAME=ERROR -->
+	</div>
+<!-- /TMPL_IF -->
+<h3>
+Current Kiosk Information
+</h3>
+<table class="data">
+<thead class="data">
+	<tr>
+		<td class="data">Location</td>
+		<td class="data">Capacity</td>
+		<td class="data">Available</td>
+		<td class="data">Type</td>
+		<!-- TMPL_IF NAME=fuel_czar -->
+		<td class="data">Value</td>
+		<td class="data">Price</td>
+		<td class="data">Update</td>
+		<!-- /TMPL_IF -->
+		<td class="data">Last Checkin</td>
+	</tr>
+</thead>
+<tfoot class="data">
+	<tr>
+		<td class="data">Totals:</td>
+		<td class="data" align="right"><!-- TMPL_VAR ESCAPE=HTML NAME=k_cap_total --></td>
+		<td class="data" align="right"><!-- TMPL_VAR ESCAPE=HTML NAME=k_avail_total --></td>
+		<td class="data" align="center">---</td>
+		<!-- TMPL_IF NAME=fuel_czar -->
+		<td class="data" align="right"><!-- TMPL_VAR ESCAPE=HTML NAME=k_value_total --></td>
+		<td class="data" align="right"><!-- TMPL_VAR ESCAPE=HTML NAME=k_price_total --></td>
+		<td class="data" colspan="2">
+			<input name="update_kiosks" type="submit" value="Update Checked">
+		</td>
+		<!-- TMPL_ELSE -->
+			<td class="data"></td>
+		<!-- /TMPL_IF -->
+	</tr>
+	<!-- TMPL_IF NAME=fuel_czar -->
+	<tr>
+		<td class="data" colspan="4">Averages:</td>
+		<td class="data" align="right"><!-- TMPL_VAR ESCAPE=HTML NAME=k_value_average --></td>
+		<td class="data" align="right"><!-- TMPL_VAR ESCAPE=HTML NAME=k_price_average --></td>
+		<td class="data" colspan="2"></td>
+	</tr>
+	<!-- /TMPL_IF -->
+</tfoot>
+<!-- TMPL_LOOP NAME=kiosks -->
+	<tr class="data">
+		<td class="data"><!-- TMPL_VAR ESCAPE=HTML NAME=k_name --></td>
+		<td class="data" align="right"><!-- TMPL_VAR ESCAPE=HTML NAME=k_capacity --></td>
+		<td class="data" align="right">
+			<!-- TMPL_IF NAME=k_fuel_czar -->
+				<input name="<!-- TMPL_VAR ESCAPE=HTML NAME=edit_available_id -->" value="<!-- TMPL_VAR ESCAPE=HTML NAME=k_available -->" type="text" size="5" style="text-align:right">
+			<!-- TMPL_ELSE -->
+				<!-- TMPL_VAR ESCAPE=HTML NAME=k_available -->
+			<!-- /TMPL_IF -->
+		</td>
+		<td class="data" align="left">
+			<!-- TMPL_IF NAME=k_fuel_czar -->
+				<input name="<!-- TMPL_VAR ESCAPE=HTML NAME=edit_type_id -->" value="<!-- TMPL_VAR ESCAPE=HTML NAME=k_type -->" type="text" size="5">
+			<!-- TMPL_ELSE -->
+				<!-- TMPL_VAR ESCAPE=HTML NAME=k_type -->
+			<!-- /TMPL_IF -->
+		</td>
+		<!-- TMPL_IF NAME=k_fuel_czar -->
+		<td class="data" align="right"><!-- TMPL_VAR ESCAPE=HTML NAME=k_value --></td>
+		<td class="data" align="right">
+			<input name="<!-- TMPL_VAR ESCAPE=HTML NAME=edit_price_id -->" value="<!-- TMPL_VAR ESCAPE=HTML NAME=k_price -->" type="text" size="5" style="text-align:right">
+		</td>
+		<td class="data" align="center">
+			<input name="<!-- TMPL_VAR ESCAPE=HTML NAME=do_edit_id -->" value="1" type="checkbox">
+		</td>
+		<!-- /TMPL_IF -->
+		<td class="data"><!-- TMPL_VAR ESCAPE=HTML NAME=k_last_checkin --></td>
+	</tr>
+<!-- /TMPL_LOOP -->
+</table>
+<hr>
+<br>
+
+
+
+<h3>
+Add a fuel delivery
+</h3>
+<table class="data">
+<thead class="data">
+	<tr>
+		<td class="data">Timestamp</td>
+		<td class="data">From</td>
+		<td class="data">To</td>
+		<td class="data">Gallons</td>
+		<td class="data">Price/Gallon</td>
+		<td class="data">Total Price</td>
+		<td class="data"></td>
+	</tr>
+</thead>
+<tr class="data">
+	<td class="data"><input name="timestamp" type="text" size="15" onclick="javascript:cal12.popup();" readonly>
+	<a href="javascript:cal12.popup();"><img src="/JavaScript/calendar/img/cal.gif" width="16" height="16" border="0" title="Pick date and time" alt="Pick date + time"></a>
+	</td>
+	<td class="data"> <!-- TMPL_VAR NAME=supplier_popup --> </td>
+	<td class="data"> <!-- TMPL_VAR NAME=kiosk_popup_delivery --> </td>
+	<td class="data"><input name="gallons" type="text" size="8"></td>
+	<td class="data">$<input name="ppg" type="text" size="8"></td>
+	<td class="data">$<input name="total" type="text" size="8"></td>
+	<td class="data"><input name="add_delivery" type="submit" value="Add Delivery" onclick="return toUnixTime();"></td>
+</tr>
+</table>
+<span class="message_quiet" id="passMsg">Enter either Price/Gallon or Total Price for purchases (From begins with 'S').  Both can be left blank for transfers between kiosks (From begins with 'K')</span><br>
+<hr>
+<br>
+<h3>
+<!-- TMPL_IF NAME=fuel_czar -->
+Last <!-- TMPL_VAR NAME=N_FUEL_DELIVERIES --> fuel deliveries<br>
+<!-- TMPL_ELSE -->
+<!-- TMPL_VAR ESCAPE=HTML NAME=memb_name -->'s last <!-- TMPL_VAR NAME=N_FUEL_DELIVERIES --> fuel deliveries
+<!-- /TMPL_IF -->
+
+</h3>
+<!-- TMPL_IF NAME=fuel_deliveries -->
+<table class="data">
+<thead class="data">
+	<tr>
+		<td class="data">Timestamp</td>
+		<td class="data">Type</td>
+		<td class="data">From</td>
+		<td class="data">To</td>
+		<td class="data">Gallons</td>
+		<td class="data">Price/Gallon</td>
+		<td class="data">Total Price</td>
+	</tr>
+</thead>
+	<!-- TMPL_LOOP NAME=fuel_deliveries -->
+		<tr class="data">
+			<td class="data"><!-- TMPL_VAR ESCAPE=HTML NAME=d_timestamp --></td>
+			<td class="data"><!-- TMPL_VAR ESCAPE=HTML NAME=d_type --></td>
+			<td class="data"><!-- TMPL_VAR ESCAPE=HTML NAME=d_supplier --></td>
+			<td class="data"><!-- TMPL_VAR ESCAPE=HTML NAME=d_location --></td>
+			<td class="data" align="right"><!-- TMPL_VAR ESCAPE=HTML NAME=d_gallons --></td>
+			<td class="data" align="right"><!-- TMPL_VAR ESCAPE=HTML NAME=d_ppg --></td>
+			<td class="data" align="right"><!-- TMPL_VAR ESCAPE=HTML NAME=d_total --></td>
+		</tr>
+	<!-- /TMPL_LOOP -->
+</table>
+<!-- TMPL_ELSE -->
+	<div id="message">There are no previous deliveries to report.</div>
+<!-- /TMPL_IF -->
+
+
+</form>
+
+<script language="JavaScript" type="text/javascript"> <!--
+	var cal12 = new calendar3(document.forms['primary'].elements['timestamp']);
+	cal12.year_scroll = false;
+	cal12.time_comp = true;
+	document.forms['primary'].elements['timestamp'].value = iso_datetime (new Date());
+	function iso_datetime (dt_datetime) {
+		return (
+			dt_datetime.getFullYear() + "-"
+			+ (dt_datetime.getMonth() < 9 ? '0' : '') + (dt_datetime.getMonth() + 1) + "-"
+			+ (dt_datetime.getDate() < 10 ? '0' : '') + dt_datetime.getDate()
+			+ ' '
+			+ (dt_datetime.getHours() < 10 ? '0' : '') + dt_datetime.getHours() + ":"
+			+ (dt_datetime.getMinutes() < 10 ? '0' : '') + (dt_datetime.getMinutes())
+		);
+	}
+	
+	function toUnixTime () {
+		document.forms['primary'].elements['timestamp'].value = 
+			cal12.prs_tsmp (document.forms['primary'].elements['timestamp'].value).getTime() / 1000;
+
+		return true;
+	}
+//-->
+</script>
+
+</div>
+</div>
+</body>
+</html>

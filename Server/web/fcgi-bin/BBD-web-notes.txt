@@ -1,0 +1,41 @@
+Member Name email
+edit contact info | send login reset email | update email (send confirmation email to new address)
+	** If login info is blank:
+edit contact info | send welcome email
+delete this family membership
+	** credit reverts to primary
+	** new column: prev_membership
+	** set membership to NULL
+	alternative:
+	** actual deletion of membership
+	** credit reverts to primary
+	** sales revert to primary
+	** cc transactions revert to primary.
+
+Add family member
+	* req: email, name
+
+
+
+Add membership
+
+
+Roles:
+Manage Family Memberships (default for primaries)
+Manage Memberships (edit any member, add memberships)
+Manage Deliveries
+Set Fuel Price
+
+
+
+Supplier:
+No BBD access (?)
+BBD-member.tmpl should not display BBD info for suppliers.
+
+Manage Deliveries:
+Last 10 deliveries (table)
+Date | Location | gallons | price per gallon | total
+
+Supplier (dropdown) | Date | time | Location (dropdown) | Gallons | price per gallon | total 
+[record delivery]
+

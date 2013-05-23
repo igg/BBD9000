@@ -1,0 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title>Baltimore Biodiesel Coop - Recent Purchases</title>
+	<link href="/CSS/bbd.css" rel="stylesheet" type="text/css">
+	<script language="JavaScript" type="text/javascript" src="/JavaScript/calendar/calendar3.js"></script>
+</head>
+<body>
+
+<div id="wrapper">
+<div class="box">
+</div>
+<!-- TMPL_INCLUDE NAME="role-nav.tmpl" -->
+
+<div id="full_width">
+
+<form action="BBD-purchases.pl" method="post" name="primary">
+<input type="hidden" name="CGISESSID" value="<!-- TMPL_VAR ESCAPE=HTML NAME=CGISESSID -->" >
+<!-- TMPL_IF NAME=ERROR -->
+	<div id="error">
+	<!-- TMPL_VAR ESCAPE=HTML NAME=ERROR -->
+	</div>
+<!-- /TMPL_IF -->
+<h3>
+View <!-- TMPL_VAR NAME=popup_purchase_types --> purchases from
+<input name="p_from" type="text" size="10" onclick="javascript:p_from_cal.popup();" readonly value="<!-- TMPL_VAR NAME=p_from -->">
+	<a href="javascript:p_from_cal.popup();"><img src="/JavaScript/calendar/img/cal.gif" width="16" height="16" border="0" title="Pick a start date" alt="Pick a start date"></a>
+&nbsp;&nbsp;
+to
+&nbsp;&nbsp;
+<input name="p_to" type="text" size="10" onclick="javascript:p_to_cal.popup();" readonly value="<!-- TMPL_VAR NAME=p_to -->">
+	<a href="javascript:p_to_cal.popup();"><img src="/JavaScript/calendar/img/cal.gif" width="16" height="16" border="0" title="Pick an end date" alt="Pick an end date"></a>
+&nbsp;&nbsp;
+<input name="update" type="submit" value="Refresh" onclick="return toUnixTime();">
+</h3>
+<span class="message_quiet" id="passMsg">Dates are from midnight local time until 11:59:59pm local time</span><br>
+<!-- TMPL_IF NAME=transactions -->
+
+<table class="data">
+<thead class="data">
+	<tr>
+		<!-- TMPL_IF NAME=show_name -->
+			<td class="data">Name</td>
+		<!-- /TMPL_IF -->
+		<td class="data">Timestamp</td>
+		<td class="data">Kiosk</td>
+		<td class="data">Item</td>
+		<td class="data">Quant.</td>
+		<td class="data">Cost</td>
+		<td class="data">Sale $</td>
+		<td class="data">Credit</td>
+		<td class="data">CC $</td>
+		<td class="data">CC Auth</td>
+		<td class="data">CC Trans. ID</td>
+	</tr>
+</thead>
+<tfoot class="data">
+	<tr>
+		<!-- TMPL_IF NAME=show_name -->
+			<td class="data" align="left" colspan="4">Table Totals:</td>
+		<!-- TMPL_ELSE -->
+			<td class="data" align="left" colspan="3">Table Totals:</td>
+		<!-- /TMPL_IF -->
+		<td class="data" align="right"><!-- TMPL_VAR ESCAPE=HTML NAME=table_s_quantity_t --></td>
+		<td class="data">&nbsp;</td>
+		<td class="data" align="right">$<!-- TMPL_VAR ESCAPE=HTML NAME=table_s_amount_t --></td>
+		<td class="data" align="right">$<!-- TMPL_VAR ESCAPE=HTML NAME=table_s_credit_t --></td>
+		<td class="data" align="right">$<!-- TMPL_VAR ESCAPE=HTML NAME=table_c_amount_t --></td>
+		<td class="data" colspan="2">&nbsp;</td>
+	</tr>
+		<!-- TMPL_IF NAME=show_name -->
+			<td class="data" align="left" colspan="4">7 Day Totals:</td>
+		<!-- TMPL_ELSE -->
+			<td class="data" align="left" colspan="3">7 Day Totals:</td>
+		<!-- /TMPL_IF -->
+		<td class="data" align="right"><!-- TMPL_VAR ESCAPE=HTML NAME=past7_s_quantity_t --></td>
+		<td class="data">&nbsp;</td>
+		<td class="data" align="right">$<!-- TMPL_VAR ESCAPE=HTML NAME=past7_s_amount_t --></td>
+		<td class="data" align="right">$<!-- TMPL_VAR ESCAPE=HTML NAME=past7_s_credit_t --></td>
+		<td class="data" align="right">$<!-- TMPL_VAR ESCAPE=HTML NAME=past7_c_amount_t --></td>
+		<td class="data" colspan="2">&nbsp;</td>
+	<tr>
+	</tr>
+	<tr>
+		<!-- TMPL_IF NAME=show_name -->
+			<td class="data" align="left" colspan="4">30 Day Totals:</td>
+		<!-- TMPL_ELSE -->
+			<td class="data" align="left" colspan="3">30 Day Totals:</td>
+		<!-- /TMPL_IF -->
+		<td class="data" align="right"><!-- TMPL_VAR ESCAPE=HTML NAME=past30_s_quantity_t --></td>
+		<td class="data">&nbsp;</td>
+		<td class="data" align="right">$<!-- TMPL_VAR ESCAPE=HTML NAME=past30_s_amount_t --></td>
+		<td class="data" align="right">$<!-- TMPL_VAR ESCAPE=HTML NAME=past30_s_credit_t --></td>
+		<td class="data" align="right">$<!-- TMPL_VAR ESCAPE=HTML NAME=past30_c_amount_t --></td>
+		<td class="data" colspan="2">&nbsp;</td>
+	</tr>
+</tfoot class="data">
+<tbody>
+<!-- TMPL_LOOP NAME=transactions -->
+	<tr class="data">
+		<!-- TMPL_IF NAME=show_name -->
+			<td class="data" align="left"> <!-- TMPL_VAR ESCAPE=HTML NAME=m_name --></td>
+		<!-- /TMPL_IF -->
+		<td class="data" align="left"><!-- TMPL_VAR ESCAPE=HTML NAME=timestamp --></td>
+		<td class="data" align="left"><!-- TMPL_VAR ESCAPE=HTML NAME=k_name --></td>
+		<td class="data" align="left"><!-- TMPL_VAR ESCAPE=HTML NAME=item --></td>
+		<td class="data" align="right"><!-- TMPL_VAR ESCAPE=HTML NAME=s_quantity --></td>
+		<td class="data" align="right"><!-- TMPL_VAR ESCAPE=HTML NAME=s_per_item --></td>
+		<td class="data" align="right"><!-- TMPL_VAR ESCAPE=HTML NAME=s_amount --></td>
+		<td class="data" align="right"><!-- TMPL_VAR ESCAPE=HTML NAME=s_credit --></td>
+		<td class="data" align="right"><!-- TMPL_VAR ESCAPE=HTML NAME=c_amount --></td>
+		<td class="data" align="right"><!-- TMPL_VAR ESCAPE=HTML NAME=c_auth_code --></td>
+		<td class="data" align="right"><!-- TMPL_VAR ESCAPE=HTML NAME=c_gwy_trans_id --></td>
+	</tr>
+<!-- /TMPL_LOOP -->
+</tbody>
+</table>
+<!-- TMPL_ELSE -->
+	<div id="message">There are no purchases with the above criteria.</div>
+<!-- /TMPL_IF -->
+
+
+
+</form>
+
+<script language="JavaScript" type="text/javascript"> <!--
+
+	var p_from_cal = new calendar3(document.forms['primary'].elements['p_from']);
+	p_from_cal.year_scroll = true;
+	p_from_cal.time_comp = false;
+
+	var p_to_cal = new calendar3(document.forms['primary'].elements['p_to']);
+	p_to_cal.year_scroll = true;
+	p_to_cal.time_comp = false;
+
+	function toUnixTime () {
+		var localDate_from = p_from_cal.prs_tsmp (document.forms['primary'].elements['p_from'].value);
+		var localDate_to = p_to_cal.prs_tsmp (document.forms['primary'].elements['p_to'].value);
+		document.forms['primary'].elements['p_from'].value = 
+			(localDate_from.getTime() / 1000)
+			//- (localDate_from.getTimezoneOffset() * 60)
+			;
+		document.forms['primary'].elements['p_to'].value = 
+			(localDate_to.getTime() / 1000)
+			//- (localDate_to.getTimezoneOffset() * 60)
+			;
+
+		return true;
+	}
+//-->
+</script>
+
+</div>
+</div>
+</body>
+</html>

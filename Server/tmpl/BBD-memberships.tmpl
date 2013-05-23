@@ -1,0 +1,237 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title>Baltimore Biodiesel Coop - Coop Memberships</title>
+	<link href="/CSS/bbd.css" rel="stylesheet" type="text/css">
+	<script language="JavaScript" type="text/javascript" src="/JavaScript/calendar/calendar3.js"></script>
+</head>
+<body>
+
+<div id="wrapper">
+<div class="box">
+</div>
+<!-- TMPL_INCLUDE NAME="role-nav.tmpl" -->
+
+<div id="full_width">
+
+<form action="BBD-memberships.pl" method="post" name="primary">
+<input type="hidden" name="CGISESSID" value="<!-- TMPL_VAR ESCAPE=HTML NAME=CGISESSID -->" >
+<!-- TMPL_IF NAME=ERROR -->
+	<div id="error">
+	<!-- TMPL_VAR ESCAPE=HTML NAME=ERROR -->
+	</div>
+<!-- /TMPL_IF -->
+<h3>Add a membership</h3>
+<table class="data">
+<thead class="data">
+	<tr class="data">
+		<td class="data">Name</td>
+		<td class="data">Email</td>
+		<td class="data">Started</td>
+		<td class="data">Type</td>
+		<td class="data">Status</td>
+		<td class="data" align="center">---</td>
+	</tr>
+</thead>
+<tr class="data">
+	<td class="data" align="left"><input name="new_name" type="text" size="20" value="<!-- TMPL_VAR NAME=new_name -->"></td>
+	<td class="data" align="left"><input name="new_email" type="text" size="20" value="<!-- TMPL_VAR NAME=new_email -->"></td>
+	<td class="data" align="left"><input name="new_start" type="text" size="15" value="<!-- TMPL_VAR NAME=new_start -->"
+		onclick="javascript:new_start_cal.popup();" readonly>
+		<a href="javascript:new_start_cal.popup();"><img src="/JavaScript/calendar/img/cal.gif" width="16" height="16" border="0" title="Pick date and time" alt="Pick date + time"></a>
+	</td>
+	<td class="data" align="left"> <!-- TMPL_VAR NAME=new_type_popup --> </td>
+	<td class="data" align="left"> <!-- TMPL_VAR NAME=new_status_popup --> </td>
+	<td class="data">
+		<input name="add_ms" type="submit" value="Add Membership" onclick="return toUnixTime();">
+	</td>
+</tr>
+</table>
+<hr>
+<br>
+
+<h3>Edit membership</h3>
+
+<!-- TMPL_IF NAME=edit_membership_ms_id -->
+<table class="data">
+<thead class="data">
+	<tr class="data">
+		<td class="data">Number</td>
+		<td class="data">Started</td>
+		<td class="data">Renewed</td>
+		<td class="data">Type</td>
+		<td class="data">Status</td>
+		<td class="data">Primary</td>
+		<td class="data" align="center">---</td>
+	</tr>
+</thead>
+<tr class="data">
+	<td class="data" align="left"><input name="edit_membership_ms_num" type="text" size="4" value = "<!-- TMPL_VAR NAME=edit_membership_ms_num -->"></td>
+	<td class="data" align="left"><input name="edit_start" type="text" size="15" value = "<!-- TMPL_VAR NAME=edit_start -->"
+		onclick="javascript:edit_start_cal.popup();" readonly>
+		<a href="javascript:edit_start_cal.popup();"><img src="/JavaScript/calendar/img/cal.gif" width="16" height="16" border="0" title="Pick date and time" alt="Pick date + time"></a>
+	</td>
+	<td class="data" align="left"><input name="edit_renew" type="text" size="10" value = "<!-- TMPL_VAR NAME=edit_renew -->"
+		onclick="javascript:edit_renew_cal.popup();" readonly>
+		<a href="javascript:edit_renew_cal.popup();"><img src="/JavaScript/calendar/img/cal.gif" width="16" height="16" border="0" title="Pick a date" alt="Pick a date"></a>
+	</td>
+	<td class="data" align="left"> <!-- TMPL_VAR NAME=edit_type_popup --> </td>
+	<td class="data" align="left"> <!-- TMPL_VAR NAME=edit_status_popup --> </td>
+	<td class="data" align="left"> <!-- TMPL_VAR NAME=edit_primary_popup --> </td>
+	<td class="data">
+		<input name="update_ms" type="submit" value="Update" onclick="return toUnixTime();">
+	</td>
+</tr>
+</table>
+<table>
+<tr>
+	<td><b>Members:</b></td>
+<td>
+<table class="data">
+<thead class="data">
+	<tr class="data">
+		<td class="data">Name</td>
+		<td class="data">Email</td>
+		<td class="data">Has Login?</td>
+		<td class="data" align="center">---</td>
+	</tr>
+</thead>
+<!-- TMPL_LOOP NAME=edit_family_memberships -->
+	<tr class="data">
+		<td class="data"><!-- TMPL_VAR ESCAPE=HTML NAME=name --></td>
+		<td class="data"><!-- TMPL_VAR ESCAPE=HTML NAME=email --></td>
+		<td class="data"><!-- TMPL_VAR ESCAPE=HTML NAME=logged_in --></td>
+		<td class="data">
+			<input name="<!-- TMPL_VAR ESCAPE=HTML NAME=edit_id -->" type="submit" value="Edit">
+			<input name="<!-- TMPL_VAR ESCAPE=HTML NAME=delete_id -->" type="submit" value="Delete"
+				onclick="return confirm('Are you sure you want to permanently delete:\n<!-- TMPL_VAR ESCAPE=HTML NAME=name --> ?\n\nThis is irreversible!');">
+			<input name="<!-- TMPL_VAR ESCAPE=HTML NAME=send_email_id -->" type="submit" value="Send"
+				onclick="return confirm('Really send an email to:\n<!-- TMPL_VAR ESCAPE=HTML NAME=name --> <<!-- TMPL_VAR ESCAPE=HTML NAME=email -->> ?\n');">
+				<!-- TMPL_VAR NAME=send_email_popup_id --> email
+		</td>
+	</tr>
+<!-- /TMPL_LOOP -->
+</table>
+</td></tr>
+<tr><td></td>
+<td>
+<!-- TMPL_IF NAME=can_add_member -->
+	<input name="add_memb" type="submit" value="Add a family member">
+<!-- TMPL_ELSE -->
+	<div id="message">Already have the maximum number of family memberships</div>
+<!-- /TMPL_IF -->
+</td></tr>
+</table>
+<input name="edit_membership_ms_id" type="hidden" value="<!-- TMPL_VAR NAME=edit_membership_ms_id -->">
+<!-- TMPL_ELSE -->
+<div id="message">
+Select a membership to edit from the list below
+</div>
+<!-- /TMPL_IF -->
+
+
+<hr>
+<br>
+<h3>
+Last <input name="last_n_memberships" type="text" size="4" value="<!-- TMPL_VAR NAME=last_n_memberships -->"> memberships <input name="refresh" type="submit" value="Refresh">
+</h3>
+<table class="data">
+<thead class="data">
+	<tr>
+		<td class="data">Name</td>
+		<td class="data">Email</td>
+		<td class="data">Number</td>
+		<td class="data">Started</td>
+		<td class="data">Renewed</td>
+		<td class="data">Type</td>
+		<td class="data">Status</td>
+		<td class="data"></td>
+	</tr>
+</thead>
+	<!-- TMPL_LOOP NAME=last_members -->
+		<tr class="data">
+			<td class="data"><!-- TMPL_VAR ESCAPE=HTML NAME=last_m_name --></td>
+			<td class="data"><!-- TMPL_VAR ESCAPE=HTML NAME=last_m_email --></td>
+			<td class="data"><!-- TMPL_VAR ESCAPE=HTML NAME=last_m_number --></td>
+			<td class="data"><!-- TMPL_VAR ESCAPE=HTML NAME=last_m_start --></td>
+			<td class="data"><!-- TMPL_VAR ESCAPE=HTML NAME=last_m_renew --></td>
+			<td class="data"><!-- TMPL_VAR ESCAPE=HTML NAME=last_m_type --></td>
+			<td class="data"><!-- TMPL_VAR ESCAPE=HTML NAME=last_m_status --></td>
+			<td class="data">
+				<input name="<!-- TMPL_VAR ESCAPE=HTML NAME=last_m_select_id -->" type="submit" value="Select">
+			</td>
+		</tr>
+	<!-- /TMPL_LOOP -->
+</table>
+
+
+</form>
+
+<script language="JavaScript" type="text/javascript"> <!--
+	var new_start_cal = new calendar3(document.forms['primary'].elements['new_start']);
+	new_start_cal.year_scroll = false;
+	new_start_cal.time_comp = true;
+	document.forms['primary'].elements['new_start'].value = iso_datetime (new Date());
+//	<!-- TMPL_IF NAME=edit_membership_ms_id -->
+	
+		var edit_start_cal = new calendar3(document.forms['primary'].elements['edit_start']);
+		edit_start_cal.year_scroll = true;
+		edit_start_cal.time_comp = true;
+	
+		var edit_renew_cal = new calendar3(document.forms['primary'].elements['edit_renew']);
+		edit_renew_cal.year_scroll = true;
+		edit_renew_cal.time_comp = false;
+//	<!-- /TMPL_IF -->
+
+	
+	
+	function iso_datetime (dt_datetime) {
+		return (
+			dt_datetime.getFullYear() + "-"
+			+ (dt_datetime.getMonth() < 9 ? '0' : '') + (dt_datetime.getMonth() + 1) + "-"
+			+ (dt_datetime.getDate() < 10 ? '0' : '') + dt_datetime.getDate()
+			+ ' '
+			+ (dt_datetime.getHours() < 10 ? '0' : '') + dt_datetime.getHours() + ":"
+			+ (dt_datetime.getMinutes() < 10 ? '0' : '') + (dt_datetime.getMinutes())
+		);
+	}
+	
+	function iso_date (dt_datetime) {
+		return (
+			dt_datetime.getFullYear() + "-"
+			+ (dt_datetime.getMonth() < 9 ? '0' : '') + (dt_datetime.getMonth() + 1) + "-"
+			+ (dt_datetime.getDate() < 10 ? '0' : '') + dt_datetime.getDate()
+		);
+	}
+	
+	function toUnixTime () {
+		document.forms['primary'].elements['new_start'].value = 
+			new_start_cal.prs_tsmp (document.forms['primary'].elements['new_start'].value).getTime() / 1000;
+//	<!-- TMPL_IF NAME=edit_membership_ms_id -->
+		document.forms['primary'].elements['edit_start'].value = 
+			edit_start_cal.prs_tsmp (document.forms['primary'].elements['edit_start'].value).getTime() / 1000;
+	//	To get to midnight GMT, we have to subtract the timezone offset
+		var localDate = edit_renew_cal.prs_tsmp (document.forms['primary'].elements['edit_renew'].value);
+		document.forms['primary'].elements['edit_renew'].value = 
+			(localDate.getTime() / 1000) - (localDate.getTimezoneOffset() * 60);
+//	<!-- /TMPL_IF -->
+
+		return true;
+	}
+	
+	function compose_email () {
+		var email_window = window.open(
+			'BBD-broadcast-email.pl',
+			'Compose Broadcast Email', ''
+		);
+		email_window.opener = window;
+		email_window.focus();
+	}
+//-->
+</script>
+
+</div>
+</div>
+</body>
+</html>

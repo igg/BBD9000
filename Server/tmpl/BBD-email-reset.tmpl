@@ -1,0 +1,36 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title>Baltimore Biodiesel Coop - Email Reset</title>
+	<link href="/CSS/bbd.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<div id="wrapper">
+<div class="box">
+</div>
+
+<div id="full_width">
+<TMPL_IF NAME=ERROR>
+	<div id="error">
+	<TMPL_VAR ESCAPE=HTML NAME=ERROR>
+	</div>
+</TMPL_IF>
+
+<center>
+
+<h3>
+New Email Address for <TMPL_VAR ESCAPE=HTML NAME=memb_name>:
+<br>&lt;<TMPL_VAR ESCAPE=HTML NAME=email>&gt;
+</h3>
+
+<br>
+
+<a href="BBD-member.pl">Return to Member Page</a></button>
+
+</center>
+</div>
+</div>
+</body>
+</html>

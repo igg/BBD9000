@@ -1,0 +1,14 @@
+*awstats*
+*/backups/*
+*/etc/*
+*/homes/*
+*/logs/*
+*/tmp/*
+*/Maildir/*
+*/OSS/*
+*/perl5lib/*
+*/svn/*
+*/var/*
+*/lib/*
+*/web/public/BBD9000-all-parts.tar.gz
+*/web/public/BBDC-Private.dmg

@@ -1,0 +1,23 @@
+#!/bin/bash
+# Fancy way of determining the directory of this script
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
+  BIN_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ $SOURCE != /* ]] && SOURCE="$BIN_DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+done
+BIN_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+
+# The directory above this script is the one that's going to be tarred up
+cd -P "${BIN_DIR}/.."
+date=`date '+%F'`
+
+/bin/tar -X "${BIN_DIR}/tar-exclude" -cf backups/baltimorebiodiesel.org-$date.tar.bz2 --bzip2 . > /dev/null 2>&1
+/usr/bin/mysqlcheck --defaults-extra-file=priv/DB_BACKUP.cnf --auto-repair --silent bbd_members > /dev/null 2>&1
+/usr/bin/mysqlcheck --defaults-extra-file=priv/DB_BACKUP.cnf --analyze --silent bbd_members > /dev/null 2>&1
+/usr/bin/mysqldump --defaults-extra-file=priv/DB_BACKUP.cnf --single-transaction bbd_members | bzip2 > backups/DB-bbd_members-$date.sql.bz2
+s3cmd --config=priv/.s3cfg --no-progress put backups/baltimorebiodiesel.org-$date.tar.bz2 s3://BBDC-Backup/ > /dev/null 2>&1
+s3cmd --config=priv/.s3cfg --no-progress put backups/DB-bbd_members-$date.sql.bz2 s3://BBDC-Backup/ > /dev/null 2>&1
+# Delete files over 30 days old
+# /usr/local/bin/gfind backups/ -mtime +90 -exec rm -f '{}' ';'
+/usr/bin/find backups/ -mtime +30 -exec rm -f '{}' ';' > /dev/null 2>&1

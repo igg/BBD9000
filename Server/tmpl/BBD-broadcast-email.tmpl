@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title>Baltimore Biodiesel Coop - Broadcast Emails</title>
+	<link href="/CSS/bbd.css" rel="stylesheet" type="text/css">
+	<script language="JavaScript" type="text/javascript" src="/JavaScript/calendar/calendar3.js"></script>
+</head>
+<body>
+
+<div id="wrapper">
+<div class="box">
+</div>
+<!-- TMPL_INCLUDE NAME="role-nav.tmpl" -->
+
+<div id="full_width">
+
+<form action="BBD-broadcast-email.pl" method="post" name="primary">
+<input type="hidden" name="CGISESSID" value="<!-- TMPL_VAR ESCAPE=HTML NAME=CGISESSID -->" >
+<!-- TMPL_IF NAME=ERROR -->
+	<div id="error">
+	<!-- TMPL_VAR ESCAPE=HTML NAME=ERROR -->
+	</div>
+<!-- /TMPL_IF -->
+<h3>Compose an email</h3>
+Compose your message in a standard email client, including formatting, images, and attachments.<br>
+Send the email to yourself, and view it as "Raw Source".<br>
+There is an <a href="http://email.about.com/od/emailsourceaccess/View_the_Source_of_a_Junk_Email_in_Your_Email_Program_or_Service.htm">article here</a> describing how to view the raw source in different email clients.<br>
+Select the entire raw source, copy it, and paste it into the window below.<br>
+The "To:" field will be modified for each recipient.<br>
+The "From:" field will be changed to "Baltimore Biodiesel Coop &lt;donotreply@baltimorebiodiesel.org&gt;".<br>
+<b><font color="#FF0000">PLEASE: Send a test email to yourself before broadcasting it to the entire list!!!</font></b><br>
+<hr>
+<table>
+	<tr>
+	<td  align="center">
+		<input name="test_email" type="submit" value="Test">
+	</td>
+	<td  align="center">
+		<input name="broadcast_email" type="submit" value="Broadcast" onclick="return checkBroadcast();"> To:
+	</td>
+	<td>
+		<input name="broadcast_type" type="radio" value="broadcast_all" <!-- TMPL_VAR NAME=broadcast_all_checked -->>&nbsp;All members with valid email addresses
+		<br>
+		<input name="broadcast_type" type="radio" value="broadcast_purchase_date" <!-- TMPL_VAR NAME=broadcast_purchase_date_checked -->>&nbsp;Purchased fuel from
+			&nbsp;
+			<input name="p_from" type="text" size="9" onclick="javascript:p_from_cal.popup();" readonly value="<!-- TMPL_VAR NAME=p_from -->">
+			<a href="javascript:p_from_cal.popup();"><img src="/JavaScript/calendar/img/cal.gif" width="16" height="16" border="0" title="Pick a start date" alt="Pick a start date"></a>
+			&nbsp;
+			to
+			&nbsp;
+			<input name="p_to" type="text" size="9" onclick="javascript:p_to_cal.popup();" readonly value="<!-- TMPL_VAR NAME=p_to -->">
+			<a href="javascript:p_to_cal.popup();"><img src="/JavaScript/calendar/img/cal.gif" width="16" height="16" border="0" title="Pick an end date" alt="Pick an end date"></a>
+		<br>
+		<input name="broadcast_type" type="radio" value="broadcast_exp_date" <!-- TMPL_VAR NAME=broadcast_exp_date_checked -->>&nbsp;Membership expired as of
+			&nbsp;
+			<input name="exp_to" type="text" size="9" onclick="javascript:exp_to_cal.popup();" readonly value="<!-- TMPL_VAR NAME=exp_to -->">
+			<a href="javascript:exp_to_cal.popup();"><img src="/JavaScript/calendar/img/cal.gif" width="16" height="16" border="0" title="Pick an expiration date" alt="Pick an expiration date"></a>
+	</td>
+</tr>
+</table>
+<br>
+<textarea id="email_body" name="email_body" rows="30" cols="90">
+<!-- TMPL_VAR NAME=email_body -->
+</textarea>
+
+</form>
+
+<script language="JavaScript" type="text/javascript"> <!--
+
+	var p_from_cal = new calendar3(document.forms['primary'].elements['p_from']);
+	p_from_cal.year_scroll = true;
+	p_from_cal.time_comp = false;
+
+	var p_to_cal = new calendar3(document.forms['primary'].elements['p_to']);
+	p_to_cal.year_scroll = true;
+	p_to_cal.time_comp = false;
+
+	var exp_to_cal = new calendar3(document.forms['primary'].elements['exp_to']);
+	exp_to_cal.year_scroll = true;
+	exp_to_cal.time_comp = false;
+
+	function toUnixTime () {
+		var localDate_from = p_from_cal.prs_tsmp (document.forms['primary'].elements['p_from'].value);
+		var localDate_to = p_to_cal.prs_tsmp (document.forms['primary'].elements['p_to'].value);
+		document.forms['primary'].elements['p_from'].value = 
+			(localDate_from.getTime() / 1000)
+			//- (localDate_from.getTimezoneOffset() * 60)
+			;
+		document.forms['primary'].elements['p_to'].value = 
+			(localDate_to.getTime() / 1000)
+			//- (localDate_to.getTimezoneOffset() * 60)
+			;
+		document.forms['primary'].elements['exp_to'].value = 
+			(localDate_to.getTime() / 1000)
+			//- (localDate_to.getTimezoneOffset() * 60)
+			;
+
+		return true;
+	}
+
+	
+	function checkBroadcast () {
+		var sent_test = confirm ("You will be sending email to a LOT of people!\nDid you send yourself a test message by clicking the 'Test' button?");
+		if (!sent_test) {
+			return (false);
+		} else {
+			toUnixTime();
+			return (true);
+		}
+	}
+
+//-->
+</script>
+
+</div>
+</div>
+</body>
+</html>

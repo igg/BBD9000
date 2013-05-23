@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title>Baltimore Biodiesel Coop - Login Page</title>
+	<link href="/CSS/bbd.css" rel="stylesheet" type="text/css">
+</head>
+<!-- body needs onkeypress="rng_seed_time();" onload="rng_seed_time();check_rsa();" onclick="rng_seed_time();" for RSA -->
+<body  onkeypress="rng_seed_time();" onload="rng_seed_time();check_rsa();" onclick="rng_seed_time();">
+<script language="JavaScript" type="text/javascript" src="/JavaScript/RSA/jsbn.js"></script>
+<script language="JavaScript" type="text/javascript" src="/JavaScript/RSA/prng4.js"></script>
+<script language="JavaScript" type="text/javascript" src="/JavaScript/RSA/rng.js"></script>
+<script language="JavaScript" type="text/javascript" src="/JavaScript/RSA/rsa.js"></script>
+<script language="JavaScript" type="text/javascript" src="/JavaScript/RSA/base64.js"></script>
+<script language="JavaScript"> <!--
+	function do_encrypt() {
+		var password = document.primary.password.value;
+		if (password.length > 0) {
+		//	var epoch_secs = Math.round (new Date().getTime()/1000);
+			var epoch_secs = document.primary.server_time.value;
+			var rsa = new RSAKey();
+			rsa.setPublic(document.primary.modulus.value, document.primary.exponent.value);
+			var res1 = rsa.encrypt('['+epoch_secs+']'+password);
+			if(res1) {
+				document.primary.password.value = '';
+				document.primary.crypt_password.value = linebrk(hex2b64(res1), 64);
+			}
+		}
+	}
+	
+	function check_rsa () {
+		var rsa = new RSAKey();
+		rsa.setPublic('94e94b2912d8d508ce8c0e91d62271a9', '10001');
+		var res = rsa.encrypt('abc');
+		if(res && document.primary.modulus.value) {
+			document.getElementById ("passMsg").innerHTML = 'Password is RSA-encrypted';
+		}
+	}
+//--></script>
+
+<!-- END of RSA scripts -->
+
+<div id="wrapper">
+<div class="box">
+</div>
+<ul id="nav">
+	<li class="home"><a href="/">Home</a></li>
+</ul>
+
+<div id="full_width">
+
+<center>
+<!-- form needs onsubmit="do_encrypt();return true;" name="primary" for RSA -->
+<form action="BBD-login.pl" method="post" onsubmit="do_encrypt();return true;" name="primary">
+<input type="hidden" name="CGISESSID" value="<TMPL_VAR ESCAPE=HTML NAME=CGISESSID>" >
+<!-- These hidden elements are needed for RSA -->
+<input type="hidden" name="modulus" value="<TMPL_VAR ESCAPE=HTML NAME=modulus>" >
+<input type="hidden" name="exponent" value="10001" >
+<input type="hidden" name="crypt_password" value="" >
+<input type="hidden" name="server_time" value="<TMPL_VAR NAME=server_time>" >
+<!-- END RSA hidden elements -->
+
+<h3><TMPL_VAR ESCAPE=HTML NAME=NAME><br>
+Please login
+</h3>
+<TMPL_IF NAME=ERROR>
+	<div id="error">
+	<TMPL_VAR ESCAPE=HTML NAME=ERROR>
+	</div>
+</TMPL_IF>
+<table border="0">
+<tr>
+	<td align="right">Login:</td>
+	<td align="left"><input name="login" type="text" value="<TMPL_VAR ESCAPE=HTML NAME=LOGIN>" size="40" maxlength="40"></td>
+</tr>
+<tr>
+	<td align="right">Password:</td>
+	<td align="left"><input name="password" type="password" size="40" maxlength="40"></td>
+</tr>
+</table>
+<!-- This text warns that passwords are plaintext until the RSA check passes on the browser -->
+<span class="message_quiet" id="passMsg">Password is sent as clear text!</span><br>
+<input name="submit" type="submit" value="Login">
+<input name="logged_in" value="<!-- TMPL_VAR NAME=logged_in -->" type="hidden">
+<br>
+<br>
+<hr>
+<br>
+Forgot your login information or haven't set it up yet?<br>
+If you have used a BBD9000, know your SPN and have the credit-card you used,
+<br>
+you can reset or set-up your login information
+&nbsp;<a href="BBD-CC-login.pl">here.</a>
+<br>
+
+</form>
+</center>
+</div>
+</div>
+</body>
+</html>

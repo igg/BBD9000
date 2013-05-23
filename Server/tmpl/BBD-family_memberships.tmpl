@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title>Baltimore Biodiesel Coop - Family Memberships</title>
+	<link href="/CSS/bbd.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<div id="wrapper">
+<div class="box">
+</div>
+<!-- TMPL_INCLUDE NAME="role-nav.tmpl" -->
+
+<div id="full_width">
+
+<form action="BBD-family_memberships.pl" method="post">
+<input type="hidden" name="CGISESSID" value="<!-- TMPL_VAR ESCAPE=HTML NAME=CGISESSID -->" >
+<!-- TMPL_IF NAME=ERROR -->
+	<div id="error">
+	<!-- TMPL_VAR ESCAPE=HTML NAME=ERROR -->
+	</div>
+<!-- /TMPL_IF -->
+
+<h3>
+<!-- TMPL_VAR ESCAPE=HTML NAME=memb_name -->'s family memberships<br>
+</h3>
+<center>
+<!-- TMPL_IF NAME=family_memberships -->
+<table class="data">
+<thead class="data">
+	<tr class="data">
+		<td class="data">Name</td>
+		<td class="data">Email</td>
+		<td class="data" align="center">---</td>
+	</tr>
+</thead>
+	<!-- TMPL_LOOP NAME=family_memberships -->
+		<tr class="data">
+			<td class="data"><!-- TMPL_VAR ESCAPE=HTML NAME=name --></td>
+			<td class="data"><!-- TMPL_VAR ESCAPE=HTML NAME=email --></td>
+			<td class="data">
+				<input name="<!-- TMPL_VAR ESCAPE=HTML NAME=edit_id -->" type="submit" value="Edit">
+				<input name="<!-- TMPL_VAR ESCAPE=HTML NAME=delete_id -->" type="submit" value="Delete"
+					onclick="return confirm('Are you sure you want to permanently delete:\n<!-- TMPL_VAR ESCAPE=HTML NAME=name --> ?\n\nThis is irreversible!');">
+				<input name="<!-- TMPL_VAR ESCAPE=HTML NAME=send_email_id -->" type="submit" value="Send"
+					onclick="return confirm('Really send an email to:\n<!-- TMPL_VAR ESCAPE=HTML NAME=name --> <<!-- TMPL_VAR ESCAPE=HTML NAME=email -->> ?\n');">
+					<!-- TMPL_VAR NAME=send_email_popup_id --> email
+			</td>
+		</tr>
+	<!-- /TMPL_LOOP -->
+</table>
+<!-- TMPL_ELSE -->
+	<div id="message">There are no family memberships associated with this membership</div>
+<!-- /TMPL_IF -->
+</center>
+<hr>
+<br>
+<!-- TMPL_IF NAME=can_add_member -->
+	<input name="add_member" type="submit" value="Add a family member">
+<!-- TMPL_ELSE -->
+	<div id="message">You already have the maximum number of family memberships</div>
+<!-- /TMPL_IF -->
+
+			
+</form>
+</center>
+</div>
+</div>
+</body>
+</html>
