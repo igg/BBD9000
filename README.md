@@ -32,4 +32,4 @@ Coop Management Software.
     * Administrative pages to keep track of inventory levels at kiosks, consolidated sales, etc.
     * Member pages to update contact info, track purchases, add family members, credit-cards, etc.
     * Credit Card Gateway communications for financial transactions (currently Authorize.net Card Present protocol)
-    * Implemented using Perl/MySQL
+    * Implemented using Perl/MySQL, deployed using [lighttpd] (http://www.lighttpd.net)
