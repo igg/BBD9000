@@ -8,16 +8,18 @@
     Pump, fuel meter, display, keypad, credit-card reader, electric strike, motion detector, lights, etc.
     * Interfaces to an ARM SBC running Linux (not part of this project) that manages secure internet communication with the hosted
 Coop Management Software.
-    * Schematics and board layouts using [KiCad](http://www.kicad-pcb.org)
+    * Schematics and board layouts using [KiCad](http://www.kicad-pcb.org) in `BBD9000/Kiosk/SmartIO/hardware/v3.3/`
 * Design files for secure outdoor mounting arrangements, 12 V standalone operations, etc.
 
 ### Kiosk Software:
 * SmartIO: Firmware running on the AVR 8-bit microcontroller. Cross-compiled C code (avr-gcc)
+    * source in `BBD9000/Kiosk/SmartIO/src/`
 * BBD9000: Software running on the ARM SBC for interfacing between SmartIO board and BBD9000-CMS.
     * Several C programs and scripts that interact using shared memory and fifos.
     * Main event-driven finite state machine for kiosk automation (BBD9000-FSM).
     * Serial communication to SmartIO
     * Encrypted HTTP/HTML communication to hosted BBD9000-CMS (wired/wireless/GPRS)
+    * Source in `BBD9000/Kiosk/BBD9000/src/`
 
 ### Coop Management Software: BBD9000-CMS:
 * Hosted software that communicates with kiosks, coop/fleet members and administrators using HTML/HTTP.
@@ -26,3 +28,4 @@ Coop Management Software.
     * Member pages to update contact info, track purchases, add family members, credit-cards, etc.
     * Credit Card Gateway communications for financial transactions (currently Authorize.net Card Present protocol)
     * Implemented using Perl/MySQL
+    * Source in `BBD9000/Server/src`
