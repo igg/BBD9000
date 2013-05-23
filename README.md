@@ -28,4 +28,4 @@ Coop Management Software.
     * Member pages to update contact info, track purchases, add family members, credit-cards, etc.
     * Credit Card Gateway communications for financial transactions (currently Authorize.net Card Present protocol)
     * Implemented using Perl/MySQL
-    * Source in `BBD9000/Server/src`
+    * Source in `BBD9000/Server/web/fcgi-bin/`, supporting files/directories in `BBD9000/Server/`
