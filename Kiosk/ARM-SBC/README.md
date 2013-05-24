@@ -1,8 +1,10 @@
 #### ARM-SBC: Software running on a single-board solid-state Linux computer for interfacing between SmartIO board and BBD9000-CMS.
-* First deployed kiosks used a [TS7200] (http://www.embeddedarm.com/products/board-detail.php?product=TS-7200).
+* The first kiosks deployed used a [TS7200] (http://www.embeddedarm.com/products/board-detail.php?product=TS-7200)
+industrial Linux ARM-based computer.
 Other, more modern possibilities include [iMX233-OLinuXino-MICRO] (https://www.olimex.com/Products/OLinuXino/iMX233/iMX233-OLinuXino-MICRO/),
 or [BeagleBone Black] (http://beagleboard.org/Products/BeagleBone%20Black).  
 Pay close attention to the specified operating temperature range, esp. for deployment in cold environments.
+Although the [RaspberryPi] (http://www.raspberrypi.org/) is a popular ARM-SBC, it is not rated to operate below freezing.
 * SBC Linux software consists of several C programs, daemons and scripts that interact using shared memory and fifos
 * C source and scripts in `src/` directory.
 * Initialization scripts in `etc/init.d/` directory.
@@ -11,9 +13,12 @@ Pay close attention to the specified operating temperature range, esp. for deplo
 * Deployment on ARM-SBC usually in `/BBD9000/`
 
 #### Dependencies
-* [libcurl] (http://curl.haxx.se/download.html): HTTP client. curl-7.17.1 has been successfully used previously
-* [timer_q] (http://www.and.org/timer_q/latest/): Timer library without alarm(). timer_q-1.0.7  has been successfully used previously
-* [libconfuse] (http://www.nongnu.org/confuse/): Configuration file processing. confuse-2.5 has been successfully used previously (configuration reading)
+* [libcurl] (http://curl.haxx.se/download.html): HTTP client.
+curl-7.17.1 has been successfully used previously
+* [timer_q] (http://www.and.org/timer_q/latest/): Timer library without alarm().
+timer_q-1.0.7  has been successfully used previously
+* [libconfuse] (http://www.nongnu.org/confuse/): Configuration file processing.
+confuse-2.5 has been successfully used previously.
 
 #### Generating keys
 1024-bit RSA is used to communicate to the remote hosted BBD9000-CMS server.  
