@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Saturday, May 18, 2013 05:48:02 PM
+EESchema Schematic File Version 2  date Friday, May 24, 2013 03:38:13 AM
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -29,8 +29,6 @@ LIBS:opto
 LIBS:atmel
 LIBS:contrib
 LIBS:valves
-LIBS:SmartIO-extra-comp
-LIBS:acs754-acs755-acs756
 LIBS:SmartIOv3.3-cache
 EELAYER 27 0
 EELAYER END
@@ -38,7 +36,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 1
 Title ""
-Date "18 may 2013"
+Date "24 may 2013"
 Rev ""
 Comp ""
 Comment1 ""
@@ -110,7 +108,7 @@ $Comp
 L ATMEGA164PA-P U2
 U 1 1 5193F3E2
 P 5670 3450
-F 0 "U2" H 4870 5280 50  0000 L BNN
+F 0 "U2" H 4910 3370 50  0000 L BNN
 F 1 "ATMEGA164PA-P" H 4920 3250 50  0000 L BNN
 F 2 "DIL40" H 4970 1600 50  0001 C CNN
 F 3 "" H 5670 3450 60  0001 C CNN
@@ -125,6 +123,8 @@ F 0 "J8" V 2940 3510 60  0000 C CNN
 F 1 "Scew terminals" V 3060 3510 60  0000 C CNN
 F 2 "" H 2980 3510 60  0001 C CNN
 F 3 "" H 2980 3510 60  0001 C CNN
+F 4 "ED2739-ND" V 2980 3510 60  0001 C CNN "DigiKeyPN"
+F 5 "OSTTE160104" V 2980 3510 60  0001 C CNN "ManPN"
 	1    2980 3510
 	1    0    0    -1  
 $EndComp
@@ -547,13 +547,9 @@ GND
 Wire Wire Line
 	7180 1040 7180 1410
 Wire Wire Line
-	6670 1000 6670 1410
+	6670 1000 6670 1750
 Wire Wire Line
-	6670 1410 6670 1750
-Wire Wire Line
-	6630 1410 6670 1410
-Wire Wire Line
-	6670 1410 6720 1410
+	6630 1410 6720 1410
 Wire Wire Line
 	6170 1000 6170 1410
 Connection ~ 6670 1410
@@ -562,14 +558,10 @@ Wire Wire Line
 Wire Wire Line
 	6170 1410 6070 1410
 Wire Wire Line
-	5670 1130 5670 1410
-Wire Wire Line
-	5670 1410 5670 1450
+	5670 1130 5670 1450
 Connection ~ 5670 1410
 Wire Wire Line
-	4970 980  4970 1130
-Wire Wire Line
-	4970 1130 4970 1450
+	4970 980  4970 1450
 Connection ~ 4970 1130
 Wire Wire Line
 	4970 1450 5470 1450
@@ -594,9 +586,7 @@ Wire Wire Line
 Wire Wire Line
 	9040 2080 9640 2080
 Wire Wire Line
-	9830 2470 9830 2520
-Wire Wire Line
-	9830 2520 9830 2690
+	9830 2470 9830 2690
 Wire Wire Line
 	9830 2470 9640 2470
 Wire Wire Line
@@ -611,9 +601,7 @@ Connection ~ 9830 2520
 Wire Wire Line
 	9950 2890 9830 2890
 Wire Wire Line
-	9950 2280 9950 2520
-Wire Wire Line
-	9950 2520 9950 2890
+	9950 2280 9950 2890
 Wire Wire Line
 	9950 2520 9830 2520
 Connection ~ 9950 2520
@@ -925,9 +913,7 @@ $EndComp
 Wire Wire Line
 	9990 5190 10390 5190
 Wire Wire Line
-	9990 5790 10110 5790
-Wire Wire Line
-	10110 5790 10390 5790
+	9990 5790 10390 5790
 Text GLabel 10390 5590 2    45   Input ~ 0
 GND
 Wire Wire Line
@@ -1093,15 +1079,11 @@ GND
 Wire Wire Line
 	5670 5450 5470 5450
 Wire Wire Line
-	4130 2550 4450 2550
-Wire Wire Line
-	4450 2550 4670 2550
+	4130 2550 4670 2550
 Wire Wire Line
 	4670 1950 4670 2150
 Wire Wire Line
-	4130 1950 4450 1950
-Wire Wire Line
-	4450 1950 4670 1950
+	4130 1950 4670 1950
 Connection ~ 4450 2550
 Wire Wire Line
 	3410 6980 3810 6980
@@ -1117,9 +1099,7 @@ F 3 "" H 2710 5780 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	3110 5780 3410 5780
-Wire Wire Line
-	3410 5780 3510 5780
+	3110 5780 3510 5780
 Text GLabel 2710 6180 0    45   Input ~ 0
 GND
 $Comp
@@ -1289,9 +1269,7 @@ F 3 "~" H 4130 2450 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	4130 2150 4130 2250
-Wire Wire Line
-	4130 2250 4130 2350
+	4130 2150 4130 2350
 Text GLabel 4080 2250 0    45   Input ~ 0
 GND
 Wire Wire Line
@@ -1326,9 +1304,7 @@ Wire Wire Line
 Wire Wire Line
 	6370 7030 6370 6940
 Wire Wire Line
-	6200 6940 6200 7030
-Wire Wire Line
-	6200 7030 6200 7170
+	6200 6940 6200 7170
 Wire Wire Line
 	6200 6940 6270 6940
 Connection ~ 6200 7030

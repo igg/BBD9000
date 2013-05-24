@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Saturday, May 18, 2013 05:48:51 PM
+EESchema Schematic File Version 2  date Friday, May 24, 2013 03:42:45 AM
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -29,8 +29,6 @@ LIBS:opto
 LIBS:atmel
 LIBS:contrib
 LIBS:valves
-LIBS:SmartIO-extra-comp
-LIBS:acs754-acs755-acs756
 LIBS:SmartIOv3.3-cache
 EELAYER 27 0
 EELAYER END
@@ -38,7 +36,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 1
 Title ""
-Date "18 may 2013"
+Date "24 may 2013"
 Rev ""
 Comp ""
 Comment1 ""
@@ -125,6 +123,8 @@ F 0 "J8" V 2940 3510 60  0000 C CNN
 F 1 "Scew terminals" V 3060 3510 60  0000 C CNN
 F 2 "" H 2980 3510 60  0001 C CNN
 F 3 "" H 2980 3510 60  0001 C CNN
+F 4 "ED2739-ND" V 2980 3510 60  0001 C CNN "DigiKeyPN"
+F 5 "OSTTE160104" V 2980 3510 60  0001 C CNN "ManPN"
 	1    2980 3510
 	1    0    0    -1  
 $EndComp
@@ -1110,6 +1110,8 @@ F 0 "J9" V 3630 5430 40  0000 C CNN
 F 1 "+5V PSU" V 3760 5440 40  0000 C CNN
 F 2 "" H 3610 5430 60  0000 C CNN
 F 3 "" H 3610 5430 60  0000 C CNN
+F 4 "ED2740-ND" V 3610 5430 60  0001 C CNN "DigiKeyPN"
+F 5 "OSTTE020104" V 3610 5430 60  0001 C CNN "ManPN"
 	1    3610 5430
 	0    -1   -1   0   
 $EndComp

@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by CvPcb (2013-mar-25)-stable date = Saturday, May 18, 2013 06:21:39 PM
+Cmp-Mod V01 Created by CvPcb (2013-mar-25)-stable date = Friday, May 24, 2013 03:44:08 AM
 
 BeginCmp
 TimeStamp = /51952E68;
@@ -200,77 +200,77 @@ BeginCmp
 TimeStamp = /51955DB3;
 Reference = J4;
 ValeurCmp = 39910-0102;
-IdModule  = ;
+IdModule  = MOLEX-39910-0102;
 EndCmp
 
 BeginCmp
 TimeStamp = /5190E361;
 Reference = J6;
 ValeurCmp = ISP Hdr;
-IdModule  = ;
+IdModule  = pin_array_3x2;
 EndCmp
 
 BeginCmp
 TimeStamp = /5190E45D;
 Reference = J7;
 ValeurCmp = Keypad;
-IdModule  = ;
+IdModule  = PIN_ARRAY-8X1;
 EndCmp
 
 BeginCmp
 TimeStamp = /5191245D;
 Reference = J8;
 ValeurCmp = Scew terminals;
-IdModule  = ;
+IdModule  = OSTTE-16;
 EndCmp
 
 BeginCmp
 TimeStamp = /5197D288;
 Reference = J9;
 ValeurCmp = +5V PSU;
-IdModule  = ;
+IdModule  = OSTTE-2;
 EndCmp
 
 BeginCmp
 TimeStamp = /5193FB5A;
 Reference = J10;
 ValeurCmp = ADC;
-IdModule  = ;
+IdModule  = PIN_ARRAY_5x1;
 EndCmp
 
 BeginCmp
 TimeStamp = /5190FB0A;
 Reference = K1;
 ValeurCmp = CB1aH-P-12V;
-IdModule  = ;
+IdModule  = relay-CB1AH;
 EndCmp
 
 BeginCmp
 TimeStamp = /5190DF67;
 Reference = Q1;
 ValeurCmp = RFD14N05;
-IdModule  = ;
+IdModule  = IPAKGDS;
 EndCmp
 
 BeginCmp
 TimeStamp = /5197A9F5;
 Reference = Q2;
 ValeurCmp = RFD14N05;
-IdModule  = ;
+IdModule  = IPAKGDS;
 EndCmp
 
 BeginCmp
 TimeStamp = /5190DFAC;
 Reference = Q3;
 ValeurCmp = RFD14N05;
-IdModule  = ;
+IdModule  = IPAKGDS;
 EndCmp
 
 BeginCmp
 TimeStamp = /5197AA26;
 Reference = Q4;
 ValeurCmp = RFD14N05;
-IdModule  = ;
+IdModule  = IPAKGDS;
 EndCmp
 
 BeginCmp
@@ -333,7 +333,7 @@ BeginCmp
 TimeStamp = /5193F9DF;
 Reference = U1;
 ValeurCmp = CPC1002N;
-IdModule  = ;
+IdModule  = SOP4;
 EndCmp
 
 BeginCmp
@@ -347,21 +347,21 @@ BeginCmp
 TimeStamp = /51955960;
 Reference = U3;
 ValeurCmp = ACS755;
-IdModule  = ;
+IdModule  = Allegro_HallSensor_Package-CB-PFF_05Jun2012;
 EndCmp
 
 BeginCmp
 TimeStamp = /5197B973;
 Reference = U4;
 ValeurCmp = MAX232;
-IdModule  = ;
+IdModule  = SO16N;
 EndCmp
 
 BeginCmp
 TimeStamp = /5190E545;
 Reference = X1;
 ValeurCmp = 18.432 MHz;
-IdModule  = ;
+IdModule  = Crystal_HC49-SD_SMD_RevA_09Aug2010;
 EndCmp
 
 EndListe

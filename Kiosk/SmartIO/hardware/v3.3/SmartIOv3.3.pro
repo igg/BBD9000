@@ -1,16 +1,6 @@
-update=Friday, May 17, 2013 03:44:51 PM
+update=Friday, May 24, 2013 03:09:11 AM
 version=1
-last_client=pcbnew
-[cvpcb]
-version=1
-NetITyp=0
-NetIExt=.net
-PkgIExt=.pkg
-NetDir=
-LibDir=
-NetType=0
-[cvpcb/libraries]
-EquName1=devcms
+last_client=cvpcb
 [eeschema]
 version=1
 LibDir=
@@ -50,8 +40,6 @@ LibName27=opto
 LibName28=atmel
 LibName29=contrib
 LibName30=valves
-LibName31=/Users/igg/EDA/SmartIO/SmartIO-extra-comp
-LibName32=/Users/igg/EDA/SmartIO/acs754-acs755-acs756
 [general]
 version=1
 [pcbnew]
@@ -73,7 +61,6 @@ DrawSegmentWidth=0.2
 BoardOutlineThickness=0.15
 ModuleOutlineThickness=0.15
 [pcbnew/libraries]
-LibDir=
 LibName1=sockets
 LibName2=connect
 LibName3=discret
@@ -84,4 +71,16 @@ LibName7=display
 LibName8=valves
 LibName9=led
 LibName10=dip_sockets
-LibName11=/Users/igg/EDA/SmartIO/lbr/relay
+LibName11=acs754-acs755-acs756
+LibName12=Crystal_HC49-SD_SMD_RevA_09Aug2010
+LibName13=relay-CB1
+LibName14=MOLEX-39910-0102
+LibName15=Pin-Array-8x1
+LibName16=CPC1002N
+LibName17=OSTTE-Screw-Terminals
+LibDir=mod
+[cvpcb]
+version=1
+NetIExt=.net
+[cvpcb/libraries]
+EquName1=devcms

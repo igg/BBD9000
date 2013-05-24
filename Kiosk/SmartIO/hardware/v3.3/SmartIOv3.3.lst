@@ -1,4 +1,4 @@
-eeschema (2013-mar-25)-stable  >> Creation date: Saturday, May 18, 2013 05:49:18 PM
+eeschema (2013-mar-25)-stable  >> Creation date: Thursday, May 23, 2013 10:58:27 PM
 #Cmp ( order = Reference )
 | C1         0.1uF       
 | C2         0.1uF       
@@ -52,6 +52,61 @@ eeschema (2013-mar-25)-stable  >> Creation date: Saturday, May 18, 2013 05:49:18
 | U3         ACS755      
 | U4         MAX232      
 | X1         18.432 MHz  
+#End Cmp
+
+#Cmp ( order = Value )
+| 33pF         C19       
+| 33pF         C20       
+| 0.1uF        C1        
+| 0.1uF        C2        
+| 0.1uF        C3        
+| 0.1uF        C4        
+| 0.1uF        C5        
+| 1uF          C7        
+| 1uF          C8        
+| 1uF          C9        
+| 1uF          C10       
+| 1uF          C11       
+| 10uF         C18       
+| 10F          C12       
+| 10F          C13       
+| 10F          C14       
+| 10F          C15       
+| 10F          C16       
+| 10F          C17       
+| MUR410       D1        
+| MUR410       D2        
+| MUR410       D3        
+| MUR410       D4        
+| MUR410       D5        
+| 1kOhm@100MHz FB1       
+| LCD          J1        
+| DB9          J2        
+| MTN          J3        
+| 39910-0102   J4        
+| ISP Hdr      J6        
+| Keypad       J7        
+| Scew terminals J8        
+| +5V PSU      J9        
+| ADC          J10       
+| CB1aH-P-12V  K1        
+| RFD14N05     Q1        
+| RFD14N05     Q2        
+| RFD14N05     Q3        
+| RFD14N05     Q4        
+| 1k           R5        
+| 3.4k         R1        
+| 5k           R7        
+| 5k           R8        
+| 5k           R9        
+| 10k          R6        
+| 10.2k        R2        
+| 56.2k        R3        
+| CPC1002N     U1        
+| ACS755       U3        
+| MAX232       U4        
+| ATMEGA164PA-P U2        
+| 18.432 MHz   X1        
 #End Cmp
 
 #End List
