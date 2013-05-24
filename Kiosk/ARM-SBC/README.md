@@ -17,25 +17,26 @@ Pay close attention to the specified operating temperature range, esp. for deplo
 
 #### Generating keys
 1024-bit RSA is used to communicate to the remote hosted BBD9000-CMS server.  
-To conserve bandwidth over expensive cellular networks, the protocol transmits binary RSA-encrypted 1024-bit message blocks
+To conserve bandwidth over expensive cellular M2M networks, the kiosk transmits binary RSA-encrypted 1024-bit message blocks
 as HTTP POST requests followed by a 1024-bit kiosk signature block.  
 Likewise, the server verifies the kiosk signature and responds with one or more binary 1024-bit RSA-encrypted message blocks followed by
 a 1024-bit server signature block.
-* Make a kiosk key - the number must match the Kiosk ID in the server database.
+* Make a kiosk key - the number (e.g. `-0001`) must match the Kiosk ID in the server database.
 
         openssl genrsa -F4 -out BBD9000-0001.pem 1024
         openssl rsa -in BBD9000-0001.pem -out BBD9000-0001-pub.pem -pubout
         chmod 400 BBD9000-0001.pem
         chmod a-w BBD9000-0001-pub.pem
-* Copy the public BBD9000-0001-pub.pem to the server's `priv/` directory.
-* Keep the private BBD9000-0001.pem on the kiosk in the `/BBD9000/` directory, and not anywhere else.
+* Copy the public `BBD9000-0001-pub.pem` to the server's `priv/` directory.
+* Keep the private `BBD9000-0001.pem` on the kiosk in the `/BBD9000/` directory, and not anywhere else.
 * Make a server key - only one key per server, regardless of number of kiosks:
  
         openssl genrsa -F4 -out BBD.pem 1024
         openssl rsa -in BBD.pem -out BBD-pub.pem -pubout
         chmod 400 BBD.pem
         chmod a-w BBD-pub.pem
-* Copy the public BBD-pub.pem to each kiosk's `/BBD9000/` directory.
-* Keep the private BBD.pem on the server's `priv/` directory, and not anywhere else.
-* Register the kiosk's key with the database on the BBD9000-CMS server
+* Copy the public `BBD-pub.pem` to each kiosk's `/BBD9000/` directory.
+* Keep the private `BBD.pem` on the server's `priv/` directory, and not anywhere else.
+* Register the kiosk's key with the database on the BBD9000-CMS server (e.g. for Kiosk ID = 1)
+
         bin/setKioskRSA.pl 1 BBD9000-0001-pub.pem
