@@ -297,7 +297,7 @@ sub do_request {
 			$deliv_total = $ppg * $gallons;
 		# PPG blank, total set - get ppg from total
 		} elsif (!$ppg and ($deliv_total and $BBD->isCGInumber ('total')) ) {
-			$ppg = $deliv_total / $gallons;
+				$ppg = ($gallons > 0.0) ? ($deliv_total / $gallons) : 0.0;
 		# Both blank for a transfer
 		} elsif (!$ppg and !$deliv_total and $from_kiosk) {
 			$ppg = $kiosks{$from_kiosk}->{fuel_value};
@@ -331,9 +331,9 @@ sub do_request {
 			$gallons,
 		);
 
-		my $new_fuel_val = (
+		my $new_fuel_val = ($kiosks{$kiosk_id}->{fuel_avail} + $gallons) > 0.0 ? ((
 			($kiosks{$kiosk_id}->{fuel_avail} * $kiosks{$kiosk_id}->{fuel_value})
-			+ $deliv_total) / ($kiosks{$kiosk_id}->{fuel_avail} + $gallons);
+			+ $deliv_total) / ($kiosks{$kiosk_id}->{fuel_avail} + $gallons)) : 0.0;
 
 		# Add fuel to the 'TO' kiosk
 		$DBH->do (ADD_KIOSK_FUEL, undef,
@@ -354,7 +354,7 @@ sub do_request {
 			$k_avail_total += $gallons;
 		}		
 		
-		$sugg_price = ($k_value_total / $k_avail_total) + PER_GALLON_MARKUP;
+		$sugg_price = ($k_avail_total > 0.0) ? (($k_value_total / $k_avail_total) + PER_GALLON_MARKUP) : 0.0;
 		if ( $sugg_price > sprintf ('%.2f',$sugg_price) ) {
 			$sugg_price = sprintf ('%.2f',$sugg_price) + 0.01;
 		} else {
@@ -448,8 +448,8 @@ sub show_form {
 		k_avail_total => sprintf ('%.2f',$k_avail_total),
 		k_value_total => sprintf ('$%.2f',$k_value_total),
 		k_price_total => sprintf ('$%.2f',$k_price_total),
-		k_value_average => sprintf ('$%.2f',$k_value_total/$k_avail_total),
-		k_price_average => sprintf ('$%.2f',$k_price_total/$k_avail_total),
+		k_value_average => sprintf ('$%.2f', ($k_avail_total > 0.0) ? ($k_value_total/$k_avail_total) : 0.0),
+		k_price_average => sprintf ('$%.2f', ($k_avail_total > 0.0) ? ($k_price_total/$k_avail_total) : 0.0),
 		kiosk_popup_delivery => $CGI->popup_menu(
 			-name=>'kiosk_popup_delivery',
 			# Sort by the values rather than the keys
