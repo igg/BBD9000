@@ -47,56 +47,87 @@
 <div id="wrapper">
 <div class="box">
 </div>
-<TMPL_INCLUDE NAME="role-nav.tmpl">
+<!-- TMPL_INCLUDE NAME="role-nav.tmpl" -->
 
 <div id="full_width">
 
 <!-- form needs onsubmit="do_encrypt();return true;" name="primary" for RSA -->
 <form action="BBD-member.pl" method="post" onsubmit="do_encrypt();return true;" name="primary">
-<input type="hidden" name="CGISESSID" value="<TMPL_VAR ESCAPE=HTML NAME=CGISESSID>" >
+<input type="hidden" name="CGISESSID" value="<!-- TMPL_VAR ESCAPE=HTML NAME=CGISESSID -->" >
 <!-- These hidden elements are needed for RSA -->
-<input type="hidden" name="modulus" value="<TMPL_VAR ESCAPE=HTML NAME=modulus>" >
+<input type="hidden" name="modulus" value="<!-- TMPL_VAR ESCAPE=HTML NAME=modulus -->" >
 <input type="hidden" name="exponent" value="10001" >
 <input type="hidden" name="crypt_SPN1" value="" >
 <input type="hidden" name="crypt_SPN2" value="" >
-<input type="hidden" name="server_time" value="<TMPL_VAR NAME=server_time>" >
-<TMPL_IF NAME=ERROR>
+<input type="hidden" name="server_time" value="<!-- TMPL_VAR NAME=server_time -->" >
+<!-- TMPL_IF NAME=ERROR -->
 	<div id="error">
 	<TMPL_VAR ESCAPE=HTML NAME=ERROR>
 	</div>
-</TMPL_IF>
+<!-- /TMPL_IF -->
 
-<h3>Membership Information for <TMPL_VAR ESCAPE=HTML NAME=memb_name>
+<h3>Membership Information for <!-- TMPL_VAR ESCAPE=HTML NAME=memb_name -->
 </h3>
 <center>
 <table border="0">
 <tr>
 	<td align="left" colspan="2">
-		Name: <input name="memb_name" type="text" value="<TMPL_VAR ESCAPE=HTML NAME=memb_name>" size="40" maxlength="40">
+		Name: <input name="memb_name" type="text" value="<!-- TMPL_VAR ESCAPE=HTML NAME=memb_name -->" size="40" maxlength="40">
 	</td>
 </tr>
 <tr>
 	<td align="left" colspan="2">
-		Membership Number: <input name="ms_num" type="text" value="<TMPL_VAR ESCAPE=HTML NAME=ms_num>" size="5" maxlength="5" disabled readonly>
-		&nbsp;&nbsp;Status: <input name="status" type="text" value="<TMPL_VAR ESCAPE=HTML NAME=status>" size="10" maxlength="10" disabled readonly>
-		&nbsp;&nbsp;Type: <input name="type" type="text" value="<TMPL_VAR ESCAPE=HTML NAME=type>" size="10" maxlength="10" disabled readonly>
-		<TMPL_IF NAME=ms_credit_editable>
-			&nbsp;&nbsp;Credit: $<input name="credit" type="text" value="<TMPL_VAR ESCAPE=HTML NAME=credit>" size="10" maxlength="10">
-		<TMPL_ELSE>
-			&nbsp;&nbsp;Credit: $<input name="credit" type="text" value="<TMPL_VAR ESCAPE=HTML NAME=credit>" size="10" maxlength="10" disabled readonly>
-		</TMPL_IF>
+		Membership Number: <input name="ms_num" type="text" value="<!-- TMPL_VAR ESCAPE=HTML NAME=ms_num -->" size="5" maxlength="5" disabled readonly>
+		&nbsp;&nbsp;Status: <input name="status" type="text" value="<!-- TMPL_VAR ESCAPE=HTML NAME=status -->" size="10" maxlength="10" disabled readonly>
+		&nbsp;&nbsp;Type: <input name="type" type="text" value="<!-- TMPL_VAR ESCAPE=HTML NAME=type -->" size="10" maxlength="10" disabled readonly>
+		<!-- TMPL_IF NAME=ms_credit_editable -->
+			&nbsp;&nbsp;Credit: $<input name="credit" type="text" value="<!-- TMPL_VAR ESCAPE=HTML NAME=credit -->" size="10" maxlength="10">
+		<!-- TMPL_ELSE -->
+			&nbsp;&nbsp;Credit: $<input name="credit" type="text" value="<!-- TMPL_VAR ESCAPE=HTML NAME=credit -->" size="10" maxlength="10" disabled readonly>
+		<!-- /TMPL_IF -->
 	</td>
 </tr>
 <tr>
 	<td align="left" colspan="2">
-		Membership started: <input name="start" type="text" value="<TMPL_VAR ESCAPE=HTML NAME=start>" size="8" maxlength="8" disabled readonly>
-		&nbsp;&nbsp;Last renewal: <input name="renew" type="text" value="<TMPL_VAR ESCAPE=HTML NAME=renew>" size="8" maxlength="8" disabled readonly>
-		&nbsp;&nbsp;Expires: <input name="expires" type="text" value="<TMPL_VAR ESCAPE=HTML NAME=expires>" size="8" maxlength="8" disabled readonly>
+		Membership started: <input name="start" type="text" value="<!-- TMPL_VAR ESCAPE=HTML NAME=start -->" size="8" maxlength="8" disabled readonly>
+		&nbsp;&nbsp;Last renewal: <input name="renew" type="text" value="<!-- TMPL_VAR ESCAPE=HTML NAME=renew -->" size="8" maxlength="8" disabled readonly>
+		&nbsp;&nbsp;Expires: <input name="expires" type="text" value="<!-- TMPL_VAR ESCAPE=HTML NAME=expires -->" size="8" maxlength="8" disabled readonly>
 	</td>
 </tr>
 </table>
 </center>
 <hr>
+
+<!-- TMPL_IF NAME=roles_editable -->
+	<h3>Database Roles for <!-- TMPL_VAR ESCAPE=HTML NAME=memb_name -->
+	</h3>
+	<table class="data">
+		<thead class="data">
+			<tr class="data">
+				<td class="data">Role</td>
+				<td class="data">Description</td>
+				<td class="data">Role Members</td>
+			</tr class="data">
+		</thead>
+
+	<!-- TMPL_LOOP NAME=all_roles -->
+		<tr class="data">
+			<td class="data">
+				<input name="memb_roles" type="checkbox" value="<!-- TMPL_VAR ESCAPE=HTML NAME=role -->" <TMPL_VAR NAME=role_check>/>
+				<!-- TMPL_VAR ESCAPE=HTML NAME=role -->
+			</td>
+			<td class="data">
+				<!-- TMPL_VAR ESCAPE=HTML NAME=role_desc -->
+			</td>
+			<td class="data">
+				<!-- TMPL_VAR ESCAPE=HTML NAME=role_membs -->
+			</td>
+		</tr>
+	<!-- /TMPL_LOOP -->
+	</table>
+	<hr>
+<!-- /TMPL_IF -->
+
 <h3>
 BBD9000 Information:
 </h3>
@@ -110,8 +141,8 @@ BBD9000 Information:
 </tr>
 <tr>
 	<td align="left" colspan="2">
-		First: <input name="memb_fname" type="text" value="<TMPL_VAR ESCAPE=HTML NAME=memb_fname>" size="20" maxlength="20">
-		&nbsp;&nbsp;Last: <input name="memb_lname" type="text" value="<TMPL_VAR ESCAPE=HTML NAME=memb_lname>" size="20" maxlength="20">
+		First: <input name="memb_fname" type="text" value="<!-- TMPL_VAR ESCAPE=HTML NAME=memb_fname -->" size="20" maxlength="20">
+		&nbsp;&nbsp;Last: <input name="memb_lname" type="text" value="<!-- TMPL_VAR ESCAPE=HTML NAME=memb_lname -->" size="20" maxlength="20">
 		<div id="message">Please do not use any prefixes, suffixes or initials - even if they appear on your credit cards!</div>
 	</td>
 </tr>
@@ -128,21 +159,21 @@ BBD9000 Information:
 </tr>
 <tr>
 	<td align="left" colspan="2">
-	Email: <input name="email" type="text" value="<TMPL_VAR ESCAPE=HTML NAME=email>" size="40" maxlength="40">
+	Email: <input name="email" type="text" value="<!-- TMPL_VAR ESCAPE=HTML NAME=email -->" size="40" maxlength="40">
 		<div id="message">
 			Receipts are sent to this email address.
-			<TMPL_IF NAME=sending_email>
+			<!-- TMPL_IF NAME=sending_email -->
 			<br>If you change the email address, a confirmation email will be sent to the new address.
 			<br>The email address will not change until it is confirmed by clicking on the link in the confirmation email.
-			<TMPL_ELSE>
+			<!-- TMPL_ELSE -->
 			<br>**Note that verification emails must be sent using a separate form.
-			</TMPL_IF>
+			<!-- /TMPL_IF -->
 		</div>
 	</td>
 </tr>
 <tr>
 	<td align="left" colspan="2">
-	Credit Card Pre-Authorization: <input name="fuel_preauth" type="text" value="<TMPL_VAR ESCAPE=HTML NAME=fuel_preauth>" size="7" maxlength="7"> gallons
+	Credit Card Pre-Authorization: <input name="fuel_preauth" type="text" value="<!-- TMPL_VAR ESCAPE=HTML NAME=fuel_preauth -->" size="7" maxlength="7"> gallons
 		<div id="message">
 			The current fuel price and the number of gallons above is used to calculate the dollar amount to authorize on your credit-card.
 			<br>When you are finished fueling, the actual value of the fuel sold will be charged to your credit-card.
@@ -161,30 +192,30 @@ Contact Information:
 <table border="0">
 <tr>
 	<td align="right">Address:</td>
-	<td align="left"><input name="ad1" type="text" value="<TMPL_VAR ESCAPE=HTML NAME=ad1>" size="30" maxlength="20"></td>
+	<td align="left"><input name="ad1" type="text" value="<!-- TMPL_VAR ESCAPE=HTML NAME=ad1 -->" size="30" maxlength="20"></td>
 	<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 	<td align="right">Home phone:</td>
-	<td align="left"><input name="h_ph" type="text" value="<TMPL_VAR ESCAPE=HTML NAME=h_ph>" size="20" maxlength="20"></td>
+	<td align="left"><input name="h_ph" type="text" value="<!-- TMPL_VAR ESCAPE=HTML NAME=h_ph -->" size="20" maxlength="20"></td>
 </tr>
 <tr>
 	<td align="right"></td>
-	<td align="left"><input name="ad2" type="text" value="<TMPL_VAR ESCAPE=HTML NAME=ad2>" size="30" maxlength="20"></td>
+	<td align="left"><input name="ad2" type="text" value="<!-- TMPL_VAR ESCAPE=HTML NAME=ad2 -->" size="30" maxlength="20"></td>
 	<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 	<td align="right">Work phone:</td>
-	<td align="left"><input name="w_ph" type="text" value="<TMPL_VAR ESCAPE=HTML NAME=w_ph>" size="20" maxlength="20"></td>
+	<td align="left"><input name="w_ph" type="text" value="<!-- TMPL_VAR ESCAPE=HTML NAME=w_ph -->" size="20" maxlength="20"></td>
 </tr>
 <tr>
 	<td align="right">City:</td>
-	<td align="left"><input name="city" type="text" value="<TMPL_VAR ESCAPE=HTML NAME=city>" size="20" maxlength="20"></td>
+	<td align="left"><input name="city" type="text" value="<!-- TMPL_VAR ESCAPE=HTML NAME=city -->" size="20" maxlength="20"></td>
 	<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 	<td align="right">Mobile phone:</td>
-	<td align="left"><input name="m_ph" type="text" value="<TMPL_VAR ESCAPE=HTML NAME=m_ph>" size="20" maxlength="20"></td>
+	<td align="left"><input name="m_ph" type="text" value="<!-- TMPL_VAR ESCAPE=HTML NAME=m_ph -->" size="20" maxlength="20"></td>
 </tr>
 <tr>
 	<td align="right">State:</td>
 	<td align="left">
-		<input name="state" type="text" value="<TMPL_VAR ESCAPE=HTML NAME=state>" size="2" maxlength="2">
-		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Zip:<input name="zip" type="text" value="<TMPL_VAR ESCAPE=HTML NAME=zip>" size="10" maxlength="10">
+		<input name="state" type="text" value="<!-- TMPL_VAR ESCAPE=HTML NAME=state -->" size="2" maxlength="2">
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Zip:<input name="zip" type="text" value="<!-- TMPL_VAR ESCAPE=HTML NAME=zip -->" size="10" maxlength="10">
 	</td>
 	<td align="right">&nbsp;</td>
 	<td align="left">&nbsp;</td>

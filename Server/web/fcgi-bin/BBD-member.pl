@@ -110,15 +110,43 @@ sub do_request {
 		
 		if (defined $CGI->param('credit') and $BBD->has_role ('Memberships') ) {			
 			if ( $BBD->isNumber($CGI->param('credit')) ) {
-				$member_info->{credit} = $CGI->param('credit');
-				push (@updates,'credit');
+				if ($member_info->{credit} != $CGI->param('credit')) {
+					$member_info->{credit} = $CGI->param('credit');
+					push (@updates,'credit');
+				}
 			} else {
 				$BBD->error ("The Credit field does not look like a number.");
 				show_form();
 				return();
 			}
 		}
-	
+		
+		if (defined $CGI->param('memb_roles') and $BBD->has_role ('Roles') ) {
+			my $roles_changed;
+			my @new_roles = $CGI->param('memb_roles');
+			my @old_roles = $BBD->get_member_roles($member_id);
+			# add new roles
+			foreach my $role (@new_roles) {
+				if (! grep {$_ eq $role} @old_roles) {
+					$BBD->add_role ($member_id, $role);
+					push (@updates,"Role '$role' (added)");
+					$roles_changed = 1;
+				}
+			}
+			# remove old roles
+			foreach my $role (@old_roles) {
+				if (! grep {$_ eq $role} @new_roles) {
+					$BBD->remove_role ($member_id, $role);
+					push (@updates,"Role '$role' (removed)");
+					$roles_changed = 1;
+				}
+			}
+			push (@updates,"Role changes take effect after logout/login")
+				if $roles_changed and not $BBD->session_param ('edit_member_id');
+		}
+
+
+
 		if (!$CGI->param('memb_fname') or $CGI->param('memb_fname') ne $member_info->{memb_fname}) {
 			if (! $CGI->param('memb_fname') ) {
 				$BBD->error ("First and last names cannot be blank.");
@@ -260,6 +288,7 @@ sub do_request {
 
 sub show_form {
 
+	my $memb_id = $member_info->{memb_id};
 	# delete some of the member stuff from the standard query we don't want in the form.
 	delete $member_info->{pin};
 	delete $member_info->{memb_id};
@@ -281,6 +310,24 @@ sub show_form {
 	# Add RSA elements
 	$member_info->{modulus} = $BBD->getRSAmodulus();
 	$member_info->{server_time} = time();
+	
+	if ($BBD->has_role ('Roles')) {
+		$member_info->{roles_editable} = 1;
+		my $all_roles = $BBD->get_all_roles_hashref();
+		my @member_roles = $BBD->get_member_roles($memb_id);
+		my @all_roles_tmpl;
+		foreach my $role (keys %$all_roles) {
+			push (@all_roles_tmpl, {
+				role => $role,
+				role_check => (grep {$_ eq $role} @member_roles) ? 'checked' : '',
+				role_desc => $all_roles->{$role}->{description} ? $all_roles->{$role}->{description} : '',
+				role_membs => join (', ', @{$all_roles->{$role}->{members}})
+			});
+		}
+		$member_info->{all_roles} = \@all_roles_tmpl;
+	} else {
+		$member_info->{roles_editable} = 0;
+	}
 	
 	if ($BBD->has_role ('Memberships')) {
 		$member_info->{ms_credit_editable} = 1;

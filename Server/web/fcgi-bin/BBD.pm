@@ -6,8 +6,9 @@ our ($LOG_DIR,$TMP_DIR,$PRIV_DIR,$TIMEZONE);
 our $URL_BASE;
 ############################################
 # Host-specific info
-#use constant DOMAIN_ROOT_CNST => '/fromBiggen/BBD9000/Server/2010-08-27';
-use constant DOMAIN_ROOT_CNST => '/home/ubuntu';
+use constant DOMAIN_ROOT_CNST => '/home/ubuntu/bbd9000.com/piedmontbiofuels.bbd9000.com/';
+use constant COOP_DOMAIN_CNST => 'piedmontbiofuels.bbd9000.com';
+use constant COOP_NAME_CNST => 'Piedmont Biofuels';
 
 # Use INSTALL_BASE=DOMAIN_ROOT_CNST for perl Makefile.PL
 #use lib DOMAIN_ROOT_CNST."/lib/perl5/";
@@ -22,36 +23,39 @@ $TIMEZONE = 'US/Eastern';
 # We're telling kiosks that we'll act as the CC gateway
 use constant SERVER_GW => 1;
 
-###
-# Things that are different b/w test and live servers
+
 our $DOMAIN_ROOT = DOMAIN_ROOT_CNST;
+our $COOP_DOMAIN = COOP_DOMAIN_CNST;
+our $COOP_NAME   = COOP_NAME_CNST;
 $LOG_DIR = "$DOMAIN_ROOT/tmp";
 $TMP_DIR = "$DOMAIN_ROOT/tmp";
 $PRIV_DIR = "$DOMAIN_ROOT/priv";
 
+###
+# Things that are different b/w test and live servers
 if (TEST_DB) {
-	$URL_BASE = 'http://baltimorebiodiesel.org/fcgi-bin/test';
+	$URL_BASE = "http://$COOP_DOMAIN/fcgi-bin/test";
 	$HTML_DIR = "$DOMAIN_ROOT/web/public/test_site";
 	$TMPL_DIR = "$DOMAIN_ROOT/tmpl/test";
 	$LOGFILE = "$LOG_DIR/BBD_test.log";
 	$TRACEFILE = "$LOG_DIR/DB_trace_test.log";
 	$REQUEST_TIME_LOG = "$LOG_DIR/req_time_test.log";
 	$DB_CONF = "$PRIV_DIR/DB_CONF_test.cnf";
-	$GW_CONF_FILE = "$PRIV_DIR/BBDC_GW_test.conf";
+	$GW_CONF_FILE = "$PRIV_DIR/GW_test.conf";
 	$LOGOUT_REDIRECT = '/test_site';
 } else {
-	$URL_BASE = 'http://baltimorebiodiesel.org/fcgi-bin';
+	$URL_BASE = "http://$COOP_DOMAIN/fcgi-bin";
 	$HTML_DIR = "$DOMAIN_ROOT/web/public";
 	$TMPL_DIR = "$DOMAIN_ROOT/tmpl";
 	$LOGFILE = "$LOG_DIR/BBD.log";
 	$TRACEFILE = "$LOG_DIR/DB_trace.log";
 	$REQUEST_TIME_LOG = "$LOG_DIR/req_time.log";
 	$DB_CONF = "$PRIV_DIR/DB_CONF.cnf";
-	$GW_CONF_FILE = "$PRIV_DIR/BBDC_GW.conf";
+	$GW_CONF_FILE = "$PRIV_DIR/GW.conf";
 	$LOGOUT_REDIRECT = '/';
 }
 
-our $VERSION = '2.1';
+our $VERSION = '2.2';
 
 
 use strict;
@@ -167,6 +171,32 @@ use constant GET_MEMBER_ROLES => <<"SQL";
 	ORDER BY roles.order ASC
 SQL
 
+##
+# Queries for modifying roles
+##
+use constant REMOVE_MEMBER_ROLE => <<"SQL";
+	DELETE FROM member_roles WHERE member_id = ?
+	AND role_id = ?
+SQL
+use constant ADD_MEMBER_ROLE => <<"SQL";
+	INSERT INTO member_roles SET
+	member_id = ?,
+	role_id = ?
+SQL
+use constant GET_ALL_ROLES => <<"SQL";
+	SELECT role_id FROM roles
+	ORDER BY roles.order ASC
+SQL
+use constant GET_ALL_ROLES_DESC => <<"SQL";
+	SELECT r.role_id, r.label, r.script, r.description,
+		(SELECT GROUP_CONCAT(DISTINCT m.name SEPARATOR ',')
+			FROM members m, member_roles mr WHERE m.member_id = mr.member_id AND mr.role_id = r.role_id
+		) AS members
+	FROM roles r
+	GROUP BY r.role_id
+	ORDER BY r.order ASC
+SQL
+
 
 ##
 # Queries for member deletion
@@ -195,6 +225,14 @@ SQL
 ##
 # Queries to make new memberships
 ##
+use constant GET_MEMBERSHIP_TYPES => <<"SQL";
+	SHOW COLUMNS FROM memberships LIKE "type"
+SQL
+
+use constant GET_MEMBERSHIP_STATUSES => <<"SQL";
+	SHOW COLUMNS FROM memberships LIKE "status"
+SQL
+
 use constant LOCK_MEMBERSHIPS_TABLE => <<"SQL";
 	LOCK TABLES memberships WRITE
 SQL
@@ -246,6 +284,13 @@ use constant DEFAULT_FUEL_PREAUTH => "20";
 ##
 use constant GET_SPNS_BY_F_L_NAMES => <<"SQL";
 	SELECT member_id,pin FROM members WHERE first_name = ? AND last_name = ?
+SQL
+
+##
+# Query to memb_id from name
+##
+use constant GET_MEMB_ID_BY_NAME => <<"SQL";
+	SELECT member_id FROM members WHERE name = ?
 SQL
 
 ##
@@ -359,7 +404,13 @@ our $REAL_GW_CONF;
 sub new {
 	my $proto = shift;
 	my $invoker = shift;
-	$invoker = ( caller(1) )[1].':'.( caller(1) )[3] unless $invoker;
+	if (not $invoker) {
+		my $filename = ( caller(1) )[1];
+		$filename = '' unless $filename;
+		my $subroutine = ( caller(1) )[3];
+		$subroutine = '' unless $subroutine;
+		$invoker = $filename.':'.$subroutine;
+	}
     my $class = ref($proto) || $proto;
     my $self = {
 		REQUIRE_LOGIN   => 1,
@@ -660,6 +711,64 @@ sub has_role {
 	return undef;
 }
 
+sub get_all_roles {
+	my $self = shift;
+	my @roles;
+	my $sth = $self->{DBH}->prepare(GET_ALL_ROLES) or die "Could not prepare handle";
+	$sth->execute();
+	my ($role);
+	$sth->bind_columns (\$role);
+	while($sth->fetch()) {
+		push (@roles,$role);
+	}
+	return @roles;
+}
+
+sub get_member_roles {
+	my $self = shift;
+	my $member_id = shift;
+	my @roles;
+
+	my $sth = $self->{DBH}->prepare(GET_MEMBER_ROLES) or die "Could not prepare handle";
+	$sth->execute( $member_id );
+	my ($role,$label,$script);
+	$sth->bind_columns (\$role,\$label,\$script);
+
+	while($sth->fetch()) {
+		push (@roles,$role);
+	}
+	return @roles;
+}
+
+sub get_all_roles_hashref {
+	my $self = shift;
+	my %roles;
+
+	my $sth = $self->{DBH}->prepare(GET_ALL_ROLES_DESC) or die "Could not prepare handle";
+	$sth->execute();
+	my ($role,$label,$script,$description,$members);
+	$sth->bind_columns (\$role,\$label,\$script,\$description,\$members);
+
+	while($sth->fetch()) {
+		$roles{$role} = {
+			role => $role, label => $label, script => $script, description => $description, members => [split(',',$members)]
+		};
+	}
+	return \%roles;
+}
+
+sub add_role {
+	my $self = shift;
+	my ($member, $role) = @_;
+	$self->{DBH}->do (ADD_MEMBER_ROLE,undef,$member,$role);
+}
+
+sub remove_role {
+	my $self = shift;
+	my ($member, $role) = @_;
+	$self->{DBH}->do (REMOVE_MEMBER_ROLE,undef,$member,$role);
+}
+
 sub myTemplate {
 	my $self = shift;
 	$self->{TEMPLATE_FILE} = shift;
@@ -832,6 +941,38 @@ sub delete_member {
 	return 1;
 }
 
+sub get_membership_types {
+my $self = shift;
+	return $self->{membership_types} if $self->{membership_types};
+
+	my $DBH = $self->{DBH};
+	my $FetchHashKeyName = $DBH->{FetchHashKeyName};
+	$DBH->{FetchHashKeyName} = "NAME_lc";
+	my $x = $DBH->selectrow_hashref(GET_MEMBERSHIP_TYPES);
+	$x->{type} =~ s/^enum\('//;
+	$x->{type} =~ s/'\)$//;
+	my @fields = split /','/, $x->{type};
+	$self->{membership_types}{$_} = $_ foreach @fields;
+	$DBH->{FetchHashKeyName} = $FetchHashKeyName;
+	return %{$self->{membership_types}};
+}
+
+sub get_membership_statuses {
+my $self = shift;
+	return $self->{membership_statuses} if $self->{membership_statuses};
+
+	my $DBH = $self->{DBH};
+	my $FetchHashKeyName = $DBH->{FetchHashKeyName};
+	$DBH->{FetchHashKeyName} = "NAME_lc";
+	my $x = $DBH->selectrow_hashref(GET_MEMBERSHIP_STATUSES);
+	$x->{type} =~ s/^enum\('//;
+	$x->{type} =~ s/'\)$//;
+	my @fields = split /','/, $x->{type};
+	$self->{membership_statuses}{$_} = $_ foreach @fields;
+	$DBH->{FetchHashKeyName} = $FetchHashKeyName;
+	return %{$self->{membership_statuses}};
+}
+
 sub new_membership {
 my $self = shift;
 my ($new_start,$new_type,$new_status,$new_name,$new_email,$new_spn,$fuel_preauth,$price,$kiosk_id) = @_;
@@ -846,6 +987,7 @@ my ($new_start,$new_type,$new_status,$new_name,$new_email,$new_spn,$fuel_preauth
 	# Get an available membership_number - need to get a write lock on the memberships table.
 	$DBH->do (LOCK_MEMBERSHIPS_TABLE);
 	my $new_membership_number = $DBH->selectrow_array (GET_NEW_MEMBERSHIP_NUMBER);
+	$new_membership_number = 1 unless $new_membership_number;
 	$DBH->do (INSERT_NEW_MEMBERSHIP,undef,
 		$new_membership_number,
 		$new_start,
@@ -1366,7 +1508,7 @@ sub send_conf_email {
 
 	$self->send_email (
 		To      => "$member_name <$new_email>",
-		From    => 'Baltimore Biodiesel Coop <donotreply@baltimorebiodiesel.org>',
+		From    => $COOP_NAME.' <donotreply@'.$COOP_DOMAIN.'>',
 		Subject => 'Email Address Confirmation',
 		Message => $message
 	);
@@ -1395,8 +1537,8 @@ sub send_welcome_email {
 
 	$self->send_email (
 		To      => "$member_name <$email>",
-		From    => 'Baltimore Biodiesel Coop <donotreply@baltimorebiodiesel.org>',
-		Subject => 'Baltimore Biodiesel Automated Fuel Kiosk Information',
+		From    => $COOP_NAME.' <donotreply@'.$COOP_DOMAIN.'>',
+		Subject => $COOP_NAME.' Automated Fuel Kiosk Information',
 		Message => $message
 	);
 	
@@ -1432,8 +1574,8 @@ sub send_reset_email {
 
 	$self->send_email (
 		To      => "$member_name <$email>",
-		From    => 'Baltimore Biodiesel Coop <donotreply@baltimorebiodiesel.org>',
-		Subject => 'Baltimore Biodiesel Login Reset',
+		From    => $COOP_NAME.' <donotreply@'.$COOP_DOMAIN.'>',
+		Subject => $COOP_NAME.' Login Reset',
 		Message => $message
 	);
 }
@@ -1458,6 +1600,21 @@ sub check_unique_SPN_names {
 	return undef;
 }
 
+sub get_memb_ids_by_name {
+	my $self = shift;
+	my $name = shift;
+	my $memb_id;
+	my @memb_ids;
+	
+	my $sth = $self->{DBH}->prepare(GET_MEMB_ID_BY_NAME) or die "Could not prepare handle";
+	$sth->execute( $name );
+	$sth->bind_columns (\$memb_id);
+	while($sth->fetch()) {
+		push (@memb_ids, $memb_id);
+	}
+	return @memb_ids;
+}
+
 sub session_clear {
 	my $self = shift;
 	return $self->{SESSION}->clear (@_);
@@ -1471,6 +1628,7 @@ sub session_close {
 
 sub session_delete {
 	my $self = shift;
+	return unless $self->{SESSION};
 	$self->{SESSION}->delete ();
 	undef ($self->{SESSION});
 }
