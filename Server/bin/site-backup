@@ -1,4 +1,9 @@
 #!/bin/bash
+# Coop-specific variables:
+DOMAIN="piedmont.bbd9000.com"
+DB_NAME="piedmont_members"
+S3CFG='/home/ubuntu/priv/.s3cfg'
+
 # Fancy way of determining the directory of this script
 SOURCE="${BASH_SOURCE[0]}"
 while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
@@ -12,12 +17,12 @@ BIN_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 cd -P "${BIN_DIR}/.."
 date=`date '+%F'`
 
-/bin/tar -X "${BIN_DIR}/tar-exclude" -cf backups/baltimorebiodiesel.org-$date.tar.bz2 --bzip2 . > /dev/null 2>&1
-/usr/bin/mysqlcheck --defaults-extra-file=priv/DB_BACKUP.cnf --auto-repair --silent bbd_members > /dev/null 2>&1
-/usr/bin/mysqlcheck --defaults-extra-file=priv/DB_BACKUP.cnf --analyze --silent bbd_members > /dev/null 2>&1
-/usr/bin/mysqldump --defaults-extra-file=priv/DB_BACKUP.cnf --single-transaction bbd_members | bzip2 > backups/DB-bbd_members-$date.sql.bz2
-s3cmd --config=priv/.s3cfg --no-progress put backups/baltimorebiodiesel.org-$date.tar.bz2 s3://BBDC-Backup/ > /dev/null 2>&1
-s3cmd --config=priv/.s3cfg --no-progress put backups/DB-bbd_members-$date.sql.bz2 s3://BBDC-Backup/ > /dev/null 2>&1
+/bin/tar -X "${BIN_DIR}/tar-exclude" -cf backups/${DOMAIN}-$date.tar.bz2 --bzip2 . > /dev/null 2>&1
+/usr/bin/mysqlcheck --defaults-extra-file=priv/DB_BACKUP.cnf --auto-repair --silent ${DB_NAME} > /dev/null 2>&1
+/usr/bin/mysqlcheck --defaults-extra-file=priv/DB_BACKUP.cnf --analyze --silent ${DB_NAME} > /dev/null 2>&1
+/usr/bin/mysqldump --defaults-extra-file=priv/DB_BACKUP.cnf --single-transaction ${DB_NAME} | bzip2 > backups/DB-${DB_NAME}-$date.sql.bz2
+s3cmd --config=${S3CFG} --no-progress put backups/${DOMAIN}-$date.tar.bz2 s3://Piedmont-Backup/ > /dev/null 2>&1
+s3cmd --config=${S3CFG} --no-progress put backups/DB-${DB_NAME}-$date.sql.bz2 s3://Piedmont-Backup/ > /dev/null 2>&1
 # Delete files over 30 days old
 # /usr/local/bin/gfind backups/ -mtime +90 -exec rm -f '{}' ';'
 /usr/bin/find backups/ -mtime +30 -exec rm -f '{}' ';' > /dev/null 2>&1
