@@ -311,22 +311,38 @@ sub show_form {
 	$member_info->{modulus} = $BBD->getRSAmodulus();
 	$member_info->{server_time} = time();
 	
+	my @member_roles = $BBD->get_member_roles($memb_id);
 	if ($BBD->has_role ('Roles')) {
-		$member_info->{roles_editable} = 1;
+		$member_info->{roles_display} = 1;
 		my $all_roles = $BBD->get_all_roles_hashref();
-		my @member_roles = $BBD->get_member_roles($memb_id);
 		my @all_roles_tmpl;
 		foreach my $role (keys %$all_roles) {
 			push (@all_roles_tmpl, {
 				role => $role,
+				roles_editable => 1,
 				role_check => (grep {$_ eq $role} @member_roles) ? 'checked' : '',
 				role_desc => $all_roles->{$role}->{description} ? $all_roles->{$role}->{description} : '',
 				role_membs => join (', ', @{$all_roles->{$role}->{members}})
 			});
 		}
 		$member_info->{all_roles} = \@all_roles_tmpl;
+	} elsif (scalar (@member_roles)) {
+		$member_info->{roles_display} = 1;
+		my $all_roles = $BBD->get_all_roles_hashref();
+		my @all_roles_tmpl;
+		foreach my $role (@member_roles) {
+			push (@all_roles_tmpl, {
+				role => $role,
+				roles_editable => 0,
+				role_check => 'checked',
+				role_desc => $all_roles->{$role}->{description} ? $all_roles->{$role}->{description} : '',
+				role_membs => join (', ', @{$all_roles->{$role}->{members}})
+			});
+		}
+		$member_info->{all_roles} = \@all_roles_tmpl;
 	} else {
-		$member_info->{roles_editable} = 0;
+		$member_info->{roles_display} = 0;
+		$member_info->{all_roles} = [];
 	}
 	
 	if ($BBD->has_role ('Memberships')) {

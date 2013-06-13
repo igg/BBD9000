@@ -98,7 +98,7 @@
 </center>
 <hr>
 
-<!-- TMPL_IF NAME=roles_editable -->
+<!-- TMPL_IF NAME=roles_display -->
 	<h3>Database Roles for <!-- TMPL_VAR ESCAPE=HTML NAME=memb_name -->
 	</h3>
 	<table class="data">
@@ -113,7 +113,9 @@
 	<!-- TMPL_LOOP NAME=all_roles -->
 		<tr class="data">
 			<td class="data">
-				<input name="memb_roles" type="checkbox" value="<!-- TMPL_VAR ESCAPE=HTML NAME=role -->" <TMPL_VAR NAME=role_check>/>
+				<!-- TMPL_IF NAME=roles_editable -->
+					<input name="memb_roles" type="checkbox" value="<!-- TMPL_VAR ESCAPE=HTML NAME=role -->" <TMPL_VAR NAME=role_check>/>
+				<!-- /TMPL_IF -->
 				<!-- TMPL_VAR ESCAPE=HTML NAME=role -->
 			</td>
 			<td class="data">

@@ -457,7 +457,7 @@ sub init {
 #####
 # The whole thing hangs up at this point until a request comes in
 	while ( my $CGI = $self->CGI() ) {
-		$self->printLog (" Request started\n");
+		$self->printLog (" Request started for ".$CGI->url()."\n");
 		my $DBH = $self->{DBH};
 	####
 	# Clear out instance stuff we may have set.
@@ -525,7 +525,7 @@ sub init {
 		$self->{TEMPLATE}->param (logged_in => 1) if $session->param ('logged_in') and $self->{TEMPLATE};
 
 	
-		$self->printLog (" Calling callback: $callback\n");
+#		$self->printLog (" Calling callback: $callback\n");
 	####
 	# Call the call-back to process the request
 		eval {
