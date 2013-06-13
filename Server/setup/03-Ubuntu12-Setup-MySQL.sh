@@ -1,6 +1,6 @@
 #!/bin/bash
 # Coop-specific variables:
-DB_BASE="piedmont"
+DB_BASE="bbd"
 
 # Fancy way of determining the directory of this script
 SOURCE="${BASH_SOURCE[0]}"
@@ -11,58 +11,72 @@ while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symli
 done
 BIN_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 ROOT_DIR=$( dirname "$BIN_DIR" )
-date=`date '+%F'`
+ISO_DATE=`date '+%F'`
+DB_NAME="${DB_BASE}_members"
 
-read -s -p "Enter MySQL root password: " ROOT_PASS
 
-# Generate a password for the bbd-server user, which is used by the website
-BBD_PASS=$(apg -n 1 -a 1 -m 16 -M NCL)
-mysql --user=root  --password=$ROOT_PASS mysql <<EOF
-CREATE USER '${DB_BASE}-server'@'localhost' IDENTIFIED BY '$BBD_PASS';
-GRANT ALL PRIVILEGES ON *.* TO '${DB_BASE}-server'@'localhost' WITH GRANT OPTION;
-create database ${DB_BASE}_members;
+
+# Create new priv/DB_CONF.cnf and priv/DB_BACKUP.cnf MySQL connection files
+# If the files do not exist, a new DB user & password will be created
+# The credentials in ~/priv/DB_BACKUP.cnf will be used to make the new user
+DB_CNF="${ROOT_DIR}/priv/DB_CONF.cnf"
+if [ ! -f ${DB_CNF} ]; then
+	# Generate a MySQL user for the server to connect as
+	DB_USER="${DB_BASE}-server"
+	DB_PASS=$(apg -n 1 -a 1 -m 16 -M NCL)
+	# We're using the home directory's DB connection to do this
+	eval DB_CNF="~/priv/DB_BACKUP.cnf"
+	mysql --defaults-extra-file=${DB_CNF} <<EOF
+CREATE USER '${DB_USER}'@'localhost' IDENTIFIED BY '$DB_PASS';
+GRANT ALL PRIVILEGES ON *.* TO '${DB_USER}'@'localhost' WITH GRANT OPTION;
 \q
 EOF
-
-mkdir priv
-chmod 700 priv
-# Generate the credential file used by the server scripts
-BBD_CNF="${ROOT_DIR}/priv/DB_CONF.cnf"
-cat > "$BBD_CNF" <<EOF
+	mkdir priv
+	chmod 700 priv
+	# Generate the credential file used by the server scripts
+	DB_CNF="${ROOT_DIR}/priv/DB_CONF.cnf"
+	cat > "${DB_CNF}" <<EOF
 # DB_CONF.cnf
 
 [client]
 host     = localhost
-database = ${DB_BASE}_members
-user     = ${DB_BASE}-server
-password = $BBD_PASS
+database = ${DB_NAME}
+user     = ${DB_USER}
+password = ${DB_PASS}
 EOF
-chmod 400 $BBD_CNF
+	chmod 400 $DB_CNF
 
-# Generate an equivalent credential file used by the backup/maintenance script
-BBD_CNF="${ROOT_DIR}/priv/DB_BACKUP.cnf"
-cat > "$BBD_CNF" <<EOF
+	# Generate an equivalent credential file used by the backup/maintenance script
+	DB_CNF="${ROOT_DIR}/priv/DB_BACKUP.cnf"
+	if [ ! -f ${DB_CNF} ]; then
+		cat > "${DB_CNF}" <<EOF
 # DB_BACKUP.cnf 
 
 [client]
 host     = localhost
-user     = ${DB_BASE}-server
-password = $BBD_PASS
+user     = ${DB_USER}
+password = ${DB_PASS}
 EOF
-chmod 400 $BBD_CNF
+		chmod 400 $DB_CNF
+	fi
+fi
 
-BBD_CNF="${ROOT_DIR}/priv/DB_BACKUP.cnf"
+
+# Generate an empty database.  Backup any existing database.
+DB_CNF="${ROOT_DIR}/priv/DB_BACKUP.cnf"
 EMPTY_DB="${ROOT_DIR}/setup/BBD-Schema.sql"
-BACKUP_DB="${ROOT_DIR}/backups/DB-${DB_BASE}_members-$(date '+%F-%T').sql.bz2"
-EXIST_DB=$(mysql --defaults-extra-file="$BBD_CNF" ${DB_BASE}_members -e 'show tables')
+BACKUP_DB="${ROOT_DIR}/backups/DB-${DB_NAME}-${ISO_DATE}.sql.bz2"
+EXIST_DB=$(mysql --defaults-extra-file="$DB_CNF" ${DB_NAME} -e 'show tables')
 
 if [ -n "$EXIST_DB" ]; then
-	echo "Database ${DB_BASE}_members already exists and has defined tables!"
+	echo "Database ${DB_NAME} already exists and has defined tables!"
 	read -p "Destroy existing contents and create an empty database? (y/N)?" choice
 	case "$choice" in 
 		y|Y )
-			echo "Existing ${DB_BASE}_members database will be backed up to ${BACKUP_DB}"
-			/usr/bin/mysqldump --defaults-extra-file=priv/DB_BACKUP.cnf --single-transaction ${DB_BASE}_members | bzip2 > "$BACKUP_DB"
+			echo "Existing ${DB_NAME} database will be backed up to ${BACKUP_DB}"
+			/usr/bin/mysqldump --defaults-extra-file=${DB_CNF} --single-transaction ${DB_NAME} | bzip2 > "$BACKUP_DB"
+			mysql --defaults-extra-file=${DB_CNF} -e "drop database ${DB_NAME};"
+			mysql --defaults-extra-file=${DB_CNF} -e "create database ${DB_NAME};"
 			EXIST_DB=""
 		;;
 		* ) echo "Skipping making an empty database";;
@@ -70,8 +84,8 @@ if [ -n "$EXIST_DB" ]; then
 fi
 
 if [ -z "$EXIST_DB" ]; then
-	echo "Making empty ${DB_BASE}_members database"
-	mysql --defaults-extra-file="$BBD_CNF" ${DB_BASE}_members < "$EMPTY_DB"
+	echo "Making empty ${DB_NAME} database"
+	mysql --defaults-extra-file="$DB_CNF" ${DB_NAME} < "$EMPTY_DB"
 fi
 
 #
