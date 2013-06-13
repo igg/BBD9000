@@ -56,14 +56,6 @@ use constant GET_FAMILY_MEMBERS => <<"SQL";
 	WHERE membership_id = ?
 SQL
 
-use constant GET_MEMBERSHIP_TYPES => <<"SQL";
-	SHOW COLUMNS FROM memberships LIKE "type"
-SQL
-
-use constant GET_MEMBERSHIP_STATUSES => <<"SQL";
-	SHOW COLUMNS FROM memberships LIKE "status"
-SQL
-
 use constant IS_UNIQUE_MEMBERSHIP_NUMBER => <<"SQL";
 	SELECT membership_number from memberships where membership_number = ?;
 SQL
@@ -156,18 +148,8 @@ sub do_request {
 	
 	$BBD->relogin () unless $member_info->{ms_id};
 	
-	$DBH->{FetchHashKeyName} = "NAME_lc";
-	my $x = $DBH->selectrow_hashref(GET_MEMBERSHIP_TYPES);
-	$x->{type} =~ s/^enum\('//;
-	$x->{type} =~ s/'\)$//;
-	my @fields = split /','/, $x->{type};
-	$membership_types{$_} = $_ foreach @fields;
-	
-	$x = $DBH->selectrow_hashref(GET_MEMBERSHIP_STATUSES);
-	$x->{type} =~ s/^enum\('//;
-	$x->{type} =~ s/'\)$//;
-	@fields = split /','/, $x->{type};
-	$membership_statuses{$_} = $_ foreach @fields;
+	%membership_types = $BBD->get_membership_types();
+	%membership_statuses = $BBD->get_membership_statuses();
 	
 	
 	
@@ -275,20 +257,24 @@ sub do_request {
 			) or return undef;
 		###
 		# If we're changing the membership number, we have to make sure its unique
-		my $edit_number = $BBD->safeCGIparam ('edit_membership_ms_num');
-		if ($edit_number and $BBD->isCGInumber ('edit_number')
-			and $edit_number != $edit_membership_tmpl_params->{edit_membership_ms_num}) {
-				my ($test_num) = $DBH->selectrow_array (IS_UNIQUE_MEMBERSHIP_NUMBER,undef,$edit_number);
+		my $old_ms_num = $edit_membership_tmpl_params->{edit_membership_ms_num};
+		my $upd_ms_num = $old_ms_num;
+		if ($BBD->isCGInumber ('edit_membership_ms_num')
+			and $BBD->safeCGIparam ('edit_membership_ms_num') != $old_ms_num) {
+				my $new_ms_num = $BBD->safeCGIparam ('edit_membership_ms_num');
+				my ($test_num) = $DBH->selectrow_array (IS_UNIQUE_MEMBERSHIP_NUMBER,undef,$new_ms_num);
+				$BBD->printLog ("Testing $new_ms_num returned $test_num");
 				if ($test_num) {
-					$BBD->error ('This membership number is already taken.');
+					$BBD->error ("This membership number ($new_ms_num) is already taken.");
 					show_form();
 					return undef;
+				} else {
+					$upd_ms_num = $new_ms_num;
 				}
-				
 		}
 
 		$DBH->do (UPDATE_MEMBERSHIP,undef,
-			$edit_number,
+			$upd_ms_num,
 			$upd_start,
 			$upd_renew,
 			$upd_type,
