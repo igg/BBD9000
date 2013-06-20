@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by PcbNew date = Wed 19 Jun 2013 02:25:22 PM EDT
+Cmp-Mod V01 Created by CvPcb (2013-mar-13)-testing date = Wed 19 Jun 2013 10:28:01 PM EDT
 
 BeginCmp
 TimeStamp = /51952E68;
@@ -134,6 +134,20 @@ IdModule  = C-X2-15mm;
 EndCmp
 
 BeginCmp
+TimeStamp = /51C25ED1;
+Reference = C22;
+ValeurCmp = 10uF;
+IdModule  = SM0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /51C25ECB;
+Reference = C23;
+ValeurCmp = 22uF;
+IdModule  = SM0805;
+EndCmp
+
+BeginCmp
 TimeStamp = /51BFE375;
 Reference = Cb1;
 ValeurCmp = 0.1uF;
@@ -250,13 +264,6 @@ TimeStamp = /5191245D;
 Reference = J8;
 ValeurCmp = Scew terminals;
 IdModule  = OSTTE-16;
-EndCmp
-
-BeginCmp
-TimeStamp = /5197D288;
-Reference = J9;
-ValeurCmp = +5V PSU;
-IdModule  = OSTTE-2;
 EndCmp
 
 BeginCmp
@@ -390,6 +397,13 @@ TimeStamp = /5197B973;
 Reference = U4;
 ValeurCmp = MAX232;
 IdModule  = SO16N;
+EndCmp
+
+BeginCmp
+TimeStamp = /51C25E9D;
+Reference = U5;
+ValeurCmp = V7805-2000;
+IdModule  = V78XX-2000;
 EndCmp
 
 BeginCmp

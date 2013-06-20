@@ -1,13 +1,8 @@
-update=Wed 19 Jun 2013 09:27:50 PM EDT
+update=Wed 19 Jun 2013 10:26:47 PM EDT
 version=1
-last_client=eeschema
+last_client=cvpcb
 [general]
 version=1
-[cvpcb]
-version=1
-NetIExt=net
-[cvpcb/libraries]
-EquName1=devcms
 [pcbnew]
 version=1
 LastNetListRead=
@@ -28,7 +23,6 @@ DrawSegmentWidth="    0.200000"
 BoardOutlineThickness="    0.150000"
 ModuleOutlineThickness="    0.150000"
 [pcbnew/libraries]
-LibDir=mod
 LibName1=sockets
 LibName2=connect
 LibName3=discret
@@ -49,6 +43,8 @@ LibName17=OSTTE-Screw-Terminals
 LibName18=POTX
 LibName19=D_MUR
 LibName20=Cap-X2
+LibName21=V78xx-2000
+LibDir=mod
 [eeschema]
 version=1
 LibDir=
@@ -88,3 +84,8 @@ LibName27=opto
 LibName28=atmel
 LibName29=contrib
 LibName30=valves
+[cvpcb]
+version=1
+NetIExt=net
+[cvpcb/libraries]
+EquName1=devcms
