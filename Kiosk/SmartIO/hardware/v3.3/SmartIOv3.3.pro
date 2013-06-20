@@ -1,50 +1,6 @@
-update=Thursday, May 30, 2013 12:54:45 PM
+update=Wed 19 Jun 2013 08:41:08 PM EDT
 version=1
-last_client=eeschema
-[general]
-version=1
-[pcbnew]
-version=1
-LastNetListRead=
-UseCmpFile=1
-PadDrill=0.6
-PadSizeH=1
-PadSizeV=1
-PcbTextSizeV=1
-PcbTextSizeH=1
-PcbTextThickness=0.3
-ModuleTextSizeV=1
-ModuleTextSizeH=1
-ModuleTextSizeThickness=0.15
-SolderMaskClearance=0
-SolderMaskMinWidth=0
-DrawSegmentWidth=0.2
-BoardOutlineThickness=0.15
-ModuleOutlineThickness=0.15
-[pcbnew/libraries]
-LibName1=sockets
-LibName2=connect
-LibName3=discret
-LibName4=pin_array
-LibName5=divers
-LibName6=libcms
-LibName7=display
-LibName8=valves
-LibName9=led
-LibName10=dip_sockets
-LibName11=acs754-acs755-acs756
-LibName12=Crystal_HC49-SD_SMD_RevA_09Aug2010
-LibName13=relay-CB1
-LibName14=MOLEX-39910-0102
-LibName15=Pin-Array-8x1
-LibName16=CPC1002N
-LibName17=OSTTE-Screw-Terminals
-LibDir=mod
-[cvpcb]
-version=1
-NetIExt=.net
-[cvpcb/libraries]
-EquName1=devcms
+last_client=pcbnew
 [eeschema]
 version=1
 LibDir=
@@ -84,3 +40,51 @@ LibName27=opto
 LibName28=atmel
 LibName29=contrib
 LibName30=valves
+[general]
+version=1
+[cvpcb]
+version=1
+NetIExt=net
+[cvpcb/libraries]
+EquName1=devcms
+[pcbnew]
+version=1
+LastNetListRead=
+UseCmpFile=1
+PadDrill="    5.969000"
+PadDrillOvalY="    5.969000"
+PadSizeH="    9.300000"
+PadSizeV="    5.400000"
+PcbTextSizeV="    1.000000"
+PcbTextSizeH="    1.000000"
+PcbTextThickness="    0.300000"
+ModuleTextSizeV="    1.000000"
+ModuleTextSizeH="    1.000000"
+ModuleTextSizeThickness="    0.150000"
+SolderMaskClearance="    0.000000"
+SolderMaskMinWidth="    0.000000"
+DrawSegmentWidth="    0.200000"
+BoardOutlineThickness="    0.150000"
+ModuleOutlineThickness="    0.150000"
+[pcbnew/libraries]
+LibDir=mod
+LibName1=sockets
+LibName2=connect
+LibName3=discret
+LibName4=pin_array
+LibName5=divers
+LibName6=libcms
+LibName7=display
+LibName8=valves
+LibName9=led
+LibName10=dip_sockets
+LibName11=acs754-acs755-acs756
+LibName12=Crystal_HC49-SD_SMD_RevA_09Aug2010
+LibName13=relay-CB1
+LibName14=MOLEX-39910-0102
+LibName15=Pin-Array-8x1
+LibName16=CPC1002N
+LibName17=OSTTE-Screw-Terminals
+LibName18=POTX
+LibName19=D_MUR
+LibName20=Cap-X2
