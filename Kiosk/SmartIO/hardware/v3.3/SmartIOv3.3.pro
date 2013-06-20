@@ -1,8 +1,6 @@
-update=Wed 19 Jun 2013 10:26:47 PM EDT
+update=Thu 20 Jun 2013 02:52:12 PM EDT
 version=1
-last_client=cvpcb
-[general]
-version=1
+last_client=kicad
 [pcbnew]
 version=1
 LastNetListRead=
@@ -45,9 +43,14 @@ LibName19=D_MUR
 LibName20=Cap-X2
 LibName21=V78xx-2000
 LibDir=mod
+[cvpcb]
+version=1
+NetIExt=net
+[cvpcb/libraries]
+EquName1=devcms
 [eeschema]
 version=1
-LibDir=
+LibDir=mod
 NetFmtName=PcbnewAdvanced
 RptD_X=0
 RptD_Y=100
@@ -84,8 +87,7 @@ LibName27=opto
 LibName28=atmel
 LibName29=contrib
 LibName30=valves
-[cvpcb]
+LibName31=SmartIOv3.3-cache
+LibName32=connectors
+[general]
 version=1
-NetIExt=net
-[cvpcb/libraries]
-EquName1=devcms
