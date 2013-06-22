@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by CvPcb (2013-mar-13)-testing date = Thu 20 Jun 2013 12:11:55 PM EDT
+Cmp-Mod V01 Created by CvPcb (2013-mar-13)-testing date = Fri 21 Jun 2013 02:09:22 PM EDT
 
 BeginCmp
 TimeStamp = /51952E68;
@@ -183,14 +183,14 @@ IdModule  = Diode-MUR;
 EndCmp
 
 BeginCmp
-TimeStamp = /5197A9EF;
+TimeStamp = /51C4ABFE;
 Reference = D2;
 ValeurCmp = MUR410;
 IdModule  = Diode-MUR;
 EndCmp
 
 BeginCmp
-TimeStamp = /5190E23A;
+TimeStamp = /51C4ABD8;
 Reference = D3;
 ValeurCmp = MUR410;
 IdModule  = Diode-MUR;
@@ -274,6 +274,13 @@ IdModule  = PIN_ARRAY_5x1;
 EndCmp
 
 BeginCmp
+TimeStamp = /51C4790A;
+Reference = J11;
+ValeurCmp = TTL UART;
+IdModule  = OLinuXino-MICRO-min;
+EndCmp
+
+BeginCmp
 TimeStamp = /5190FB0A;
 Reference = K1;
 ValeurCmp = CB1aH-P-12V;
@@ -281,14 +288,14 @@ IdModule  = relay-CB1AH;
 EndCmp
 
 BeginCmp
-TimeStamp = /5190DF67;
+TimeStamp = /51C4ABDE;
 Reference = Q1;
 ValeurCmp = RFD14N05;
 IdModule  = IPAKGDS;
 EndCmp
 
 BeginCmp
-TimeStamp = /5197A9F5;
+TimeStamp = /51C4AC04;
 Reference = Q2;
 ValeurCmp = RFD14N05;
 IdModule  = IPAKGDS;
@@ -306,6 +313,20 @@ TimeStamp = /5197AA26;
 Reference = Q4;
 ValeurCmp = RFD14N05;
 IdModule  = IPAKGDS;
+EndCmp
+
+BeginCmp
+TimeStamp = /51C47B69;
+Reference = Q5;
+ValeurCmp = BSS138K;
+IdModule  = SOT23;
+EndCmp
+
+BeginCmp
+TimeStamp = /51C4CC9A;
+Reference = Q6;
+ValeurCmp = BSS138K;
+IdModule  = SOT23;
 EndCmp
 
 BeginCmp
@@ -369,6 +390,34 @@ TimeStamp = /51C1ED0B;
 Reference = R10;
 ValeurCmp = 120;
 IdModule  = R4;
+EndCmp
+
+BeginCmp
+TimeStamp = /51C47BA6;
+Reference = R11;
+ValeurCmp = 10k;
+IdModule  = SM0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /51C47CC6;
+Reference = R12;
+ValeurCmp = 10k;
+IdModule  = SM0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /51C4CCA1;
+Reference = R13;
+ValeurCmp = 10k;
+IdModule  = SM0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /51C4CCA8;
+Reference = R14;
+ValeurCmp = 10k;
+IdModule  = SM0805;
 EndCmp
 
 BeginCmp

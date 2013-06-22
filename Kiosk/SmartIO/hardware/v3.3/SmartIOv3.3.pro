@@ -1,6 +1,6 @@
-update=Thu 20 Jun 2013 02:52:12 PM EDT
+update=Saturday, June 22, 2013 02:06:38 PM
 version=1
-last_client=kicad
+last_client=eeschema
 [pcbnew]
 version=1
 LastNetListRead=
@@ -42,7 +42,10 @@ LibName18=POTX
 LibName19=D_MUR
 LibName20=Cap-X2
 LibName21=V78xx-2000
+LibName22=OLinuXino-MICRO-hdr
 LibDir=mod
+[general]
+version=1
 [cvpcb]
 version=1
 NetIExt=net
@@ -89,5 +92,3 @@ LibName29=contrib
 LibName30=valves
 LibName31=SmartIOv3.3-cache
 LibName32=connectors
-[general]
-version=1
