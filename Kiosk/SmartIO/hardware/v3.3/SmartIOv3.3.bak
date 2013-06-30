@@ -861,7 +861,7 @@ F 3 "" H 2700 5800 60  0001 C CNN
 $EndComp
 Text GLabel 2700 6200 0    45   Input ~ 0
 GND
-Text GLabel 3800 5800 2    45   Input ~ 0
+Text GLabel 4100 5800 2    45   Input ~ 0
 GND
 $Comp
 L C C5
@@ -1141,7 +1141,7 @@ Text GLabel 4300 5250 2    45   Input ~ 0
 Text Notes 6300 5970 0    39   ~ 0
 NB: NT/GND pin\nused for EMI return ONLY\nNOT power return!
 $Comp
-L TERM-5 J11
+L TERM-CPU J11
 U 1 1 51C4790A
 P 8900 3850
 F 0 "J11" V 8850 3850 50  0000 C CNN
@@ -1403,7 +1403,7 @@ Wire Wire Line
 Wire Wire Line
 	3400 5650 4200 5650
 Wire Wire Line
-	3800 5650 3800 5550
+	3800 5550 3800 5800
 Connection ~ 3800 5650
 Wire Wire Line
 	3400 7000 3800 7000
@@ -1420,9 +1420,9 @@ Wire Wire Line
 Wire Wire Line
 	6650 7000 6650 6800
 Wire Wire Line
-	6650 6800 6100 6800
+	6100 6800 6650 6800
 Wire Wire Line
-	6100 6800 6100 6400
+	6100 6400 6100 6800
 Wire Wire Line
 	6600 6500 6600 6650
 Wire Wire Line
@@ -1556,4 +1556,6 @@ Wire Wire Line
 	10700 1750 10600 1750
 Wire Wire Line
 	10700 1100 10700 1750
+Wire Wire Line
+	3800 5800 4100 5800
 $EndSCHEMATC
