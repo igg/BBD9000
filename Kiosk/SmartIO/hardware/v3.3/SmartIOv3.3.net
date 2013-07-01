@@ -1,7 +1,7 @@
 (export (version D)
   (design
     (source /media/sf_igg/src/BBD9000/Kiosk/SmartIO/hardware/v3.3/SmartIOv3.3.sch)
-    (date "Fri 28 Jun 2013 09:55:07 PM EDT")
+    (date "Sun 30 Jun 2013 11:03:52 PM EDT")
     (tool "eeschema (2013-mar-13)-testing"))
   (components
     (comp (ref R3)
@@ -220,12 +220,12 @@
       (sheetpath (names /) (tstamps /))
       (tstamp 5197D88F))
     (comp (ref C19)
-      (value 33pF)
+      (value 22pF)
       (libsource (lib device) (part CSMALL))
       (sheetpath (names /) (tstamps /))
       (tstamp 5197ECE5))
     (comp (ref C20)
-      (value 33pF)
+      (value 22pF)
       (libsource (lib device) (part CSMALL))
       (sheetpath (names /) (tstamps /))
       (tstamp 5197ED13))
