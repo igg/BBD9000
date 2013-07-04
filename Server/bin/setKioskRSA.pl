@@ -18,19 +18,14 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 # -----------------------------------------------------------------------------
-use DBI;
+use strict;
+use warnings;
+use FindBin;
+use lib $FindBin::Bin;
 
-# website information
-my $TMP_DIR = '/users/home/wifixed/domains/baltimorebiodiesel.org/tmp';
-
-# database information
-my $DB_CONF = "$TMP_DIR/DB_CONF.cnf";
-my $DSN =
-  "DBI:mysql:;" . 
-  "mysql_read_default_file=$DB_CONF";
-my $DBH = DBI->connect($DSN,undef,undef,{RaiseError => 1})
-	or  die "DBI::errstr: $DBI::errstr";
-
+use BBD;
+my $BBD = new BBD();
+$BBD->require_login (0);
 
 use constant SET_KIOSK_RSA => <<"SQL";
 	UPDATE kiosks
@@ -39,31 +34,42 @@ use constant SET_KIOSK_RSA => <<"SQL";
 SQL
 
 
-if (! ($ARGV[0] && $ARGV[1]) ) {
-	print <<USAGE;
+$BBD->init(\&do_request);
+exit;
+
+
+
+sub do_request {
+	$BBD->session_delete();
+	print "Urp?\n" and die unless $BBD->{CGI}->remote_host() eq 'localhost';
+	my $DBH = $BBD->DBH();
+	if (! ($ARGV[0] && $ARGV[1]) ) {
+		print <<USAGE;
 Usage:
   $0 kiosk_id pub_key.pem
   Where kiosk_id is the dabase ID of the kiosk,
   and pub_key.pem is the path to the kiosk's public key
 USAGE
-	exit();
+		exit();
+	}
+
+
+	open (PEM_FILE,"< $ARGV[1]")
+		or die "Could not open public key pem file $ARGV[1]\n";
+
+	my $pem_key = '';
+	while (<PEM_FILE>) {
+		$pem_key .= $_;
+	}
+	close PEM_FILE;
+
+	print "Public key:\n$pem_key\n";
+
+
+	my $sth = $DBH->prepare(SET_KIOSK_RSA)
+		or die "Could not prepare handle";
+	$sth->execute( $pem_key, $ARGV[0] )
+		or die "Could not execute statement handle";
+
+	print "Key updated for Kiosk $ARGV[0]\n";
 }
-
-open (PEM_FILE,"< $ARGV[1]")
-	or die "Could not open $ARGV[1]\n";
-
-my $pem_key = '';
-while (<PEM_FILE>) {
-	$pem_key .= $_;
-}
-close PEM_FILE;
-
-print "Public key:\n$pem_key\n";
-
-
-$sth = $DBH->prepare(SET_KIOSK_RSA)
-	or die "Could not prepare handle";
-$sth->execute( $pem_key, $ARGV[0] )
-	or die "Could not execute statement handle";
-
-print "Key updated for Kiosk $ARGV[0]\n";
