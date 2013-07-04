@@ -20,6 +20,36 @@ timer_q-1.0.7  has been successfully used previously
 * [libconfuse] (http://www.nongnu.org/confuse/): Configuration file processing.
 confuse-2.5 has been successfully used previously.
 
+#### Development/Building/Installing - NFS method
+* Configure ARM CPU as an NFS client
+* Download and unpack a full linux-arm distribution on host computer (in e.g. /BBD9000/linux-arm-deb)
+* Setup host computer as NFS server. Keep the linux distro inside the exported directory (e.g. /BBD9000/linux-arm-deb). Add the following to /etc/exports (assuming Kiosk is on 10.0.1.8, /BBD9000 and distro is owned by username 'igg'):
+
+        /BBD9000 -maproot=igg 10.0.1.8
+* Restart NFS on host/server:
+
+        sudo nfsd restart
+* Make sure that the export is working on the host/NFS server:
+
+        showmount -e
+* Make a shell script on the Kiosk (in /root for e.g.) to mount and chroot to the linux distro on NFS (assuming NFS server is on 10.0.1.254):
+
+        #!/bin/sh
+        mount -t nfs 10.0.1.254:/BBD9000 /mnt/nfs
+        mount -t nfs 10.0.1.254:/BBD9000 /mnt/nfs/linux-arm-deb/mnt/nfs
+        mount -o bind /dev /mnt/nfs/linux-arm-deb/dev
+        mount -o bind / /mnt/nfs/linux-arm-deb/mnt/main
+        chroot /mnt/nfs/linux-arm-deb /bin/bash
+* Make a shell script on the Kiosk (in /root for e.g.) to unmount the chrooted NFS linux distro (assuming NFS server is on 10.0.1.254):
+
+        #!/bin/sh
+        umount /mnt/nfs/linux-arm-deb/mnt/main
+        umount /mnt/nfs/linux-arm-deb/dev
+        umount /mnt/nfs/linux-arm-deb/mnt/nfs
+        umount /mnt/nfs
+* If the above structure is used, the kiosk's root file system ('/') is available in /mnt/main while chrooted.
+
+
 #### Generating keys
 1024-bit RSA is used to communicate to the remote hosted BBD9000-CMS server.  
 To conserve bandwidth over expensive cellular M2M networks, the kiosk transmits binary RSA-encrypted 1024-bit message blocks
