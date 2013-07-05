@@ -40,8 +40,7 @@ confuse-2.5 has been successfully used previously.
         mount -o bind /dev /mnt/nfs/linux-arm-deb/dev
         mount -o bind / /mnt/nfs/linux-arm-deb/mnt/main
         chroot /mnt/nfs/linux-arm-deb /bin/bash
-* Make a shell script on the Kiosk (in /root for e.g.) to unmount the chrooted NFS linux distro (assuming NFS server is on 10.0.1.254):
-
+* Make a shell script on the Kiosk (in /root for e.g.) to unmount the chrooted NFS linux distro:
         #!/bin/sh
         umount /mnt/nfs/linux-arm-deb/mnt/main
         umount /mnt/nfs/linux-arm-deb/dev
@@ -52,10 +51,8 @@ confuse-2.5 has been successfully used previously.
 
 #### Generating keys
 1024-bit RSA is used to communicate to the remote hosted BBD9000-CMS server.  
-To conserve bandwidth over expensive cellular M2M networks, the kiosk transmits binary RSA-encrypted 1024-bit message blocks
-as HTTP POST requests followed by a 1024-bit kiosk signature block.  
-Likewise, the server verifies the kiosk signature and responds with one or more binary 1024-bit RSA-encrypted message blocks followed by
-a 1024-bit server signature block.
+To conserve bandwidth over expensive cellular M2M networks, the kiosk sends encrypted and signed message blocks over http using POST requests. Each request contains one or more binary message blocks followed by a signature block.
+The server verifies the message using the kiosk signature and responds with one or more binary 1024-bit RSA-encrypted message blocks followed by the server's signature.
 * Make a kiosk key - the number (e.g. `-0001`) must match the Kiosk ID in the server database.
 
         openssl genrsa -F4 -out BBD9000-0001.pem 1024
