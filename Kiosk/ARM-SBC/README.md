@@ -41,6 +41,7 @@ confuse-2.5 has been successfully used previously.
         mount -o bind / /mnt/nfs/linux-arm-deb/mnt/main
         chroot /mnt/nfs/linux-arm-deb /bin/bash
 * Make a shell script on the Kiosk (in /root for e.g.) to unmount the chrooted NFS linux distro:
+
         #!/bin/sh
         umount /mnt/nfs/linux-arm-deb/mnt/main
         umount /mnt/nfs/linux-arm-deb/dev
