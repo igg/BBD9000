@@ -1,0 +1,49 @@
+Color code:
+AC:
+Black = AC hot
+Red = switched AC hot
+White = neutral
+Grn = ground
+
+DC:
+black: positive
+Red:   switched positive
+white: negative
+Grn = ground
+Both power leads are 3-wire
+
+Conduit fittings:
+Power  (Blk-Wht-Grn 10AWG)
+Pump   (Red-Wht-Grn 10AWG)
+Signal (FLM,STK,LGHT)
+
+Signal wire color code
+STK:
+  Red:  Stk + (12 V)
+  Blk:  Stk- (switched GND)
+  Wht:  DRSN
+  Grn:  Gnd
+
+LGHT:
+  Red+Blk: LGHT+ (12 V)
+  Wht+Grn: LGHT- (switched GND)
+
+FLM:
+  Wht: FLM2
+  Blk: FLM1
+  Grn: GND
+  Red:  5V
+
+Internal OMNI MSR cable (4-wires)
+Wire   Pin
+Yel       +5v - +5V
+Wht     2 Tx  - CCTX
+Grn     3 Rx  - CCRX
+Blk     5 GND - GND
+Gry     7 RTS - 
+Brn     8 CTS - 
+
+Internal MTN header:
+Blk   1 GND
+Red   2 +5V
+Yel   3 MTN
