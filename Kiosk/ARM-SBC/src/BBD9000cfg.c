@@ -13,6 +13,8 @@ cfg_t *cfg;
 
 	// Declaration of options in the config file
 	static cfg_opt_t opts[] = {
+	/* Coop Name */
+		CFG_STR("coop-name",     "Baltimore Biodiesel", CFGF_NONE),
 	/* File Paths */
 		CFG_STR("BBD9000LOG",    "BBD9000.log", CFGF_NONE),
 		CFG_STR("BBD9000-run",   "BBD9000-run.conf", CFGF_NONE),
@@ -25,6 +27,7 @@ cfg_t *cfg;
 	/* SmartIO device and baud */
 		CFG_STR("SmartIOdev", "/dev/ttyAM1", CFGF_NONE),
 		CFG_INT("SmartIObaud", 115200, CFGF_NONE),
+        CFG_BOOL("has-DRSN", cfg_true, CFGF_NONE),
 
 	/* modem device */
 		CFG_STR("Modemdev", "/dev/tts/0", CFGF_NONE),
@@ -78,6 +81,8 @@ char tmpPath[PATH_SIZE],BBD9000root[PATH_SIZE];
 	}
 
 	// Copy stuff from the configuration
+	strncpy (shmem->coop_name, cfg_getstr (cfg, "coop-name"), COOP_NAME_SIZE);
+
 	strncpy (tmpPath,cfg_getstr (cfg, "BBD9000LOG"),sizeof (tmpPath));
 	if (*tmpPath == '/')
 		strncpy (shmem->BBD9000LOG,tmpPath,sizeof (shmem->BBD9000LOG) );
@@ -124,6 +129,8 @@ char tmpPath[PATH_SIZE],BBD9000root[PATH_SIZE];
 	/* SmartIO device and baud */
 	strncpy (shmem->SmartIOdev,cfg_getstr (cfg, "SmartIOdev"),sizeof (shmem->SmartIOdev));
 	shmem->SmartIObaud = cfg_getint (cfg,"SmartIObaud");
+	shmem->has_DRSN = cfg_getbool(cfg, "has-DRSN") ? 1 : 0;
+
 
 	/* modem device - might be blank */
 	strncpy (shmem->Modemdev,cfg_getstr (cfg, "Modemdev"),sizeof (shmem->Modemdev));
@@ -189,6 +196,16 @@ cfg_t *cfg;
 		CFG_INT("no_fuel_cutoff", 5, CFGF_NONE),
 	// Operator code
 		CFG_STR("operator_code",    "", CFGF_NONE),
+	// ADC0 calibration - voltage (low raw ADC value, low calibrated value, high raw ADC value, high calibrated value)
+		CFG_INT   ("ADC0_RAW1", 100   , CFGF_NONE),
+		CFG_FLOAT ("ADC0_CAL1",   0   , CFGF_NONE),
+		CFG_INT   ("ADC0_RAW2", 782   , CFGF_NONE),
+		CFG_FLOAT ("ADC0_CAL2",  14.82, CFGF_NONE),
+	// ADC1 calibration - current (low raw ADC value, low calibrated value, high raw ADC value, high calibrated value)
+		CFG_INT   ("ADC1_RAW1", 127   , CFGF_NONE),
+		CFG_FLOAT ("ADC1_CAL1",   0   , CFGF_NONE),
+		CFG_INT   ("ADC1_RAW2", 615   , CFGF_NONE),
+		CFG_FLOAT ("ADC1_CAL2",  50.00, CFGF_NONE),
 		
 		CFG_END()
 	};
@@ -229,6 +246,16 @@ void cal_cfg_from_mem (cfg_t *cfg,BBD9000mem *shmem) {
 	cfg_setint(cfg, "low_fuel_alarm", shmem->low_fuel_alarm);
 	cfg_setint(cfg, "no_fuel_cutoff", shmem->no_fuel_cutoff);
 	cfg_setstr(cfg, "operator_code", shmem->operator_code);
+
+	cfg_setint   (cfg, "ADC0_RAW1", shmem->ADC0_cal.raw1);
+	cfg_setfloat (cfg, "ADC0_CAL1", shmem->ADC0_cal.cal1);
+	cfg_setint   (cfg, "ADC0_RAW2", shmem->ADC0_cal.raw2);
+	cfg_setfloat (cfg, "ADC0_CAL2", shmem->ADC0_cal.cal2);
+
+	cfg_setint   (cfg, "ADC1_RAW1", shmem->ADC1_cal.raw1);
+	cfg_setfloat (cfg, "ADC1_CAL1", shmem->ADC1_cal.cal1);
+	cfg_setint   (cfg, "ADC1_RAW2", shmem->ADC1_cal.raw2);
+	cfg_setfloat (cfg, "ADC1_CAL2", shmem->ADC1_cal.cal2);
 }
 
 void cal_cfg_to_mem (cfg_t *cfg,BBD9000mem *shmem) {
@@ -244,6 +271,16 @@ void cal_cfg_to_mem (cfg_t *cfg,BBD9000mem *shmem) {
 	shmem->low_fuel_alarm = cfg_getint (cfg,"low_fuel_alarm");
 	shmem->no_fuel_cutoff = cfg_getint (cfg,"no_fuel_cutoff");
 	strncpy (shmem->operator_code,cfg_getstr (cfg, "operator_code"),sizeof (shmem->operator_code));
+
+	shmem->ADC0_cal.raw1 = cfg_getint   (cfg, "ADC0_RAW1");
+	shmem->ADC0_cal.cal1 = cfg_getfloat (cfg, "ADC0_CAL1");
+	shmem->ADC0_cal.raw2 = cfg_getint   (cfg, "ADC0_RAW2");
+	shmem->ADC0_cal.cal2 = cfg_getfloat (cfg, "ADC0_CAL2");
+
+	shmem->ADC1_cal.raw1 = cfg_getint   (cfg, "ADC1_RAW1");
+	shmem->ADC1_cal.cal1 = cfg_getfloat (cfg, "ADC1_CAL1");
+	shmem->ADC1_cal.raw2 = cfg_getint   (cfg, "ADC1_RAW2");
+	shmem->ADC1_cal.cal2 = cfg_getfloat (cfg, "ADC1_CAL2");
 
 }
 
@@ -263,6 +300,10 @@ FILE *conf_fp;
 	cfg_set_print_func(cfg, "pump_off_threshold", print_float2);
 	cfg_set_print_func(cfg, "valrm_on_threshold", print_float2);
 	cfg_set_print_func(cfg, "valrm_off_threshold", print_float2);
+	cfg_set_print_func(cfg, "ADC0_CAL1", print_float2);
+	cfg_set_print_func(cfg, "ADC0_CAL2", print_float2);
+	cfg_set_print_func(cfg, "ADC1_CAL1", print_float2);
+	cfg_set_print_func(cfg, "ADC1_CAL2", print_float2);
 
 	// Save the configuration.
 	conf_fp = fopen (shmem->cal_conf,"w");

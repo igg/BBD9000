@@ -1,0 +1,48 @@
+Wide voltage range ESD-protected digital inputs.
+
+Use ESD-protected N-MOSFET gate with large Vgs max (maximum gate-source voltage) to drive AVR pins.
+Vgs max determines input range. Want > 15V
+ON Semi NTJD5121N dual, Vgs max = +/- 20 V $0.33, digikey
+NXP 2N7002CK single, Vgs max  = +/- 20V, $0.35, digikey
+
+The MOSFET gate serves as the input terminal, with or without 5k pullups up to the FLM+ voltage
+The drain of the MOSFET is pulled up to +5V (10k), and connected to AVR DIO pin.
+The MOSFET source is connected to ground
+
+Use a rotary SP3T switch to select FLM+ voltage (5V, 12V, NC/External)
+  5V/12V current rating is 100 mA.
+  If the FLM+ wire is powered externally, the selector MUST be on NC.
+  The 5k pullups will pull FLM1, FLM2 to the voltage on FLM+ if selected.
+  The external FLM+ voltage MUST be less than 20V.
+  e.g.: RTE0310N04 SP3T rotary DIP - 100mA, 30V
+Use a DIP switch (2-pos SPST) to turn FLM pullups on and off
+  These pullups are in front of the MOSFET gate, connected to FLM+ (12V, 5V or NC/External)
+  SPST 2-DIP
+
+Std FLM cable:
+  FLM+ - Red
+  GND  - Grn
+  FLM1 - Blk
+  FLM2 - Wht
+
+
+There are two common types of fuelmeter pulser outputs: open-collector/ground-switch and positive voltage pulse.
+Open-collector means that the switch/sensor/transistor operates by connecting the signal pin (FLM1/FLM2) to ground.
+  When the open-collector is operating (closed) its voltage is near GND (below ~ 1.5V counts as GND).
+  When the open-collector is "open", the "high" side of the pulse is at an undefined voltage.
+  True open-collector outputs need pullup resistors to define the high-side voltage.
+    The FLM1, FLM2 pullup DIP switches connect 5k resistors between the FLM1/FLM2 inputs and FLM+
+  A fuelmeter with "open collector" outputs and an internal pullup resistor operates as a positive-pulse meter.
+  The SmartIO board can provide 5V or 12V power to the meter (< 100 mA), or it can use the outputs from an externally powered meter.
+    Provided by SmartIO: FLM+ selector set to +5V or +12V depending on flowmeter requirements
+    Provided by flowmeter: FLM+ selector set to NC
+      The voltage must still be pulled up either by the SmartIO board (FLM1/FLM2 DIPs ON), or by the fuelmeter (FLM1/FLM2 DIPs OFF).
+
+Positive voltage pulse:
+  The voltage of the meter pulse must range between GND (< ~1.5V) and 20 V (absolute maximum voltage!).
+  Power (+5V or +12V, < 100 mA) can be provided to the meter by the SmartIO using the FLM+ selector switch.
+  The meter can provide its own power, but the pulses on FLM1/FLM2 must be less than 20V
+  The pullup resistor DIP switches should be OFF unless the pulser can drive a 5k reistor b/w ground and pulse voltage.
+  With the pullups off, the fuelmeter will "see" a naked, ESD-protected N-MOSFET gate.
+    This is a very high impedance input, with a small inrush current to charge the gate capacitor (~20 pF).
+    Long wires driving high-impedance inputs can be subject to interference (noise).

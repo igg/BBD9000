@@ -85,13 +85,13 @@
 #define UART0_TX_BUFFER_SIZE		0x0100	///< number of bytes for uart0 transmit buffer
 #endif
 #ifndef UART0_RX_BUFFER_SIZE
-#define UART0_RX_BUFFER_SIZE		0x0010	///< number of bytes for uart0 receive buffer
+#define UART0_RX_BUFFER_SIZE		0x0032	///< number of bytes for uart0 receive buffer
 #endif
 #ifndef UART1_TX_BUFFER_SIZE
-#define UART1_TX_BUFFER_SIZE		0x0010	///< number of bytes for uart1 transmit buffer
+#define UART1_TX_BUFFER_SIZE		0x0004	///< number of bytes for uart1 transmit buffer
 #endif
 #ifndef UART1_RX_BUFFER_SIZE
-#define UART1_RX_BUFFER_SIZE		0x0010	///< number of bytes for uart1 receive buffer
+#define UART1_RX_BUFFER_SIZE		0x0016	///< number of bytes for uart1 receive buffer
 #endif
 
 // define this key if you wish to use
@@ -202,6 +202,11 @@ void uart1AddToTxBuffer(uint8_t data);
 void uartSendBuffer(uint8_t nUart, char *buffer, uint16_t nBytes);
 void uartSendString(uint8_t nUart, char *buffer);
 void uartSendString_P(uint8_t nUart, PGM_P buffer);
+
+//! Checks if the indicated UART is transmitting
+///
+char uartTxBusy (uint8_t nUart);
+
 
 //! interrupt service handlers
 void uartTransmitService(uint8_t nUart);

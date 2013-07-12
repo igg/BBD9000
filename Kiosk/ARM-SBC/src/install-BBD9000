@@ -1,6 +1,6 @@
 #!/bin/sh
 ROOT=$1
-if [ "$ROOT" -eq "" ]; then
+if [ -z "$ROOT" ]; then
     ROOT="/BBD9000"
 fi
 

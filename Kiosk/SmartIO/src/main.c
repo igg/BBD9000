@@ -57,7 +57,7 @@ char outStr[64];
 	wdt_enable(WDTO_500MS);
 
 
-	initEEPROM();
+	initVars();
 	initDIO();
 	initADC();
 	initTimer();
@@ -92,7 +92,6 @@ char outStr[64];
 	uartSendString (0,EOL);
 	uartSendString_P(0, PSTR("Ready"));
 	uartSendString (0,EOL);
-
 
 	while (1) {
 		// reset the watchdog
@@ -139,11 +138,6 @@ char outStr[64];
 				uartSendString_P (0,PSTR("VALRM-STOP"));
 			uartSendString (0,EOL);
 
-			// If we're in power failure, save the EEPROM
-			// and wait for the power to restabilize.
-			if (SmartIOinfo.ADC0.STATUS & (1<< ALRM)) {
-				saveEEPROM();
-			}
 			SmartIOinfo.ADC0.STATUS &= ~(1 << ALRM_CHG);
 		}
 		// PMP-ON PMP-OFF
@@ -295,7 +289,6 @@ char outStr[64];
 		}
 
 		if (SmartIOinfo.API_STATUS & (1<< DO_RESET)) {
-			saveEEPROM();
 		// Use the watchdog timer to reset.
 			wdt_enable(WDTO_15MS);
 			while(1);
@@ -343,14 +336,6 @@ char *int16Out_buf=(char *)SmartIOinfo.int16Out_buf;
 		ADCinfo->OFF_THRESH_CAL = (uint16_t) off;
 		ADCinfo->OFF_THRESH     = off_thresh;
 
-		// Save to EEPROM
-		if (ADCinfo == &(SmartIOinfo.ADC0)) {
-			eeprom_write_word (&VIN_ALARM_THRESH_CAL_NV,ADCinfo->ON_THRESH_CAL);
-			eeprom_write_word (&VIN_OK_THRESH_CAL_NV,ADCinfo->OFF_THRESH_CAL);
-		} else if (ADCinfo == &(SmartIOinfo.ADC1)) {
-			eeprom_write_word (&IP_ON_THRESH_CAL_NV,ADCinfo->ON_THRESH_CAL);
-			eeprom_write_word (&IP_OFF_THRESH_CAL_NV,ADCinfo->OFF_THRESH_CAL);
-		}
 	}
 
 	// Print result
@@ -424,18 +409,6 @@ char *int16Out_buf=(char *)SmartIOinfo.int16Out_buf;
 		ADCinfo->MIN        = CAL_TO_ADC(0,m,b);
 		if (ADCinfo->MIN > 1023) ADCinfo->MIN = 0;
 
-		// Save to EEPROM
-		if (ADCinfo == &(SmartIOinfo.ADC0)) {
-			eeprom_write_word (&ADC0_RAW1_NV,ADCinfo->RAW1);
-			eeprom_write_word (&ADC0_CAL1_NV,ADCinfo->CAL1);
-			eeprom_write_word (&ADC0_RAW2_NV,ADCinfo->RAW2);
-			eeprom_write_word (&ADC0_CAL2_NV,ADCinfo->CAL2);
-		} else if (ADCinfo == &(SmartIOinfo.ADC1)) {
-			eeprom_write_word (&ADC1_RAW1_NV,ADCinfo->RAW1);
-			eeprom_write_word (&ADC1_CAL1_NV,ADCinfo->CAL1);
-			eeprom_write_word (&ADC1_RAW2_NV,ADCinfo->RAW2);
-			eeprom_write_word (&ADC1_CAL2_NV,ADCinfo->CAL2);
-		}
 	}
 
 	// Print result
@@ -457,7 +430,6 @@ char *int16Out_buf=(char *)SmartIOinfo.int16Out_buf;
 	uint16_to_string (ADCinfo->CAL2, 2, int16Out_buf);
 	uartSendString (0,int16Out_buf);
 	uartSendString (0,EOL);
-
 	*(SmartIOinfo.int16Out_buf) = '\0';
 
 	ADCinfo->STATUS &= ~(1 << DO_CAL);
@@ -502,16 +474,17 @@ void do_GetSet_U32 (PGM_P name, volatile uint32_t *val, unsigned char bit) {
 		*val = strtoul ((char *)SmartIOinfo.int32,NULL,10);
 		*(SmartIOinfo.int32) = '\0';
 
-	// GET
-	} else {
-		uartSendString_P (0,(PGM_P)name);
-		uartAddToTxBuffer (0,'\t');
-
-		ultoa (*val, (char *)SmartIOinfo.int32Out_buf, 10);
-		uartSendString (0,(char *)SmartIOinfo.int32Out_buf);
-		*(SmartIOinfo.int32Out_buf) = '\0';
-		uartSendString (0,EOL);
 	}
+	
+	// GET
+	uartSendString_P (0,(PGM_P)name);
+	uartAddToTxBuffer (0,'\t');
+
+	ultoa (*val, (char *)SmartIOinfo.int32Out_buf, 10);
+	uartSendString (0,(char *)SmartIOinfo.int32Out_buf);
+	*(SmartIOinfo.int32Out_buf) = '\0';
+	uartSendString (0,EOL);
+
 	SmartIOinfo.API_STATUS &= ~(1 << bit);
 }
 
@@ -526,16 +499,16 @@ long tmp;
 		tmp *= INT_PER_MS;
 		if (tmp >= 0 && tmp < UINT16_MAX) *val = tmp;
 
-	// GET
-	} else {
-		uartSendString_P (0,(PGM_P)name);
-		uartAddToTxBuffer (0,'\t');
-
-		utoa ((*val) / INT_PER_MS, (char *)SmartIOinfo.int16Out_buf, 10);
-		uartSendString (0,(char *)SmartIOinfo.int16Out_buf);
-		*(SmartIOinfo.int16Out_buf) = '\0';
-		uartSendString (0,EOL);
 	}
+	
+	// GET
+	uartSendString_P (0,(PGM_P)name);
+	uartAddToTxBuffer (0,'\t');
+
+	utoa ((*val) / INT_PER_MS, (char *)SmartIOinfo.int16Out_buf, 10);
+	uartSendString (0,(char *)SmartIOinfo.int16Out_buf);
+	*(SmartIOinfo.int16Out_buf) = '\0';
+	uartSendString (0,EOL);
 
 	SmartIOinfo.API_STATUS &= ~(1 << bit);
 }

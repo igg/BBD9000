@@ -422,7 +422,7 @@ int nevents;
 
 	// Initialize our state
 	doLCD (0, 1, NULL);
-	doLCD (1, 1, "Baltimore Biodiesel");
+	doLCD (1, 1, shmem->coop_name);
 	doRestore ();
 
 	// Set our first watchdog reset
@@ -657,18 +657,19 @@ int MSR_status;
 static char is_idle=0;
 char LCD1[LCD_MAX_LINE_SIZE+1], LCD2[LCD_MAX_LINE_SIZE+1];
 time_t t_now;
-size_t buf_siz;
+size_t buf_siz=0;
 
 	// Deal with maintenance message
 	t_now = time(NULL);
 	if (shmem->sched_maint_start) {
 		if (t_now < shmem->sched_maint_start) { // start is in the future
-			buf_siz = strftime( LCD1, LCD_MAX_LINE_SIZE, "Baltimore Biodiesel - Refueling shutdown %-m/%-e %-l",
+			buf_siz += snprintf (LCD1+buf_siz, LCD_MAX_LINE_SIZE-buf_siz, "%s", shmem->coop_name);
+			buf_siz += strftime( LCD1+buf_siz, LCD_MAX_LINE_SIZE-buf_siz, " - Refueling shutdown %-m/%-e %-l",
 				localtime(&(shmem->sched_maint_start)) );
-			buf_siz = strftime( LCD1+buf_siz,  LCD_MAX_LINE_SIZE, "-%-l%P !", localtime(&(shmem->sched_maint_end)) );
+			buf_siz += strftime( LCD1+buf_siz,  LCD_MAX_LINE_SIZE-buf_siz, "-%-l%P !", localtime(&(shmem->sched_maint_end)) );
 			sprintf (LCD2,"%s $%4.2f/gal. Swipe CC to begin.",shmem->fuel_type,shmem->last_ppg);
 		} else if (t_now >= shmem->sched_maint_start && t_now <= shmem->sched_maint_end) { // in window
-			sprintf (LCD1,"Baltimore Biodiesel");
+			sprintf (LCD1,shmem->coop_name);
 			buf_siz = strftime( LCD2, LCD_MAX_LINE_SIZE, "Refueling shutdown %-m/%-e %-l",
 				localtime(&(shmem->sched_maint_start)) );
 			buf_siz = strftime( LCD2+buf_siz, LCD_MAX_LINE_SIZE, "-%-l%P", localtime(&(shmem->sched_maint_end)) );
@@ -678,7 +679,7 @@ size_t buf_siz;
 	}
 
 	if (!shmem->sched_maint_start) {
-		sprintf (LCD1,"Baltimore Biodiesel");
+		sprintf (LCD1,shmem->coop_name);
 		sprintf (LCD2,"%s $%4.2f/gal. Swipe CC to begin.",shmem->fuel_type,shmem->last_ppg);
 	}
 
@@ -831,7 +832,7 @@ static char wait_door_closed=0;
 			is_substate = 0;
 			// When re-entering from a sub-state with the door closed,
 			// we re-open the door.
-			if (!shmem->door_open) {
+			if (! (shmem->door_open && shmem->has_DRSN)) {
 				fprintf (out_fp,"StrikeRly\t1\n");
 				doTimeout (shmem->strike_rly_timeout,"StrikeRly");
 				fflush (out_fp);
@@ -875,7 +876,7 @@ static char wait_door_closed=0;
 
 	
 		doLCD (1, 1, "Operator Mode ON");
-		if (!shmem->door_open) {
+		if (! (shmem->door_open && shmem->has_DRSN) ) {
 			doLCD (2, 1, "Open Door: Push&Pull");
 		} else {
 			doLCD (2, 1, "%5.1f $%4.2f $%7.2f",shmem->memb_gallons,shmem->memb_ppg,shmem->memb_dollars);
@@ -889,10 +890,10 @@ static char wait_door_closed=0;
 
 	// a sub-state may have put a message on the LCD, this refreshes it for our state
 	case LCDRefreshTimeout_Evt:
-		if (!shmem->door_open && shmem->StrikeRly) {
+		if (! (shmem->door_open && shmem->has_DRSN) && shmem->StrikeRly) {
 			doLCD (1, 0, "Operator Mode ON");
 			doLCD (2, 0, "Open Door: Push&Pull");
-		} else if (wait_door_closed) {
+		} else if (wait_door_closed  && shmem->has_DRSN) {
 			doLCD (1, 0, "Operator Canceled");
 			doLCD (2, 0, "Please shut the door");
 		} else {
@@ -929,7 +930,7 @@ static char wait_door_closed=0;
 			fprintf (out_fp,"StrikeRly\t0\n");
 			memset (shmem->keypad_buffer,0,KEYPAD_BUFF_SIZE);
 			doLCD (1, 1, "Operator Canceled");
-			if (shmem->door_open) {
+			if (shmem->door_open && shmem->has_DRSN) {
 				doLCD (2, 1, "Please shut the door");
 				fflush (out_fp);
 				doTimeout (shmem->door_close_timeout,"DoorClose");
@@ -945,7 +946,7 @@ static char wait_door_closed=0;
 	break;
 
 	case DoorCloseTimeout_Evt:
-		if (shmem->door_open) {
+		if (shmem->door_open && shmem->has_DRSN) {
 			doNotice ("alert","Security\tDoor left open after operator mode",
 				shmem->memb_id,shmem->memb_number);
 			fflush (srv_fp);
@@ -973,7 +974,7 @@ static char wait_door_closed=0;
 	
 	case StrikeRlyTimeout_Evt:
 		// The relay is turned off in the global handler
-		if (!shmem->door_open) {
+		if (! (shmem->door_open && shmem->has_DRSN) ) {
 			doLCD (1, 1, "Operator Canceled");
 			doLCD (2, 1, "Door left closed");
 			new_state = doReset();
@@ -1229,7 +1230,7 @@ static long retry_backoff;
 		shmem->server = 1;
 		shmem->status_interval = shmem->status_interval_net;
 
-		doLCD (1, 0, "Baltimore Biodiesel");
+		doLCD (1, 0, shmem->coop_name);
 		doLCD (2, 0, "Network restored");
 		// If we have our network back, capture any stale transaction
 		if ( *(shmem->cc_resp.trans_id) ) new_state = GatewayCapture_State;
@@ -2315,12 +2316,12 @@ int new_state = shmem->status_idx;
 		cancelTimeout ("Input");
 		cancelTimeout ("LCD");
 		doLCD (1, 1, shmem->msr_name);
-		if (!shmem->door_open) {
+		if (!shmem->door_open && shmem->has_DRSN) {
 			doTimeout (shmem->strike_rly_timeout,"StrikeRly");
 			fprintf (out_fp,"StrikeRly\t1\n");
 			fflush (out_fp);
 			doLCD (2, 1, "Open Door: Push&Pull");
-		} else {
+		} else if (shmem->door_open || !shmem->has_DRSN) {
 			cancelTimeout ("StrikeRly");
 			fprintf (out_fp,"StrikeRly\t0\n");
 			fprintf (out_fp,"PumpRly\t1\n");
@@ -2342,7 +2343,16 @@ int new_state = shmem->status_idx;
 			doNotice ("sale","%d\t%s\t%.3f\t%.3f\t%.2f\t%.1f",
 				shmem->memb_id,shmem->fuel_type,shmem->memb_gallons,shmem->memb_ppg,(shmem->memb_ppg*shmem->memb_gallons),getMaxFlowGPM());
 		}
-		
+
+		// This is our version of the total amount owed (or credit remaining if negative)
+		shmem->memb_dollars = (-shmem->memb_credit) +
+			(shmem->memb_gallons * shmem->memb_ppg) +
+			(shmem->memb_renewal_sale ? shmem->renewal_fee : 0) +
+			(shmem->memb_full_membership_sale ? shmem->full_membership_fee : 0) +
+			(shmem->memb_temp_membership_sale ? shmem->temp_membership_fee : 0) +
+			(shmem->memb_upgrade_sale ? shmem->upgrade_fee : 0)
+		;
+
 		// --------------------
 		// Low on Fuel: 75 gal
 		if (shmem->avail_gallons < shmem->no_fuel_cutoff) {
@@ -2354,21 +2364,21 @@ int new_state = shmem->status_idx;
 			doNotice ("alert","Fuel\tLow fuel: %.2f gallons left",shmem->avail_gallons);
 			doLCD (1, 1, "Low on Fuel: %.0f gal",shmem->avail_gallons);
 		} else {
-			float other_chrgs = (-shmem->memb_credit) +
+			float other_chrgs = 
 				(shmem->memb_renewal_sale ? shmem->renewal_fee : 0) +
 				(shmem->memb_full_membership_sale ? shmem->full_membership_fee : 0) +
 				(shmem->memb_temp_membership_sale ? shmem->temp_membership_fee : 0) +
 				(shmem->memb_upgrade_sale ? shmem->upgrade_fee : 0)
 			;
-			if (other_chrgs >= 0.01) {
-				doLCD (1, 1, "$%.2f F +$%.2f O",
+			if (other_chrgs >= 0.0) {
+				doLCD (1, 1, "$%.2f Fuel +$%.2f Fees",
 					(shmem->memb_gallons * shmem->memb_ppg),other_chrgs);
-			} else if (other_chrgs <= -0.01) {
-				doLCD (1, 1, "$%.2f F -$%.2f O",
-					(shmem->memb_gallons * shmem->memb_ppg),-other_chrgs);
 			} else {
 				doLCD (1, 1, "$%.2f Fuel",shmem->memb_gallons * shmem->memb_ppg);
 			}
+		}
+		if ( shmem->memb_dollars > shmem->memb_credit ) {
+				doLCD (2, 1, "$%.2f Credit Remaining",shmem->memb_dollars - shmem->memb_credit);
 		}
 		fprintf (out_fp,"PMP\nVIN\n");
 		fflush (out_fp);
@@ -4577,7 +4587,7 @@ int new_state;
 	// This is called before going into an idle state.
 	// We need to make sure we get into the right state depending on conditions
 
-	if (shmem->motion && shmem->door_open) {
+	if (shmem->motion && (shmem->door_open && shmem->has_DRSN)) {
 		new_state = WaitDoorClosed_State;
 	} else if (shmem->server) {
 		if (shmem->avail_gallons > shmem->no_fuel_cutoff) {

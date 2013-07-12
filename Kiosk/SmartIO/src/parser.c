@@ -128,7 +128,7 @@ const cmd_entry cmds [] PROGMEM = {// Command action
 	{MTN_MS_name  , do_MTN_MS  },  // Get/Set motion timeout
 	{PMP_name     , do_PMP     },  // Get calibrated pump current (get only, no value)
 	{PMP_THR_name , do_PMP_THR },  // Get/Set pump threshold (calibrated values: on-threshold<TAB>off-threshold)
-	{RESET_name   , do_RESET   },  // Save EEPROM and Reboot immediately (get only, no value)
+	{RESET_name   , do_RESET   },  // Reboot immediately (get only, no value)
 	{RLY1_name    , do_RLY1    },  // Get/Set pump relay
 	{STK_name     , do_STK     },  // Get/Set Strike value
 	{VCAL_name    , do_VCAL    },  // Get/Set Voltage calibrations (raw1<TAB>cal1<TAB>raw2<TAB>cal2)

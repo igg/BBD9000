@@ -1,0 +1,247 @@
+Drivers are available in the TS-Linux distribution to support USB flash drives. One 
+can load Debian OS with two scripts provided by the on-board flash TS-Linux file 
+system.  First,  invoke /usr/bin/loadUSBModules.sh,  then run the script 
+/usr/bin/loadUSB.sh to chroot into the Debian OS.
+
+Console:
+screen /dev/tty.USA19QW1d1P1.1 115200
+Note that a NULL-Modem adaptor is important!
+^A ^\ to exit screen
+
+\BBD9000 should be at root@192.168.0.50
+
+Install ssh:
+mkdir /usr/lib
+cp /mnt/cf/usr/lib/libcrypto.so* /usr/lib/
+cp /mnt/cf/usr/lib/libz.so.1* /usr/lib
+cp /mnt/cf/usr/bin/ssh usr/bin/scp /usr/bin/
+
+sftp:
+cp /mnt/cf/usr/lib/sftp-server /usr/lib/
+cp /mnt/cf/usr/bin/sftp /usr/bin/
+
+Install sshd:
+cp /mnt/cf/usr/sbin/sshd /usr/sbin/
+cp /mnt/cf/lib/libpam.so.0* /lib
+cp /mnt/cf/lib/libpthread.so.0* /lib
+cd /mnt/cf/etc/ssh/
+chmod 600 moduli sshd_config ssh_host_dsa_key ssh_host_key ssh_host_rsa_key
+cp -R /mnt/cf/etc/ssh/ /etc/ssh
+
+install openssl:
+cp /mnt/cf/usr/lib/libssl.so* /usr/lib/
+cp /mnt/cf/usr/bin/openssl /usr/bin/
+
+
+Modify network in chrooted Debian
+vi etc/network/interfaces
+uncomment the DHCP line:
+iface eth0 inet dhcp 
+comment-out the other iface lines
+
+Apache problems:
+$ ls -l S91apache-ssl 
+lrwxrwxrwx    1 root     root           20 Oct 12  2007 S91apache-ssl -> ../init.d/apache-ssl
+$ rm S91apache-ssl 
+
+rc2.d, rc3.d, rc4.d, rc5.d, 
+
+
+
+Shared memory:
+/etc/fstab:
+none /dev/shm ramfs defaults 0 0
+
+Change to:
+none /var/ramfs ramfs defaults 0 0
+propagate to BBD9000mem.h
+recompile
+
+Vin multiplier = 0.0625
+
+Timezone:
+On chrooted debian:
+apt-get install tzdata
+(configure US Eastern)
+$ mkdir  /usr/share/zoneinfo
+$ mkdir  /usr/share/zoneinfo/US
+$ cp /mnt/cf/usr/share/zoneinfo/US/Eastern /usr/share/zoneinfo/US/
+$ cd /etc/
+$ ln -s /usr/share/zoneinfo/US/Eastern /etc/localtime
+
+Com ports:
+To be able to use com ports, you have to turn off getty on them in /etc/inittab:
+#                                               
+# Start console logins on both COM Ports          
+#                                               
+lgn0:12345:respawn:/sbin/getty -L 115200 ttyAM0 
+#lgn1:12345:respawn:/sbin/getty -L 115200 ttyAM1
+This disables COM1 as a login console, letting us use it as a regular COM port
+
+# NFS:
+# On mac (Leopard):
+edit /etc/exports
+showmount -e
+# open access to 10.0.1.8 or everyone:
+/BBD9000 -maproot=igg 10.0.1.8
+# Tiger:
+sudo killall -HUP mountd
+# Leopard:
+sudo nfsd restart
+# sudo nfsd enable
+# sudo nfsd disable
+# On BBD9000 in /root:
+$ cat chrootCathilya 
+#!/bin/sh
+mount -t nfs cathilya.org:/BBD9000 /mnt/nfs
+mount -t nfs cathilya.org:/BBD9000 /mnt/nfs/linux-arm-dev/mnt/nfs
+mount -o bind /dev /mnt/nfs/linux-arm-dev/dev
+chroot /mnt/nfs/linux-arm-dev /bin/bash
+
+mount -t nfs 10.0.1.254:/BBD9000 /mnt/nfs
+mount -t nfs 10.0.1.254:/BBD9000 /mnt/nfs/linux-arm-dev/mnt/nfs
+mount -o bind /dev /mnt/nfs/linux-arm-dev/dev
+mount -o bind / /mnt/nfs/linux-arm-dev/mnt/main
+chroot /mnt/nfs/linux-arm-dev /bin/bash
+
+$ cat unchroot 
+#!/bin/sh
+umount /mnt/nfs/linux-arm-dev/dev
+umount /mnt/nfs/linux-arm-dev/mnt/nfs
+umount /mnt/nfs
+
+
+mount -t nfs 192.168.1.106:/fromBiggen/BBD9000 /mnt/nfs
+mount -t nfs 192.168.1.106:/fromBiggen/BBD9000 /mnt/nfs/linux-arm-dev/mnt/nfs
+
+mount -t nfs 169.254.218.100:/fromBiggen/BBD9000 /mnt/nfs
+mount -t nfs 169.254.218.100:/fromBiggen/BBD9000 /mnt/nfs/linux-arm-dev/mnt/nfs
+
+
+###
+switch to fixed-IP, no DHCP:
+cd /etc
+rm sysconfig
+ln -s sysconfig-192.168.0.50 sysconfig
+
+talk to MSR:
+minicom com2
+
+libcurl (curl-7.17.1):
+cp /mnt/cf/usr/local/lib/libcurl.* /usr/lib/
+cd /usr/lib/
+rm libcurl.a libcurl.so libcurl.so.4
+ln -s libcurl.so.4.0.1 libcurl.so
+ln -s libcurl.so.4.0.1 libcurl.so.4
+mkdir /usr/local
+mkdir /usr/local/share
+mkdir /usr/local/share/curl
+cp /mnt/cf/usr/local/share/curl/curl-ca-bundle.crt /usr/local/share/curl/
+
+
+cron:
+cp /mnt/cf/root/nfs/etc/init.d/crond /etc/init.d/
+mkdir /etc/crontabs
+cd /etc/rc.d/rc3.d/
+ln -s ../../init.d/crond S45crond
+echo "0 1 * * * $BBD9000ROOT/BBD9000twilight" > /etc/crontabs/root
+
+timer_q:
+cp -R /mnt/cf/usr/local/lib/libtimer_q* /usr/lib/
+cd /usr/lib/     
+rm libtimer_q-1.0.so.0 libtimer_q.so 
+ln -s libtimer_q-1.0.so.0.0.7 libtimer_q-1.0.so.0
+ln -s libtimer_q-1.0.so.0.0.7 libtimer_q.so
+
+libconfuse (configuration reading)
+cp /mnt/cf/usr/local/lib/libconfuse.* /usr/lib/
+cd /usr/lib/
+rm libconfuse.so libconfuse.so.0
+ln -s libconfuse.so.0.0.0 libconfuse.so
+ln -s libconfuse.so.0.0.0 libconfuse.so.0
+
+
+back-end server on joyent.us:
+ssh wifixed@spinnaker.joyent.us
+cd domains/baltimorebiodiesel.org/
+https://spinnaker.joyent.us/phpmyadmin/
+
+perl setup:
+wget http://search.cpan.org/CPAN/authors/id/I/IR/IROBERTS/Crypt-OpenSSL-Random-0.04.tar.gz
+wget http://search.cpan.org/CPAN/authors/id/I/IR/IROBERTS/Crypt-OpenSSL-RSA-0.25.tar.gz
+wget http://search.cpan.org/CPAN/authors/id/G/GA/GAAS/MIME-Base64-3.07.tar.gz
+
+perl Makefile.PL PREFIX=~/domains/baltimorebiodiesel.org/
+PERL5LIB=/users/home/wifixed/domains/baltimorebiodiesel.org/lib/perl5/site_perl/5.8.0/i386-solaris-thread-multi/
+export PERL5LIB
+
+kiosk dns configuration:
+$ cat >> /etc/nsswitch.conf
+hosts:      files dns
+$ cat >> /etc/hosts
+8.12.36.225       baltimorebiodiesel.org
+
+
+
+generating keys:
+# Make two keys
+openssl genrsa -F4 -out BBD9000-0001.pem 1024
+openssl genrsa -F4 -out BBD.pem 1024
+chmod 400 BBD9000-0001.pem BBD.pem
+# Get the public part of both keys
+openssl rsa -in BBD9000-0001.pem -out BBD9000-0001-pub.pem -pubout
+openssl rsa -in BBD.pem -out BBD-pub.pem -pubout
+chmod a-w  BBD9000-0001-pub.pem BBD-pub.pem
+
+import new kiosk key into DB:
+bin/setKioskRSA.pl kiosk_id pubkey.pem
+bin/setKioskRSA.pl 1 BBD9000-0001-pub.pem
+
+generate operator mode SPN (e.g. 01234567890 in plain text):
+openssl passwd -1 01234567890
+edit /BBD9000/BBD9000-cal.conf to set operator_code
+
+Adding mke2fs
+$ cp /mnt/cf/lib/libext2fs.so.2* /lib
+$ cd /lib
+$ rm libext2fs.so.2
+$ ln -s libext2fs.so.2.4 libext2fs.so.2   
+$ cp /mnt/cf/lib/libcom_err.so.2* /lib
+$ rm libcom_err.so.2   
+$ ln -s libcom_err.so.2.1 libcom_err.so.2   
+$ cp /mnt/cf/lib/libe2p.so.2* /lib
+$ rm libe2p.so.2 
+$ ln -s libe2p.so.2.3 libe2p.so.2   
+
+
+
+Debugging:
+// set core dump limit
+#include <sys/resource.h>
+struct rlimit rlp = {RLIM_INFINITY,RLIM_INFINITY};
+setrlimit(RLIMIT_CORE, &rlp);
+# this may not work for daemons
+ulimit -c unlimited
+# Make cores in /mnt/cf/root/BBD9000/core.*, sub * with pid
+echo /mnt/cf/root/BBD9000/core > /proc/sys/kernel/core_pattern
+echo "1" > /proc/sys/kernel/core_uses_pid
+
+add -g flag to gcc for files dumping core
+gdb ../BBD9000/BBD9000timer ../BBD9000/core.2929
+
+
+Changing IP:
+e.g. to change the IP address to 192.168.1.45 of another network card, 
+type:
+/sbin/ifconfig eth1 inet 192.168.1.45 netmask 255.255.255.0
+Scanning IPs:
+nmap -A -T4 10.0.1.1-255
+-or-
+nmap -A -T4 192.168.1.1-100
+
+-----------------
+boot linux from linux:
+http://www.embeddedarm.com/software/arm-linux-bootloader.php
+bunzip -c vmlinux.bin.bz2 | bootload -
+exec -c "console=ttyAM0,115200 root=/dev/mtdblock1"
+

@@ -42,7 +42,6 @@
 
 // Defines
 #define MAX_RESET_RETRIES 5
-#define MAX_RESPONSE_RETRIES 5
 
 struct termios oldtio;
 int ser_fd;
@@ -57,6 +56,9 @@ speed_t baud_const[BAUD_CNT] = { B50, B75, B110, B134, B150, B200, B300, B600,
 unsigned long baud_value[BAUD_CNT] = { 50, 75, 110, 134, 150, 200, 300, 600,
 		1200, 1800, 2400, 4800, 9600, 19200, 38400, 57600, 115200 };
 int getBaudID (int baud);
+ssize_t wait_ser_resp (int ser_fd, char *read_buf, size_t buf_len, char *resp, long ms_timeout);
+void wait_ser_clear (int ser_fd, long ms_timeout);
+long elapsed_msecs (struct timeval *start);
 
 void sigTermHandler (int signum);
 
@@ -300,10 +302,10 @@ FILE *BBD9000ID_fp;
 
 int checkSmartIO (BBD9000mem *shmem) {
 FILE *ser_fp;
-char read_buf[READ_BUF_SIZE+1], *char_p, evt[EVT_NAME_SIZE+1];
+char read_buf[READ_BUF_SIZE+1];
 int reset_retries = MAX_RESET_RETRIES;
-int response_retries = MAX_RESPONSE_RETRIES;
 float vin=0.0,vold=0.0;
+ssize_t res;
 
 
 // Initialize the serial line and get its file descriptor
@@ -318,10 +320,8 @@ float vin=0.0,vold=0.0;
 		fprintf (stderr,"Couldn't fopen SmartIO serial line %s: %s\n",shmem->SmartIOdev,strerror(errno));
 		exit (EXIT_FAILURE);
 	}
-// Turn off buffering on this stream to make fgets work with select()
-// Otherwise, fgets can read more than one line into its buffer, causing select() to block,
-// but return only the first line read.
-	setvbuf (ser_fp, NULL, _IONBF, 0);
+// Use line buffering on this stream to match "canonical" serial IO setup
+	setvbuf (ser_fp, NULL, _IOLBF, 0);
 
 	// Register our signal handler to restore serial line
 	signal (SIGTERM, sigTermHandler);
@@ -334,75 +334,104 @@ float vin=0.0,vold=0.0;
 	fprintf(stdout,"Waiting for SmartIO reboot...");
 	fflush (stdout);
 
-	char_p = NULL;
-	// Wait for SmartIO to reset the voltage alarm
-	// Potentially, forever.
-	while (!char_p) {
+	// Wait for SmartIO to reset itself
+	while (reset_retries) {
 		reset_retries--;
 	// Reset the SmartIO board and wait for it to signal "Ready".
 		fprintf (ser_fp,"\n\n\nRESET\n");
 		fflush (ser_fp);
-	
-		char_p = NULL;
-		response_retries = MAX_RESPONSE_RETRIES;
-		while (!char_p && response_retries) {
-			response_retries--;
-			char_p = fgets (read_buf,READ_BUF_SIZE,ser_fp);
-			sscanf (read_buf,"%" xstr(EVT_NAME_SIZE) "[^\t\r\n]",evt);
-			if ( strcmp (evt,"Ready") ) {
-				char_p = NULL; // not a "Ready" line
-				usleep (1000); // Don't hog the CPU
-			}
-		}
+		if ( (res = wait_ser_resp (ser_fd, read_buf, READ_BUF_SIZE, "Ready", 200)) ) break;
+		wait_ser_clear (ser_fd, 200);
 	}
 	
-	if (char_p) {
-		fprintf(stdout,"Ready\nWaiting for stable voltage...");
+	if (res) {
+		fprintf(stdout,"Ready\nSetting calibrations...");
 	} else {
 		fprintf(stdout,"Could not reboot SmartIO - exiting\n");
 		exit (EXIT_FAILURE);
 	}
-
 	
+	// Drain any other output for a while...
+	wait_ser_clear (ser_fd, 200);
+	
+	// Write the calibration settings to the SmartIO
+	// This will stubbornly try to do this forever...
+	// The calibration settings in the config file supersede any the SmartIO has
 
-	// Wait for SmartIO to reset the voltage alarm
-	// Potentially, forever.
-	char_p = NULL;
-	while (!char_p) {	
-		char_p = fgets (read_buf,READ_BUF_SIZE,ser_fp);
-		sscanf (read_buf,"%" xstr(EVT_NAME_SIZE) "[^\t\r\n]",evt);
-		if ( strcmp (evt,"VALRM-STOP") ) {
-			char_p = NULL; // not a "VALRM-STOP" line
-			usleep (1000); // Don't hog the CPU
-		}
+	// The voltage calibration points
+	res = 0;
+	while (!res) {
+		fprintf (ser_fp,"VCAL\t%d\t%.2f\t%d\t%.2f\n",shmem->ADC0_cal.raw1, shmem->ADC0_cal.cal1, shmem->ADC0_cal.raw2, shmem->ADC0_cal.cal2);
+		fflush (ser_fp);
+		fprintf(stdout,"VCAL...");
+
+		if ( (res = wait_ser_resp (ser_fd, read_buf, READ_BUF_SIZE, "VCAL", 200)) ) break;
+		wait_ser_clear (ser_fd, 200);
+	}
+	// The voltage alarm threshold
+	res = 0;
+	while (!res) {	
+		fprintf (ser_fp,"VIN-THR\t%.2f\t%.2f\n",shmem->valrm_on_threshold,shmem->valrm_off_threshold);
+		fflush (ser_fp);
+		fprintf(stdout,"VIN-THR...");
+		if ( (res = wait_ser_resp (ser_fd, read_buf, READ_BUF_SIZE, "VIN-THR", 200)) ) break;
+		wait_ser_clear (ser_fd, 200);
+	}
+	// Current calibration
+	res = 0;
+	while (!res) {	
+		fprintf (ser_fp,"ICAL\t%d\t%.2f\t%d\t%.2f\n",shmem->ADC1_cal.raw1, shmem->ADC1_cal.cal1, shmem->ADC1_cal.raw2, shmem->ADC1_cal.cal2);
+		fflush (ser_fp);
+		fprintf(stdout,"ICAL...");
+		if ( (res = wait_ser_resp (ser_fd, read_buf, READ_BUF_SIZE, "ICAL", 200)) ) break;
+		wait_ser_clear (ser_fd, 200);
+	}
+	// Pump on/off thresholds
+	res = 0;
+	while (!res) {	
+		fprintf (ser_fp,"PMP-THR\t%.2f\t%.2f\n",shmem->pump_on_threshold,shmem->pump_off_threshold);
+		fflush (ser_fp);
+		fprintf(stdout,"PMP-THR...");
+		if ( (res = wait_ser_resp (ser_fd, read_buf, READ_BUF_SIZE, "PMP-THR", 200)) ) break;
+		wait_ser_clear (ser_fd, 200);
+	}
+	// Flowmeter total
+	res = 0;
+	while (!res) {	
+		fprintf (ser_fp,"FLM-TOT\t%lu\n",(unsigned long) (shmem->cumulative_gallons * shmem->flowmeter_pulses_per_gallon));
+		fflush (ser_fp);
+		fprintf(stdout,"FLM-TOT...");
+		if ( (res = wait_ser_resp (ser_fd, read_buf, READ_BUF_SIZE, "FLM-TOT", 200)) ) break;
+		wait_ser_clear (ser_fd, 200);
 	}
 
-	usleep (100000);
+	fprintf(stdout,"\nOK\nWaiting for stable voltage...");
+
 	// Wait for SmartIO to stabilize the voltage
 	// Potentially, forever.
-	char_p = NULL;
-	response_retries = 10;
-	while (!char_p && response_retries) {
+	res = 0;
+	while (!res) {	
 		fprintf (ser_fp,"VIN\n");
 		fflush (ser_fp);
-		response_retries--;
-		char_p = fgets (read_buf,READ_BUF_SIZE,ser_fp);
-		vin = 0;
-		sscanf (read_buf,"VIN\t%f",&vin);
-		if (vin > 0.0) {
-			fprintf(stdout,"%.2f...",vin);
-			fflush (stdout);
-			if ( (fabs(vin - vold)/vin > 0.005) || vin < shmem->valrm_on_threshold) {
-				char_p = NULL; // not ready
-				usleep (100000); // Don't hog the CPU
+		res = wait_ser_resp (ser_fd, read_buf, READ_BUF_SIZE, "VIN", 200);
+		if (res) {
+			vin = 0;
+			sscanf (read_buf,"VIN\t%f",&vin);
+			if (vin > 0.0) {
+				fprintf(stdout,"%.2f...",vin);
+				fflush (stdout);
+				if ( (fabs(vin - vold)/vin > 0.005) || vin < shmem->valrm_on_threshold)
+					res = 0; // not ready
+				else break;
+				vold = vin;
+			} else {
+				res = 0; // not a "VIN" line
 			}
-			vold = vin;
-		} else {
-			char_p = NULL; // not a "VIN" line
 		}
+		wait_ser_clear (ser_fd, 300);
 	}
 	shmem->voltage = vin;
-	fprintf(stdout,"OK\n");
+	fprintf(stdout,"\nOK\n");
 
 	return (1);
 
@@ -422,7 +451,7 @@ struct termios newtio;
 	  Initialize the serial port.
 	  This is taken from the Serial-Programming-HOWTO
 	*/
-	ser_fd = open(modem, O_RDWR | O_NOCTTY );
+	ser_fd = open(modem, O_RDWR | O_NOCTTY | O_NONBLOCK);
 	assert(ser_fd != -1);
 	
 	if (oldtio) tcgetattr(ser_fd,oldtio); /* save current port settings */
@@ -514,6 +543,63 @@ int i, baudid=-1;
 	
 	assert(baudid != -1);
 	return (baudid);
+}
+
+// Assumes line-buffered "canonical" reading, resp must appear as first string on the line.
+// Assumes ser_fd open with O_NONBLOCK (non-blocking reads).
+// Returns response size if response found. Returns 0 otherwise.
+ssize_t wait_ser_resp (int ser_fd, char *read_buf, size_t buf_len, char *resp, long ms_timeout) {
+	int resp_l = strlen (resp);
+	struct timeval t_now;
+	ssize_t res;
+	gettimeofday(&t_now, NULL);
+
+	*read_buf = '\0';
+	while (elapsed_msecs (&t_now) < ms_timeout) {
+		*read_buf = '\0';
+		res = read(ser_fd,read_buf,buf_len);
+		if (res > -1) {
+			read_buf[res] = '\0';
+			if ( ! strncmp (read_buf,resp,resp_l) ) break;
+			else res = 0;
+		} else res = 0;
+		usleep (1000);
+	}
+	return (res);
+}
+
+// Consumes and ignores serial line input until ms_timeout is reached
+// Assumes ser_fd open with O_NONBLOCK (non-blocking reads).
+void wait_ser_clear (int ser_fd, long ms_timeout) {
+	struct timeval t_now;
+	gettimeofday(&t_now, NULL);
+	while (elapsed_msecs (&t_now) < ms_timeout) {
+		tcflush (ser_fd,TCIFLUSH);
+		usleep (1000);
+	}
+}
+
+long elapsed_msecs (struct timeval *start) {
+long int msecs, ssecs=start->tv_sec, susecs=start->tv_usec;
+struct timeval t_now;
+
+	gettimeofday(&t_now, NULL);
+
+	/* Perform the carry for the later subtraction by updating y. */
+	if (t_now.tv_usec < susecs) {
+		int nsec = (susecs - t_now.tv_usec) / 1000000 + 1;
+		susecs -= 1000000 * nsec;
+		ssecs += nsec;
+	}
+	if (t_now.tv_usec - susecs > 1000000) {
+		int nsec = (t_now.tv_usec - susecs) / 1000000;
+		susecs += 1000000 * nsec;
+		ssecs -= nsec;
+	}
+
+	msecs = (t_now.tv_sec - ssecs) * 1000;
+	msecs += (t_now.tv_usec - susecs) / 1000;
+	return msecs;
 }
 
 

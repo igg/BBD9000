@@ -1,0 +1,38 @@
+# Set time quickly, without starting ntpd - uses configured servers:
+/usr/local/bin/ntpdate pool.ntp.org
+
+/usr/local/bin/ntpd -q  -c /etc/ntp.conf -l /var/log/ntpd.log -f /etc/ntp.drift 
+/usr/local/bin/ntpd -c /etc/ntp.conf -l /var/log/ntpd.log -f /etc/ntp.drift 
+
+
+/mnt/nfs/linux-arm-dev/root/oss/adjtimex-1.28/adjtimex -p
+
+$ tail /etc/ntp.drift 
+198.234
+
+Last frequency of BBD9000-2:
+$ cat /etc/ntp.drift 
+205.666
+
+
+
+Wait until ntpq -c rv shows state=4, then get frequency=198.579
+ntptime -f frequency
+# ntptime frequency (or drift file) times 65536 = adjtimex.frequency
+
+
+Need:
+ntpq
+ntpd
+ntptime
+
+Isolated configuration:
+on mac/host
+add line to /etc/ntp.conf:
+tos orphan 9
+
+add line to /etc/ntp.conf on client:
+tos orphan 9
+server igg-mbp.cathilya.org iburst # when at home
+server 192.168.2.1 iburst          # when isolated
+driftfile /etc/ntp.drift

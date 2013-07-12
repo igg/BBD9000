@@ -1,0 +1,146 @@
+Input debounce and timings
+
+Software event flags
+These are set in ISRs
+These remain set until cleared by the main program
+DIO_STATUS
+  KEY_PRESSED   0
+  FLM_CHANGED   1
+  MTN_CHANGED   2
+  MTN_PRESENT   3
+  MTN_LOGIC     4  // (PA5 & MTN_LOGIC == MTN_PRESENT)
+  DRSN_CHANGED  5
+  DRSN_LOGIC    6  // (PD6 & DRSN_LOGIC == DRSN_OPEN)
+  DRSN_OPEN     7
+
+ADC_STATUS
+  VALRM_CHANGED 0
+  VALRM         1
+  PMP_CHANGED   2
+  PMP_ON        3
+
+// check bit
+//	if ( DIO_STATUS & 1<<KEY_PRESSED )
+// set bit
+//	DIO_STATUS |= 1 << KEY_PRESSED;
+// unset bit
+//	DIO_STATUS &= ~(1 << KEY_PRESSED);
+
+FLM_EVT_TIMER (uint16_t FLM_TIMEOUT)
+MTN_TIMER (uint16_t MTN_TIMEOUT)
+ (either 0x00 or 0xFF)
+
+
+Flowmeter speed-limit implementation
+FLM debounce counter decrements speed-limit counter while stable,
+  and spped-limit timer is > 0 (in timer ISR).
+  Main loop sends a flowmeter event if speed-limit timer == 0
+    Sets the speed-limit timer to the speed limit after the FLM event.
+
+  
+
+Voltage and Current levels are compared to thresholds in the main program loop.
+Matrix keypad reading done by main loop
+Flowmeter count updates/events done by main loop
+All events sent by main loop
+
+
+Keypad.
+Init:
+  Set R1-R4 to inputs (PB0-PB3), 1  with pullup
+  Set C1-C4 to outputs (PB4-PB7),0
+Timer ISR:
+  debounce inputs in timer ISR, set KEY_PRESSED
+Main loop:
+  if KEY_PRESSED:
+    Set R1-R4 (PB0-PB3) to 1 until Cx is 1.
+    send Key event
+    set KEY_PRESSED to 0
+
+FLM:
+Init:
+  Set PD4 and PD5 to inputs
+  Ensure that pullups are set set PD5 in PORTD
+Timer ISR:
+  Debounce FLM1 and FLM2
+  if FLM1 or FLM2 is steady:
+    update FLM_CURRENT and FLM_CUMULATIVE
+    set FLM_CHANGED
+    if (FLM_EVT_TIMER > 0) FLM_EVT_TIMER--;
+Main loop:
+  If FLM_CHANGED && FLM_EVT_TIMER == 0
+    Issue Flowmeter event
+    Set FLM_EVT_TIMER to threshold
+    Set FLM_CHANGED to 0
+
+MTN:
+Init:
+  Set PA5 to input
+  Set PA5 pullup
+Timer ISR:
+  Debounce PA5
+  if (MTN & MTN_LOGIC)
+    Set MTN_TIMER to MTN_TIMEOUT
+    if (!MTN_PRESENT)
+      MTN_CHANGED = 1
+    MTN_PRESENT = 1
+  else
+    if (MTN_TIMEOUT) MTN_TIMEOUT--
+    if (MTN_PRESENT && MTN_TIMEOUT == 0)
+      MTN_PRESENT = 0
+      MTN_CHANGED = 1
+Main loop:
+  if (MTN_CHANGED)
+    if (MTN_PRESENT)
+      Issue Motion event
+    else
+      Issue Motion stopped event
+
+DRSN:
+Init:
+  Set PD6 to input
+  Set PD6 pullup
+Timer ISR:
+  Debounce PD6
+  set DRSN_CHANGED
+Main loop:
+  if DRSN_CHANGED
+    Issue Door event
+
+
+
+---------------------
+Vertical counters - 3-bit, repeating
+
+        MOVF    SB,W   	;W = B
+        ANDWF   SC,W    ;W = B&C
+        XORWF   SA,F    ;A+ = A ^ (B&C)
+        MOVF    SC,W    ;W = C
+        XORWF   SB,F    ;B+ = B ^ C
+        COMF    SC,F    ;C+ = ~C
+        RETURN
+
+C for 2-bit
+temp_A = A & B;
+B = A & ~B;         //O.k. to assign to B
+A = temp_A;
+
+ASM for 2-bit:
+        MOVF    SB,W    ;W = B
+        XORWF   SA,F    ;A+ = A ^ B
+        COMF    SB,F    ;B+ = ~B
+
+        RETURN
+
+
+C for 3-bit
+temp_B = B & C;
+next_A = A ^ temp_B;
+next_B = B ^ C;
+next_C = ~C;
+
+A ^= B & C;
+B ^= C;
+C ~= C;
+
+

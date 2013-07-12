@@ -1,0 +1,126 @@
+SmartIO API (RS232 interface)
+Default RS232 interface settings: 115200 baud, 8 bit, no parity, 1 stop bit (8N1).
+General syntax:
+<PERIPHERAL>[<TAB><VALUE>]0..n<NEWLINE>
+Note that angle brackets ('<', '>') are used to delineate the fields and field-separators.
+Square brackets ('[',']') are used to designate optional entries.
+Brackets are not part of the syntax.  <TAB> is a single tab character.
+<PERIPHERAL> is text referring to the sub-system/peripheral being commanded or queried (ex. LCD1, RLY1, AUX, etc).
+  generally, the peripheral name corresponds to labeled components on the circuit board.
+Following the command is zero or more <TAB>-delimited values.
+  generally, the peripheral name alone (without any values) will return its current setting (i.e ADC1, VIN, PMP).
+The command is terminated by a newline (any combination of one or more carriage-returns (^m), newlines (^n) or linefeeds (^r)).
+
+There are several events that are initiated by the SmartI/O board, which means the board sends a message without
+being initiated by a query.
+
+Commands and Queries:
+  Allmost all of these commands can be used to set a setting or report a current value.
+LCD1<TAB>Text
+  Text appears on the first line of the LCD.  Any remaining text positions on the 1st line of the LCD are cleared.
+LCD2<TAB>Text
+  Sames as LCD1, but for the second line.
+LCDBL[<TAB> 0 or 1]
+  Zero or 1 for the value turns the LCD back-light off and on respectively.
+  The bare command reports the current setting.
+RLY1[<TAB> 0 or 1]
+  Turns the on-board Relay on and off.
+  The bare command reports the current setting.
+  The relay is optically isolated and rated for 70 Amps AC/DC.
+  The circuit traces should not carry more than ~30 amps.
+LGHT[<TAB> 0 or 1]
+  Turns the LGHT output (lights, normally) on and off.
+  The bare command reports the current setting.
+  This solid-state relay switches ground, and can take a 2 Amp load.
+STK[<TAB> 0 or 1]
+  Turns the STK (electric strike) on and off.
+  The bare command reports the current setting.
+  This solid-state relay switches ground, and can take a 2 Amp load.
+AUX[<TAB> 0 or 1]
+  Turns the AUX (auxiliary output) on and off.
+  The bare command reports the current setting.
+  This solid-state relay switches ground, and can take a 2 Amp load.
+FLM-CUR[<TAB>value]
+  Normally used to clear the flowmeter counter, but can be used to set it to any value
+  This is a 32-bit unsigned integer.
+  The bare command reports the current value.
+  Note that flowmeter values are not calibrated - this is simply the number of pulses counted.
+FLM-MS[<TAB>value]
+  This is the shortest amount of time to wait between flowmeter events.
+  This speed limit is necessary because otherwise an event will be sent for every pulse edge (potentially several hundred per second)
+  Values of 50-100 ms are reasonable (many LCD displays will take 100ms to refresh).  Default is 50.
+  The bare command reports the current value.
+FLM-TOT[<TAB>value]
+  This is a cumulative flowmeter counter, which maintains the count through power-cycles.
+  It can also be reset by specifying a value.
+  The counter is a 32-bit unsigned integer (4,294,967,296 pulses max.  This is 5,368,709 gallons using a flowmeter with 800 pulses/gallon).
+  The bare command returns the current number of pulses.
+VIN
+  Reports the current calibrated voltage on Vin (as a floating-point number in volts).
+VRAW
+  Reports the current raw ADC reading on Vin.
+VCAL[<TAB><RAW1><TAB><CAL1><TAB><RAW2><TAB><CAL2>]
+  ADC calibration values for voltage (Vin).  RAW1 is the first (low) raw ADC reading, CAL1 is the corresponding low calibrated voltage.
+  The RAW2 is the second (high) raw ADC reading, and CAL2 is the high calibration voltage.
+  The voltage resolution is ~10 millivolts.  Calibrated values can range from 0.0 - 655.36 and raw values from 0 - 1024.
+  The bare command reports the current values.
+  Defaults:
+  VCAL	100	0	782	14.82
+
+VIN-THR<TAB><alarm on voltage><TAB><alarm off voltage>
+  The threshold voltages of Vin at which to send and reset a VALRM event.  VALRM events are sent only once until a subsequent VOK event.
+  Default is 10.50 V for the alarm-on voltage and 11.50 V for the alarm-off voltage
+  The bare command reports the current values.
+PMP
+  Reports the current calibrated amperage reading as a floating-point number (amps).
+  Note that AC currents are read as the maxima of the sine-wave, which is 1.414 times the RMS current.
+IRAW
+  Reports the current raw ADC reading on the relay current sensor.
+ICAL<TAB><RAW1><TAB><CAL1><TAB><RAW2><TAB><CAL2>
+  ADC calibration values for current through RLY1.  RAW1 is the first (low) raw ADC reading.
+  CAL1 is the corresponding low calibrated current (i.e. 50.00 is 50 amps).
+  RAW2 is the second (high) raw ADC reading, and CAL2 is the corresponding high calibration current.
+  The amperage resolution is ~100 milliamps.  Calibrated values can range from 0.0 - 655.36 and raw values from 0 - 1024.
+  The bare command reports the current values.
+  Defaults:
+  ICAL	127	0	615	50.00
+PMP-THR<TAB><pump on current><TAB><pump off current>
+  The threshold currents for sending "pump on" and "pump off" events.  "Pump on" events are sent only once until a subsequent "Pump off" event.
+  Default is 1.5 amp for the pump-on current and 0.6 for the pump-off current.
+  The bare command reports the current values.
+MTN[<TAB>0 or 1]
+  This is used to set the logic of the motion sensor.  It can be interpreted as "sensor value when motion is happening".
+  The bare command reports wether or not there is currently motion (not the logic setting).
+MTN-MS[<TAB>value (ms)]
+  This is used to set the amount of time to wait (in ms) from the motion detector detecting no further motion to a "MTN stopped" event being sent.
+  Motion sensors typically cycle rapidly, so a high value is recommended here - several seconds. 65535 is maximum.
+  The bare command reports the current value.
+DRSN<TAB>0 or 1
+  This is used to set the logic of the door sensor.  It can be interpreted as "sensor value when door is open".
+  The bare command reports wether or not the door is open (not the logic setting).
+RESET
+  This command causes a reboot of the SmartIO board, equivalent to cycling power to the board.
+
+Events (these are messages sent by the board without an initial query)
+  FLM<TAB>current pulses
+    not cummulative, equivalent to FLM-CUR.  Occurs whenever flowmeter state changes (edge-triggered)
+  KP<TAB>key
+    Keypad key.  Keys are non-repeating.
+  MTN-STRT
+    Motion started
+  MTN-STOP
+    Motion stopped
+  DRSN-OPND
+    Door Opened
+  DRSN-CLSD
+    Door Closed
+  VALRM-STRT
+    Voltage Alarm
+  VALRM-STOP
+    Voltage Alarm Reset
+  PMP-ON
+    Pump ON
+  PMP-OFF
+    Pump OFF
+  MSR<TAB>track 1<TAB>track 2
+    Tracks are read directly off of the card and reported with the sentinel characters removed

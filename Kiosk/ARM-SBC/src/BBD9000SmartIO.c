@@ -152,8 +152,6 @@ char read_buf[READ_BUF_SIZE+1];
 
 	// BBD9000init has taken care of making sure SmartIO is functioning.	
 	// ensure that SmartIO is synchronized with shmem
-	getSetting ("FLM-TOT", ser_fp, BBD9000EVT_fp);
-	getSetting ("PMP-THR", ser_fp, BBD9000EVT_fp);
 	getSetting ("VIN", ser_fp, BBD9000EVT_fp);
 	getSetting ("PMP", ser_fp, BBD9000EVT_fp);
 	getSetting ("DRSN", ser_fp, BBD9000EVT_fp);
@@ -304,7 +302,7 @@ struct timeval t_now;
 				shmem->pump_off_threshold-val_f2 > 0.001) {
 					fprintf (ser_fp,"PMP-THR\t%.2f\t%.2f\n",shmem->pump_on_threshold,shmem->pump_off_threshold);
 					fflush (ser_fp);
-					logMessage (log_fp,"Updated EEPROM pump thresholds from (%.2f,%.2f) to (%.2f,%.2f)",
+					logMessage (log_fp,"Updated pump thresholds from (%.2f,%.2f) to (%.2f,%.2f)",
 						val_f,val_f2,shmem->pump_on_threshold,shmem->pump_off_threshold);
 			}
 		}
@@ -318,7 +316,7 @@ struct timeval t_now;
 				shmem->valrm_off_threshold-val_f2 > 0.001) {
 					fprintf (ser_fp,"VIN-THR\t%.2f\t%.2f\n",shmem->valrm_on_threshold,shmem->valrm_off_threshold);
 					fflush (ser_fp);
-					logMessage (log_fp,"Updated EEPROM Voltage alarm thresholds from (%.2f,%.2f) to (%.2f,%.2f)",
+					logMessage (log_fp,"Updated Voltage alarm thresholds from (%.2f,%.2f) to (%.2f,%.2f)",
 						val_f,val_f2,shmem->valrm_on_threshold,shmem->valrm_off_threshold);
 			}
 		}

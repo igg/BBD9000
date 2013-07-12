@@ -113,6 +113,7 @@ typedef struct {
 #define STR_SIZE 256
 #define READ_BUF_SIZE 511
 #define MD5_SIZE 36
+#define COOP_NAME_SIZE 32
 
 #define CC_RESP_CODE_SIZE 16
 #define CC_MESSAGE_SIZE 64
@@ -136,6 +137,12 @@ typedef struct {
 
 #define FLOWMETER_BUFF_SIZE 32
 
+typedef struct {
+	int raw1;
+	float cal1;
+	int raw2;
+	float cal2;
+} ADC_cal;
 /*
   The structure in BBD9000MEM
 */
@@ -153,6 +160,7 @@ typedef struct {
 typedef struct {
 	char root_path [PATH_SIZE];
 	u_int32_t  kiosk_id;
+	char       coop_name[COOP_NAME_SIZE];
 	char       status[STATUS_SIZE];
 	int        status_idx;
 	// This is set to "restart" by default.
@@ -198,6 +206,7 @@ typedef struct {
 	float voltage;
 	float current;
 	struct timeval t_voltage, t_current;
+	ADC_cal ADC0_cal, ADC1_cal;
 
 	
 	// pump on?
@@ -225,6 +234,7 @@ typedef struct {
 
 	/* door */
 	char door_open;
+	char has_DRSN;
 
 	/* lcd stuff */
 	char LCD1[LCD_MAX_LINE_SIZE+1];

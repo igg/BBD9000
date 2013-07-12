@@ -276,6 +276,10 @@ uint8_t byte;
 	}
 }
 
+char uartTxBusy (uint8_t nUart) {
+	return (uartBufferedTx[nUart]);
+}
+
 
 // UART Transmit Buffer Empty (UDRE) Interrupt Function
 void uartTransmitService(uint8_t nUart)

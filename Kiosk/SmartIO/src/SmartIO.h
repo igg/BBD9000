@@ -25,9 +25,7 @@
 #ifndef SmartIO_h
 #define SmartIO_h
 
-#define VERSION_STR "BBD9000 v3.2.3"
-
-#include <avr/eeprom.h>
+#define VERSION_STR "BBD9000 v3.2.4"
 //
 // ADC setup
 //
@@ -55,7 +53,7 @@
 
 // Default threshold values
 // These are calibrated values! (centi-volts and centi-amps)
-// Calibrated values are stored in EEPROM, RAW values are used at run-time.
+// Calibrated values are stored as defaults, RAW values are used at run-time.
 #define VIN_ALARM_THRESH_CAL_DEF   1050
 #define VIN_OK_THRESH_CAL_DEF      1150
 #define IP_ON_THRESH_CAL_DEF        150
@@ -239,7 +237,7 @@ typedef struct {
 	volatile uint16_t avg;
 	volatile uint32_t sum;
 
-	// Calibration and raw values stored in EEPROM
+	// Calibration and raw values
 	// Calibrated values are in centi-volts (1/100 volt) and centi-amps (1/100 amp)
 	volatile uint16_t RAW1;
 	volatile uint16_t CAL1;
@@ -254,8 +252,6 @@ typedef struct {
 	volatile uint16_t MIN;
 
 	// Thresholds for ADCs - RAW ADC values (not calibrated)
-	// The values stored in EEPROM are calibrated values
-	// so that their values are unaffected by ADC calibration settings
 	volatile uint16_t ON_THRESH;
 	volatile uint16_t OFF_THRESH;
 	// These are the calibrated thresholds
@@ -306,7 +302,7 @@ typedef struct {
 	volatile char KP_KEY;
 
 	// Flowmeter counters
-	volatile uint32_t FLM_CUMULATIVE; // store in eeprom on power loss
+	volatile uint32_t FLM_CUMULATIVE;
 	volatile uint32_t FLM_CURRENT;
 	volatile uint16_t FLM_EVT_TIMER;
 	volatile uint16_t FLM_EVT_TIMER_MAX;
@@ -327,38 +323,11 @@ typedef struct {
 extern SmartIO_info_t SmartIOinfo;
 extern char EOL[], TAB[];
 
-//
-// EEPROM variables
-//
-// Various timers and settings
-extern uint32_t EEMEM FLM_CUMULATIVE_NV;
-extern uint8_t  EEMEM DIO_LOGIC_NV;
-extern uint16_t EEMEM FLM_EVT_TIMER_NV; // for setting FLM_EVT_TIMER_MAX (ms)
-extern uint16_t EEMEM MTN_STOPPED_CNT_NV; // for setting MTN_STOPPED_CNT_MAX (ms)
-extern uint16_t EEMEM MTN_PRESENT_CNT_NV; // for setting MTN_PRESENT_CNT_MAX (ms)
-
-// Threshold defaults are calibrated values
-extern uint16_t EEMEM VIN_ALARM_THRESH_CAL_NV;
-extern uint16_t EEMEM VIN_OK_THRESH_CAL_NV;
-extern uint16_t EEMEM IP_ON_THRESH_CAL_NV;
-extern uint16_t EEMEM IP_OFF_THRESH_CAL_NV;
-
-// ADC0 calibration points - raw ADC readings and "centi-volts" (CTV; 1/100 of a volt)
-extern uint16_t EEMEM ADC0_RAW1_NV;
-extern uint16_t EEMEM ADC0_CAL1_NV;
-extern uint16_t EEMEM ADC0_RAW2_NV;
-extern uint16_t EEMEM ADC0_CAL2_NV;
-// ADC1 calibration points - raw ADC readings and "centi-amps" (CTA; 1/100 of an amp)
-extern uint16_t EEMEM ADC1_RAW1_NV;
-extern uint16_t EEMEM ADC1_CAL1_NV;
-extern uint16_t EEMEM ADC1_RAW2_NV;
-extern uint16_t EEMEM ADC1_CAL2_NV;
 
 void initTimer (void);
 void initADC (void);
 void initDIO (void);
-void initEEPROM (void);
-void saveEEPROM (void);
+void initVars (void);
 char getKey (uint8_t r, uint8_t c);
 uint16_t getADC (void);
 void uint16_to_string (uint16_t value_E1, char pos, char *destination);

@@ -24,7 +24,6 @@
 */
 #include <avr/io.h>
 #include <util/delay.h>
-#include <avr/eeprom.h>
 #include <avr/interrupt.h>
 #include <stdio.h>
 #include <avr/pgmspace.h>
@@ -35,32 +34,6 @@
 #include "SmartIO.h"
 
 
-//
-// EEPROM variables
-//
-// Various timers and settings
-uint32_t EEMEM FLM_CUMULATIVE_NV   = 0;
-uint8_t  EEMEM DIO_LOGIC_NV        = DIO_LOGIC_DEF;
-uint16_t EEMEM FLM_EVT_TIMER_NV    = FLM_EVT_TIMER_DEF; // for setting FLM_EVT_TIMER_MAX (ms)
-uint16_t EEMEM MTN_STOPPED_CNT_NV      = MTN_STOPPED_CNT_DEF; // for setting MTN_STOPPED_CNT_MAX (ms)
-uint16_t EEMEM MTN_PRESENT_CNT_NV      = MTN_PRESENT_CNT_DEF; // for setting MTN_PRESENT_CNT_MAX (ms)
-
-// Threshold defaults are calibrated values
-uint16_t EEMEM VIN_ALARM_THRESH_CAL_NV = VIN_ALARM_THRESH_CAL_DEF;
-uint16_t EEMEM VIN_OK_THRESH_CAL_NV    = VIN_OK_THRESH_CAL_DEF;
-uint16_t EEMEM IP_ON_THRESH_CAL_NV     = IP_ON_THRESH_CAL_DEF;
-uint16_t EEMEM IP_OFF_THRESH_CAL_NV    = IP_OFF_THRESH_CAL_DEF;
-
-// ADC0 calibration points - raw ADC readings and "centi-volts" (CTV; 1/100 of a volt)
-uint16_t EEMEM ADC0_RAW1_NV  = ADC0_RAW1_DEF;
-uint16_t EEMEM ADC0_CAL1_NV  = ADC0_CAL1_DEF;
-uint16_t EEMEM ADC0_RAW2_NV  = ADC0_RAW2_DEF;
-uint16_t EEMEM ADC0_CAL2_NV  = ADC0_CAL2_DEF;
-// ADC1 calibration points - raw ADC readings and "centi-amps" (CTA; 1/100 of an amp)
-uint16_t EEMEM ADC1_RAW1_NV  = ADC1_RAW1_DEF;
-uint16_t EEMEM ADC1_CAL1_NV  = ADC1_CAL1_DEF;
-uint16_t EEMEM ADC1_RAW2_NV  = ADC1_RAW2_DEF;
-uint16_t EEMEM ADC1_CAL2_NV  = ADC1_CAL2_DEF;
 
 char EOL[]="\r\n";
 char TAB[]="\t";
@@ -188,7 +161,7 @@ void initADC (void) {
 	SmartIOinfo.ADC0.STATUS |= (1 << ALRM);  // voltage alarm on
 }
 
-// READ EEPROM FIRST!!!
+
 void initDIO (void) {
 // First make everything an input
 	DDRA = 0;
@@ -243,83 +216,17 @@ void initDIO (void) {
 	
 }
 
-void initEEPROM (void) {
-uint8_t  byte;
-uint16_t word;
-uint32_t longint;
+void initVars (void) {
 
-
-// Read FLM_CUMULATIVE, set it to default if its not set in EEPROM
-	eeprom_read_block ((void *)&(longint), &FLM_CUMULATIVE_NV, sizeof (longint));
-	if (longint == 0xFFFFFFFF) {
-		longint = 0;
-		eeprom_write_block ((void *)&(longint), &FLM_CUMULATIVE_NV, sizeof (longint));
-	}
-	SmartIOinfo.FLM_CUMULATIVE = longint;
-
-// Read DIO_LOGIC
-	byte = eeprom_read_byte (&DIO_LOGIC_NV);
-	if (byte == 0xFF) {
-		byte = DIO_LOGIC_DEF;
-		eeprom_write_byte (&DIO_LOGIC_NV,byte);
-	}
-	SmartIOinfo.DIO_STATUS = byte;
-
-// Read FLM_EVT_TIMER_NV, set it to default if its not set in EEPROM
-// eeprom is in ms.  timer is in events.
-	word = eeprom_read_word (&FLM_EVT_TIMER_NV);
-	if (word == 0xFFFF) {
-		word = FLM_EVT_TIMER_DEF;
-		eeprom_write_word (&FLM_EVT_TIMER_NV, word);
-	}
-	SmartIOinfo.FLM_EVT_TIMER_MAX = word * INT_PER_MS;
-
-// Read MTN_STOPPED_CNT_NV, set it to default if its not set in EEPROM
-	word = eeprom_read_word (&MTN_STOPPED_CNT_NV);
-	if (word == 0xFFFF) {
-		word = MTN_STOPPED_CNT_DEF;
-		eeprom_write_word (&MTN_STOPPED_CNT_NV, word);
-	}
-	SmartIOinfo.MTN_STOPPED_CNT_MAX = word * INT_PER_MS;
-	
-
-// Read MTN_PRESENT_CNT_NV, set it to default if its not set in EEPROM
-	word = eeprom_read_word (&MTN_PRESENT_CNT_NV);
-	if (word == 0xFFFF) {
-		word = MTN_PRESENT_CNT_DEF;
-		eeprom_write_word (&MTN_PRESENT_CNT_NV, word);
-	}
-	SmartIOinfo.MTN_PRESENT_CNT_MAX = word * INT_PER_MS;
-
-
-// Read ADC calibrations, and set ADC formulas
-	word = eeprom_read_word (&ADC0_RAW1_NV);
-	if (word == 0xFFFF) {
-		word = ADC0_RAW1_DEF;
-		eeprom_write_word (&ADC0_RAW1_NV,word);
-	}
-	SmartIOinfo.ADC0.RAW1 = word;
-
-	word = eeprom_read_word (&ADC0_CAL1_NV);
-	if (word == 0xFFFF) {
-		word = ADC0_CAL1_DEF;
-		eeprom_write_word (&ADC0_CAL1_NV,word);
-	}
-	SmartIOinfo.ADC0.CAL1 = word;
-
-	word = eeprom_read_word (&ADC0_RAW2_NV);
-	if (word == 0xFFFF) {
-		word = ADC0_RAW2_DEF;
-		eeprom_write_word (&ADC0_RAW2_NV,word);
-	}
-	SmartIOinfo.ADC0.RAW2 = word;
-
-	word = eeprom_read_word (&ADC0_CAL2_NV);
-	if (word == 0xFFFF) {
-		word = ADC0_CAL2_DEF;
-		eeprom_write_word (&ADC0_CAL2_NV,word);
-	}
-	SmartIOinfo.ADC0.CAL2 = word;
+	SmartIOinfo.FLM_CUMULATIVE = 0;
+	SmartIOinfo.DIO_STATUS = DIO_LOGIC_DEF;
+	SmartIOinfo.FLM_EVT_TIMER_MAX = FLM_EVT_TIMER_DEF * INT_PER_MS;
+	SmartIOinfo.MTN_STOPPED_CNT_MAX = MTN_STOPPED_CNT_DEF * INT_PER_MS;
+	SmartIOinfo.MTN_PRESENT_CNT_MAX = MTN_PRESENT_CNT_DEF * INT_PER_MS;
+	SmartIOinfo.ADC0.RAW1 = ADC0_RAW1_DEF;
+	SmartIOinfo.ADC0.CAL1 = ADC0_CAL1_DEF;
+	SmartIOinfo.ADC0.RAW2 = ADC0_RAW2_DEF;
+	SmartIOinfo.ADC0.CAL2 = ADC0_CAL2_DEF;
 
 // Slope and intercept for ADC0
 	SmartIOinfo.ADC0.M = ADC_M_FUNC(SmartIOinfo.ADC0.CAL1,SmartIOinfo.ADC0.RAW1,SmartIOinfo.ADC0.CAL2,SmartIOinfo.ADC0.RAW2);
@@ -330,51 +237,16 @@ uint32_t longint;
 // Alarm thresholds
 // N.B.: Defaults are stored as calibrated values!
 // The thresholds while running are RAW values
-	word = eeprom_read_word (&VIN_ALARM_THRESH_CAL_NV);
-	if (word == 0xFFFF) {
-		word = VIN_ALARM_THRESH_CAL_DEF;
-		eeprom_write_word (&VIN_ALARM_THRESH_CAL_NV,word);
-	}
-	SmartIOinfo.ADC0.ON_THRESH_CAL = word;
-	SmartIOinfo.ADC0.ON_THRESH = CAL_TO_ADC(word,SmartIOinfo.ADC0.M,SmartIOinfo.ADC0.B);
-
-
-	word = eeprom_read_word (&VIN_OK_THRESH_CAL_NV);
-	if (word == 0xFFFF) {
-		word = VIN_OK_THRESH_CAL_DEF;
-		eeprom_write_word (&VIN_OK_THRESH_CAL_NV,word);
-	}
-	SmartIOinfo.ADC0.OFF_THRESH_CAL = word;
-	SmartIOinfo.ADC0.OFF_THRESH = CAL_TO_ADC(word,SmartIOinfo.ADC0.M,SmartIOinfo.ADC0.B);
+	SmartIOinfo.ADC0.ON_THRESH_CAL = VIN_ALARM_THRESH_CAL_DEF;
+	SmartIOinfo.ADC0.ON_THRESH = CAL_TO_ADC(SmartIOinfo.ADC0.ON_THRESH_CAL,SmartIOinfo.ADC0.M,SmartIOinfo.ADC0.B);
+	SmartIOinfo.ADC0.OFF_THRESH_CAL = VIN_OK_THRESH_CAL_DEF;
+	SmartIOinfo.ADC0.OFF_THRESH = CAL_TO_ADC(SmartIOinfo.ADC0.OFF_THRESH_CAL,SmartIOinfo.ADC0.M,SmartIOinfo.ADC0.B);
 
 // ADC1 calibrations
-	word = eeprom_read_word (&ADC1_RAW1_NV);
-	if (word == 0xFFFF) {
-		word = ADC1_RAW1_DEF;
-		eeprom_write_word (&ADC1_RAW1_NV,word);
-	}
-	SmartIOinfo.ADC1.RAW1 = word;
-
-	word = eeprom_read_word (&ADC1_CAL1_NV);
-	if (word == 0xFFFF) {
-		word = ADC1_CAL1_DEF;
-		eeprom_write_word (&ADC1_CAL1_NV,word);
-	}
-	SmartIOinfo.ADC1.CAL1 = word;
-
-	word = eeprom_read_word (&ADC1_RAW2_NV);
-	if (word == 0xFFFF) {
-		word = ADC1_RAW2_DEF;
-		eeprom_write_word (&ADC1_RAW2_NV,word);
-	}
-	SmartIOinfo.ADC1.RAW2 = word;
-
-	word = eeprom_read_word (&ADC1_CAL2_NV);
-	if (word == 0xFFFF) {
-		word = ADC1_CAL2_DEF;
-		eeprom_write_word (&ADC1_CAL2_NV,word);
-	}
-	SmartIOinfo.ADC1.CAL2 = word;
+	SmartIOinfo.ADC1.RAW1 = ADC1_RAW1_DEF;
+	SmartIOinfo.ADC1.CAL1 = ADC1_CAL1_DEF;
+	SmartIOinfo.ADC1.RAW2 = ADC1_RAW2_DEF;
+	SmartIOinfo.ADC1.CAL2 = ADC1_CAL2_DEF;
 
 // Slope and intercept for ADC1
 	SmartIOinfo.ADC1.M = ADC_M_FUNC(SmartIOinfo.ADC1.CAL1,SmartIOinfo.ADC1.RAW1,SmartIOinfo.ADC1.CAL2,SmartIOinfo.ADC1.RAW2);
@@ -387,44 +259,11 @@ uint32_t longint;
 // The thresholds while running are RAW values
 // The RAW values are computed form the calibrated values whenever
 // the ADC calibration changes, or the calibrated thresholds change.
-// The calibrated values are also kept in RAM, besides being stored in EEPROM.
-// The EEPROM is saved only on do_REBOOT() and power-loss shutdown (saveEEPROM()) - not each time these values change.
-// The saved EEPROM is read on startup in this function - initEEPROM().
-	word = eeprom_read_word (&IP_ON_THRESH_CAL_NV);
-	if (word == 0xFFFF) {
-		word = IP_ON_THRESH_CAL_DEF;
-		eeprom_write_word (&IP_ON_THRESH_CAL_NV,word);
-	}
-	SmartIOinfo.ADC1.ON_THRESH_CAL = word;
-	SmartIOinfo.ADC1.ON_THRESH = CAL_TO_ADC(word,SmartIOinfo.ADC1.M,SmartIOinfo.ADC1.B);
-
-	word = eeprom_read_word (&IP_OFF_THRESH_CAL_NV);
-	if (word == 0xFFFF) {
-		word = IP_OFF_THRESH_CAL_DEF;
-		eeprom_write_word (&IP_OFF_THRESH_CAL_NV,word);
-	}
-	SmartIOinfo.ADC1.OFF_THRESH_CAL = word;
-	SmartIOinfo.ADC1.OFF_THRESH = CAL_TO_ADC(word,SmartIOinfo.ADC1.M,SmartIOinfo.ADC1.B);
-}
-
-void saveEEPROM (void) {
-	eeprom_write_block ((void *)&(SmartIOinfo.FLM_CUMULATIVE), &FLM_CUMULATIVE_NV, sizeof (SmartIOinfo.FLM_CUMULATIVE));
-	eeprom_write_byte (&DIO_LOGIC_NV,(SmartIOinfo.DIO_STATUS & DIO_LOGIC_BITS));
-	eeprom_write_word (&FLM_EVT_TIMER_NV, SmartIOinfo.FLM_EVT_TIMER_MAX / INT_PER_MS);
-	eeprom_write_word (&MTN_STOPPED_CNT_NV, SmartIOinfo.MTN_STOPPED_CNT_MAX / INT_PER_MS);
-	eeprom_write_word (&MTN_PRESENT_CNT_NV, SmartIOinfo.MTN_PRESENT_CNT_MAX / INT_PER_MS);
-//	eeprom_write_word (&ADC0_RAW1_NV,SmartIOinfo.ADC0.RAW1);
-//	eeprom_write_word (&ADC0_CAL1_NV,SmartIOinfo.ADC0.CAL1);
-//	eeprom_write_word (&ADC0_RAW2_NV,SmartIOinfo.ADC0.RAW2);
-//	eeprom_write_word (&ADC0_CAL2_NV,SmartIOinfo.ADC0.CAL2);
-//	eeprom_write_word (&VIN_ALARM_THRESH_CAL_NV,SmartIOinfo.ADC0.ON_THRESH_CAL);
-//	eeprom_write_word (&VIN_OK_THRESH_CAL_NV,SmartIOinfo.ADC0.OFF_THRESH_CAL);
-//	eeprom_write_word (&ADC1_RAW1_NV,SmartIOinfo.ADC1.RAW1);
-//	eeprom_write_word (&ADC1_CAL1_NV,SmartIOinfo.ADC1.CAL1);
-//	eeprom_write_word (&ADC1_RAW2_NV,SmartIOinfo.ADC1.RAW2);
-//	eeprom_write_word (&ADC1_CAL2_NV,SmartIOinfo.ADC1.CAL2);
-//	eeprom_write_word (&IP_ON_THRESH_CAL_NV,SmartIOinfo.ADC1.ON_THRESH_CAL);
-//	eeprom_write_word (&IP_OFF_THRESH_CAL_NV,SmartIOinfo.ADC1.OFF_THRESH_CAL);
+// The calibrated values are also kept in RAM
+	SmartIOinfo.ADC1.ON_THRESH_CAL = IP_ON_THRESH_CAL_DEF;
+	SmartIOinfo.ADC1.ON_THRESH = CAL_TO_ADC(SmartIOinfo.ADC1.ON_THRESH_CAL,SmartIOinfo.ADC1.M,SmartIOinfo.ADC1.B);
+	SmartIOinfo.ADC1.OFF_THRESH_CAL = IP_OFF_THRESH_CAL_DEF;
+	SmartIOinfo.ADC1.OFF_THRESH = CAL_TO_ADC(SmartIOinfo.ADC1.OFF_THRESH_CAL,SmartIOinfo.ADC1.M,SmartIOinfo.ADC1.B);
 }
 
 ISR ( TIMER0_COMPA_vect ) {
