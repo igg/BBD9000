@@ -1,0 +1,41 @@
+EESchema-DOCLIB  Version 2.0  Date: Tue 30 Jul 2013 02:46:01 PM EDT
+#
+$CMP LM193
+D Dual Voltage Comparator
+K Comp
+F ns/lm193.pdf
+$ENDCMP
+#
+$CMP LM193SM
+D Dual Voltage Comparator
+K Comp
+F ns/lm193.pdf
+$ENDCMP
+#
+$CMP LM293
+D Dual Voltage Comparator
+K Comp
+F ns/lm193.pdf
+$ENDCMP
+#
+$CMP LM393
+D Dual Voltage Comparator
+K Comp
+F ns/lm193.pdf
+$ENDCMP
+#
+$CMP MOS_N_X2
+F transistors/mos/*.*
+$ENDCMP
+#
+$CMP TVSx2
+D TVS Diode
+K TVS DIODE
+$ENDCMP
+#
+$CMP TVSX4
+D TVS Diode
+K TVS DIODE
+$ENDCMP
+#
+#End Doc Library

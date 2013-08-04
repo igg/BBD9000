@@ -1,0 +1,12 @@
+ip link set wlan0 up
+iwconfig wlan0 essid "Radio Free Cathilya"
+dhcpcd wlan0
+ntpd -s
+
+# Doesn't work with default wifi driver?
+pacman -S iw
+# iw commands produce:
+# nl80211 not found.
+
+systemctl disable openntpd
+systemctl disable ntpd

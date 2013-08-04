@@ -1,0 +1,103 @@
+PCBNEW-LibModule-V1  Thu 01 Aug 2013 12:55:38 PM EDT
+# encoding utf-8
+Units mm
+$INDEX
+SW_DP3T
+$EndINDEX
+$MODULE SW_DP3T
+Po 0 0 0 15 51FA9306 00000000 ~~
+Li SW_DP3T
+Cd Switch DP3T
+Kw SW
+Sc 0
+AR /51F6CE29
+Op 0 0 0
+T0 -0.127 -3.1242 0.762 0.762 0 0.1524 N V 21 N "SW2"
+T1 0 4 1.016 1.016 0 0.2032 N I 21 N "SW-DP3T"
+DS 6.5 2.5 6.5 1.5 0.1524 21
+DS 6.5 -2.5 6.5 -1.5 0.1524 21
+DS -6.5 -2.5 -6.5 -1.5 0.1524 21
+DS -6.5 2.5 -6.5 1.5 0.1524 21
+DS -3 2.5 -3 6 0.1524 21
+DS -3 6 0.5 6 0.1524 21
+DS 0.5 6 0.5 2.5 0.1524 21
+DS -6.5 -2.5 6.5 -2.5 0.1524 21
+DS 6.5 2.5 -6.5 2.5 0.1524 21
+$PAD
+Sh "1" R 1.4 1.4 0 0 0
+Dr 0.8 0 0
+At STD N 00E0FFFF
+Ne 2 "+5Vout"
+Po -4 1.25
+$EndPAD
+$PAD
+Sh "5" C 1.4 1.4 0 0 0
+Dr 0.8 0 0
+At STD N 00E0FFFF
+Ne 2 "+5Vout"
+Po -4 -1.25
+$EndPAD
+$PAD
+Sh "2" C 1.4 1.4 0 0 0
+Dr 0.8 0 0
+At STD N 00E0FFFF
+Ne 3 "FLM+"
+Po 0 1.25
+$EndPAD
+$PAD
+Sh "6" C 1.4 1.4 0 0 0
+Dr 0.8 0 0
+At STD N 00E0FFFF
+Ne 3 "FLM+"
+Po 0 -1.25
+$EndPAD
+$PAD
+Sh "3" C 1.4 1.4 0 0 0
+Dr 0.8 0 0
+At STD N 00E0FFFF
+Ne 4 "N-0000049"
+Po 2 1.25
+$EndPAD
+$PAD
+Sh "7" C 1.4 1.4 0 0 0
+Dr 0.8 0 0
+At STD N 00E0FFFF
+Ne 5 "N-0000050"
+Po 2 -1.25
+$EndPAD
+$PAD
+Sh "4" C 1.4 1.4 0 0 0
+Dr 0.8 0 0
+At STD N 00E0FFFF
+Ne 1 "+12V"
+Po 4 1.25
+$EndPAD
+$PAD
+Sh "8" C 1.4 1.4 0 0 0
+Dr 0.8 0 0
+At STD N 00E0FFFF
+Ne 1 "+12V"
+Po 4 -1.25
+$EndPAD
+$PAD
+Sh "" C 1.6 1.6 0 0 0
+Dr 1.2 0 0
+At STD N 00E0FFFF
+Ne 0 ""
+Po -6.1 0
+$EndPAD
+$PAD
+Sh "" C 1.6 1.6 0 0 0
+Dr 1.2 0 0
+At STD N 00E0FFFF
+Ne 0 ""
+Po 6.1 0
+$EndPAD
+$SHAPE3D
+Na "pin_array/pins_array_5x2.wrl"
+Sc 1 1 1
+Of 0 0 0
+Ro 0 0 0
+$EndSHAPE3D
+$EndMODULE SW_DP3T
+$EndLIBRARY

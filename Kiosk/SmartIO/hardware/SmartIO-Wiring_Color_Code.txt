@@ -1,49 +1,80 @@
-Color code:
-AC:
-Black = AC hot
-Red = switched AC hot
-White = neutral
-Grn = ground
+BBD9000 Wiring Color Code
+This file is available at
+<https://github.com/igg/BBD9000/blob/master/Kiosk/SmartIO/hardware/SmartIO-Wiring_Color_Code.txt>
 
-DC:
+Conduit fittings (1/2”):
+Power  (Blk-Wht-Grn 110 V AC)
+Pump   (Red-Wht-Grn 110 V AC)
+Signal (FLM,STK,LGHT,ETH,ANT)
+
+Color codes:
+
+Power (110 V AC):
+Black:  AC hot – to breaker
+White:  neutral
+Grn:    ground
+
+Pump (110 V AC):
+Red:   switched hot
+white: neutral
+Grn:   ground
+
+Power (12 V DC):
 black: positive
+white: negative
+Grn:   ground
+
+Pump (12 V DC):
 Red:   switched positive
 white: negative
-Grn = ground
-Both power leads are 3-wire
+Grn:   ground
 
-Conduit fittings:
-Power  (Blk-Wht-Grn 10AWG)
-Pump   (Red-Wht-Grn 10AWG)
-Signal (FLM,STK,LGHT)
-
-Signal wire color code
 STK:
-  Red:  Stk + (12 V)
-  Blk:  Stk- (switched GND)
-  Wht:  DRSN
+  Red:  Stk+ (+12 V electric strike coil)
+  Blk:  Stk- (switched GND electric strike coil)
+  Wht:  DRSN, door sensor, open-collector, internal 5k 5V pullup.
   Grn:  Gnd
+  N.B.: The DRSN/white wire must never see more than 5 V.
+    Voltages higher than 5V will destroy the SmartIO board!
 
 LGHT:
-  Red+Blk: LGHT+ (12 V)
-  Wht+Grn: LGHT- (switched GND)
+  Red+Blk: LGHT+ (+12 V for motion-controlled lighting)
+  Wht+Grn: LGHT- (switched ground for lighting)
 
 FLM:
-  Wht: FLM2
-  Blk: FLM1
-  Grn: GND
-  Red:  5V
+  Blk: FLM1 pulse (edge) sensor 1, open-collector, internal 5k 5V pullup.
+  Wht: FLM2 pulse (edge) sensor 2, open-collector, internal 5k 5V pullup.
+  Grn: GND  Ground
+  Red:  5V  5V power for flowmeter (if necessary).
+  N.B.: The FLM1/FLM2 wires must never see more than 5 V.
+    Voltages higher than 5V will destroy the SmartIO board!
 
 Internal OMNI MSR cable (4-wires)
-Wire   Pin
-Yel       +5v - +5V
+        DB9     SmartIO
+Wire    Pin     Label
+Yel     ----- - +5v
 Wht     2 Tx  - CCTX
 Grn     3 Rx  - CCRX
 Blk     5 GND - GND
-Gry     7 RTS - 
-Brn     8 CTS - 
+Gry     7 RTS - N/C
+Brn     8 CTS - A/C
 
 Internal MTN header:
 Blk   1 GND
 Red   2 +5V
 Yel   3 MTN
+
+Crimped connectors for signal wires for STK, FLM, LGHT, AUX, MSR:
+  replacing screw terminals - keep 2x2 screw terminals for 5V DC out, 12V DC in
+  Shielded 4-conductor 22 AWG cable used for STK, FLM, LGHT: DigiKey W504-100-ND
+JST PA series (locking). 3A/cond (AWG 22). 0.7mm hole, 2mm pitch (2x 1.1mm board retainer holes in footprint!)
+Right-angle through-hole shrouded male on board (4-pin):
+DigiKey 455-1849-ND, $0.44
+Cable female:
+DigiKey 455-1488-ND, $0.17
+Crimp female terminals/contacts:
+DigiKey 455-1325-1-ND, $3.25 (100)
+
+
+
+

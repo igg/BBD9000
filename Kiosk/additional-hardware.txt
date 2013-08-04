@@ -1,0 +1,22 @@
+BBD9000 Hardware not covered in the SmartIO BOM
+
+12 V power supply, 110VAC or battery/power-supply.
+Small 12VDC/110VAC power supplies:
+Rhino PSS12-035, 35 W automationdirect.com. 98 x 97 x 38 mm (3.86 x 3.82 x 1.50 in)
+<http://www.automationdirect.com/adc/Shopping/Catalog/Power_Products_(Electrical)/DC_Power_Supplies/12VDC,_24VDC_Enclosed_Panel_Mount_(RHINO_PSS_Series)/PSS12-035>
+This one may fit better  85 x 57 x 37(mm) 3.3 x 2.2 x 1.5(inch)
+<http://www.amazon.com/Universal-Regulated-Switching-Power-Supply/dp/B002FH54L6/ref=sr_1_4?ie=UTF8&qid=1373852028&sr=8-4&keywords=12+V+power+supply+2A>
+
+LCD Display.  Header works with Newhaven Display 763-0220JZ-FSW-FBW. YMMV.
+<http://www.mouser.com/ProductDetail/Newhaven-Display/NHD-0220JZ-FSW-FBW/?qs=%2fha2pyFadugjBiOj3JXFR11ReJFmIMtfC3KTpO%252b1DCRg3R59sfcTaq6zobSSRfdO>
+
+Matrix keypad, header for e.g. Grayhill 88AB2-152. 
+<http://www.digikey.com/scripts/dksearch/dksus.dll?vendor=0&keywords=GH5013-ND>
+
+MSR: Magnetic Stripe Reader. RS232 interface. 
+e.g. ID Tech wcr3227-512c <http://www.geminicomputersinc.com/wcr3227-512c.html>
+
+MTN: PIR Motion Sensor
+Panasonic Napion Motion Sensor AMN11111
+Uses 56k pull-down on board get 0 on no-motion, 100 uA max current.
+

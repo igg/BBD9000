@@ -1,0 +1,138 @@
+Notes for board revision SmartIOv3.3r0 -> SmartIOv3.3r1
+
+Summary:
+--------
+The two Rx lines cannot be hooked up at the same time
+  need a DPDT switch to select RS232 vs. TTL (both Rx and Tx)
+10k pullup on uP RESET
+Killer: Big terminal mis-defined: wires go out the other way.
+Still need input protection.
+
+footprint definition problems:
+  Big terminal block has wires going the wrong way
+  RC snubber resistor: make wider, pins further appart, bigger drill size
+  RC snubber cap: bigger drill size
+  LCD pot: bigger drill size, right-angle facing the wrong way
+  MUR410 (no longer used): bigger drill size
+  Remove solder-mask on bottom of relay pads
+
+
+Layout changes
+--------------
+Use grouped screw terminals for easier assembly/layout
+Screw terminals:
+4x 4-terminal (OSTTE020104 - ED2742-ND $0.62) ED2742-ND, 3x 2-terminal (OSTTE020104 - ED2740-ND $0.36)
+  FLM
+    FLM+
+    FLM1
+    FLM2
+    GND
+
+  STK
+    +12V
+    STK-
+    DRSN
+    GND
+
+  MSR
+    +5V
+    CCRx
+    CCTx
+    GND
+
+  AUX
+    +12V
+    AUX-
+    AUXi
+    GND
+
+  LGHT
+    +12V
+    LGHT-
+
+  PWR (11-15 V DC)
+    +12V
+    GND
+
+  +5V out
+    +5 V
+    GND
+
+
+Move MSR RS232 next to DB9
+
+Move connectors to internal components to top of board with right-angle headers:
+  LCD, Keypad
+  A32706-40-ND 80pos $5.18 (No ISP: 24pos/board, 3 boards/80pos; ISP: 30pos/board, 2 boards/80pos)
+
+
+Circuit changes:
+-----------------
+10k pullup/cap on uP RESET
+
+Replace R2 (10.2k) with 10k to reduce BOM count
+
+Digital input protection:
+  Use LM193 Comparator (296-31647-1-ND $0.65), where inputs can go higher than Vcc without device damage (30 V max).
+  Protect positive input with 15V TVS diode.
+    Quad TVS SMS15T1GOSCT-ND 15/16.7 350W $0.50
+    Dual TVS GSOT15C-GS08CT-ND 15/16.5 345 W $0.53 $0.37@10
+  Use pulse-rated high-wattage load resistor
+    696-1230-1-ND - 5k/3W $1.50
+    Or "automotive rated" RCL4.99KECT-ND 5k/2W $0.80@10
+  non-inverting single-supply with hysteresis:
+    feedback resistor Rf = 53k (used for MTN pull-down)
+    load resistor Rl (series with input) = 5k/3W.
+    Vref = 10k/10k divider b/w 5V and 0V = 2.5V
+    Vo-l: V output-low = 0V
+    Vo-h: V output-high = 5V
+    Falling voltage threshold Vth-l = ( (Rf * Vref) + (Rl * Vo-l) ) / (Rl + Rf) = 2.30 V
+    Rising voltage threshold Vth-h = ( (Rf * Vref) + (Rl * Vo-h) ) / (Rl + Rf) = 2.73 V
+  pros:
+    correct operation with open-collector, open-emitter, push-pull (no pullup/pulldown resistor selection)
+    Voltage input tolerance (limited by wattage of load resistor):
+       V   I(mA)  W
+        5   1.0  0.005
+       12   2.4  0.029
+       15   3.0  0.045
+       24   4.8  0.115
+       50  10.0  0.500
+      100  20.0  2.000 <-- Max V for 2W
+      122  24.4  2.977 <-- Max V (RMS) for 3W
+      200  40.0  8.000
+Analog RC filter to limit rise time to 10 us max (digitally debounced twice @ 2 kHz)
+  R in-line (serial), C to ground.
+  R = 5k, C = 0.004 uF (4nF): Trise (90%) = 46 us, 8kHz cutoff.
+  High-volt cap if placed before the comparator (445-12624-1-ND).
+
+Use same for setup for DRSN, even though over-kill.
+Bring out an extra aux input (+4 components, 3 from DRSN, no new parts)
+
+TVS for FLM1, FLM2, DRSN, AUXin.
+  Quad TVS SMS15T1GOSCT-ND 15/16.7 350W $0.50 - looks small and flimsy, inconvenient routing
+  Dual TVS GSOT15C-GS08CT-ND 15/16.5 345 W $0.53 $0.37@10 - better match to dual LM193
+
+Add feature to select flowmeter voltage on FLM+ terminal (12V, 5V, External)
+Use same switch as serial comms selector switch: DP3T
+  +5V output provided by 102-2175-ND (5V switching regulator) is short-circuit protected.
+  Use flyback diode for reverse polarity/overvoltage from mis-wiring of 5V.
+  N.B.: over-current protection from 12V PTC and 5V PSU only
+
+12 V Power-in protection:
+  PTC: MF-LSMF300/24X-2CT-ND, $0.56, 3A/5.2A 24V 0.02 Ohm.
+  TVS: 15V max breakdown. N.B.: supercaps absolute max = 16.2V!
+       1SMB13AT3GOSCT-ND: 13V/15.9max, 600W, $0.42
+
+Slide switches - use same switch for serial/FLM+ selection: 2xDP3T
+  DP3T - EG1913-ND $0.58 0.2A @ 30VDC
+  http://spec.e-switch.com/P-J/P040240C.pdf
+
+SMD Schottky flyback diodes on digital outputs to replace MUR410:
+  -> 497-8487-1-ND, 60V/5A $0.70/25 DO-214AB (Vf 520mV @ 5A, 220µA @60V)
+  641-1124-1-ND, 100V/5A $0.57/25 DO-214AB
+  641-1127-1-ND, 60V/5A $0.74/25 DO-214AB (Vf 750mV@5A, 500uA @60V)
+  568-7408-1-ND, 40V/5A $0.38/25 SOD-128 (Vf 490mV @ 5A, 300µA @ 40V
+SMD MOSFETs to replace RFD14N05:
+  NTD5806NT4GOSCT-ND $0.56, $0.41/25 40V 33A 2.5V max Vgs-th, 26mOhm max@4.5V Vgs DPAK
+Replace big LCD BL MOSFET with TTL voltage shifter MOSFET (BSS138K, BSS138KCT-ND, SOT23, $0.38)
+
