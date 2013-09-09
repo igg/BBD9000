@@ -7,8 +7,8 @@ while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symli
   [[ $SOURCE != /* ]] && SOURCE="$BIN_DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
 done
 BIN_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-ROOT_DIR=$( dirname "$BIN_DIR" )
-date=`date '+%F'`
+# File with site-specific variables
+source ${BIN_DIR}/coop_defs.sh
 
 # set up lighttpd and start it
 sudo mv /etc/lighttpd/lighttpd.conf /etc/lighttpd/lighttpd.conf-OLD

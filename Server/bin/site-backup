@@ -1,10 +1,5 @@
 #!/bin/bash
 # Coop-specific variables:
-DOMAIN="baltimorebiodiesel.org"
-DB_BASE="bbd"
-S3_BUCKET="s3://BBDC-Backup/"
-eval S3CFG="~/priv/.s3cfg"
-
 # Fancy way of determining the directory of this script
 SOURCE="${BASH_SOURCE[0]}"
 while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
@@ -13,7 +8,8 @@ while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symli
   [[ $SOURCE != /* ]] && SOURCE="$BIN_DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
 done
 BIN_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-DB_NAME="${DB_BASE}_members"
+# File with site-specific variables
+source ${BIN_DIR}/coop_defs.sh
 
 # The directory above this script is the one that's going to be tarred up
 cd -P "${BIN_DIR}/.."
@@ -23,8 +19,8 @@ date=`date '+%F'`
 /usr/bin/mysqlcheck --defaults-extra-file=priv/DB_BACKUP.cnf --auto-repair --silent ${DB_NAME} > /dev/null 2>&1
 /usr/bin/mysqlcheck --defaults-extra-file=priv/DB_BACKUP.cnf --analyze --silent ${DB_NAME} > /dev/null 2>&1
 /usr/bin/mysqldump --defaults-extra-file=priv/DB_BACKUP.cnf --single-transaction ${DB_NAME} | bzip2 > backups/DB-${DB_NAME}-$date.sql.bz2
-s3cmd --config=${S3CFG} --no-progress put backups/${DOMAIN}-$date.tar.bz2 ${S3_BUCKET} > /dev/null 2>&1
-s3cmd --config=${S3CFG} --no-progress put backups/DB-${DB_NAME}-$date.sql.bz2 ${S3_BUCKET} > /dev/null 2>&1
+/usr/bin/s3cmd --config=${S3CFG} --no-progress put backups/${DOMAIN}-$date.tar.bz2 ${S3_BUCKET} > /dev/null 2>&1
+/usr/bin/s3cmd --config=${S3CFG} --no-progress put backups/DB-${DB_NAME}-$date.sql.bz2 ${S3_BUCKET} > /dev/null 2>&1
 # Delete files over 30 days old
 # /usr/local/bin/gfind backups/ -mtime +90 -exec rm -f '{}' ';'
 /usr/bin/find backups/ -mtime +30 -exec rm -f '{}' ';' > /dev/null 2>&1

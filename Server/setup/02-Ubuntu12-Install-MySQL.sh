@@ -1,7 +1,5 @@
 #!/bin/bash
 # Coop-specific variables:
-DB_BASE="bbd"
-
 # Fancy way of determining the directory of this script
 SOURCE="${BASH_SOURCE[0]}"
 while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
@@ -10,9 +8,8 @@ while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symli
   [[ $SOURCE != /* ]] && SOURCE="$BIN_DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
 done
 BIN_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-ROOT_DIR=$( dirname "$BIN_DIR" )
-ISO_DATE=`date '+%F'`
-DB_NAME="${DB_BASE}_members"
+# File with site-specific variables
+source ${BIN_DIR}/coop_defs.sh
 
 # Generate a root password for mysql (this needs to be done before installing MySql)
 ROOT_PASS=$(apg -n 1 -a 1 -m 16 -M NCL)

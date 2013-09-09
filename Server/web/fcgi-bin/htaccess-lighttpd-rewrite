@@ -1,4 +1,0 @@
-RewriteEngine on
-#Rewriterule ^(.*)$ /users/home/wifixed/domains/baltimorebiodiesel.org/var/run/BBD-disp.socket [P]
-Rewriterule ^(.*\.pl)$ http://baltimorebiodiesel.org:10041/$1 [P]
-

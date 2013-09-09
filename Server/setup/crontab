@@ -1,4 +1,4 @@
-35 * * * * /home/ubuntu/bin/BBD-alert-kiosk-status.pl # Check for off-line kiosks
-40 7 * * * /home/ubuntu/bin/BBD-clean_sessions.pl     # Clean out expired sessions
-45 7 * * * /home/ubuntu/bin/BBD-membership-update.pl  # Update membership status to ASK_RENEWAL and EXPIRED
-50 7 * * * /home/ubuntu/bin/site-backup               # Backup web pages, CGIs and bbd_members DB
+00 * * * * /home/ubuntu/bbd9000.com/test.bbd9000.com/bin/BBD-alert-kiosk-status.pl # Check for off-line kiosks
+05 7 * * * /home/ubuntu/bbd9000.com/test.bbd9000.com/bin/BBD-clean_sessions.pl     # Clean out expired sessions
+10 7 * * * /home/ubuntu/bbd9000.com/test.bbd9000.com/bin/BBD-membership-update.pl  # Update membership status to ASK_RENEWAL and EXPIRED
+15 7 * * * /home/ubuntu/bbd9000.com/test.bbd9000.com/bin/site-backup               # Backup web pages, CGIs and bbd_members DB

@@ -102,7 +102,7 @@ sub do_request {
 		my $hours = $last_heard == 1 ? 'hour' : 'hours';
 		$BBD->send_email (
 			To      => join (' , ',@TOs),
-			From    => 'Baltimore Biodiesel Coop <donotreply@baltimorebiodiesel.org>',
+			From    => $BBD->getCoopName().' <donotreply@'.$BBD->getCoopDomain().'>',
 			Subject => "BBD Kiosk \"$name\" off-line for $last_heard $hours",
 			Message => <<"TEXT");
 Last request from "$name" on $dt_last_chk

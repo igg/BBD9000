@@ -115,7 +115,7 @@ my $type = shift;
 	# This confuses the emailer
 #	delete $param->{'Mime-Version'};
 	delete $param->{'Reply-To'};
-	$param->{From} = 'Baltimore Biodiesel Coop <donotreply@baltimorebiodiesel.org>';
+	$param->{From} = $BBD->getCoopName().' <donotreply@'.$BBD->getCoopDomain().'>';
 	my $rx = $Mail::Sendmail::address_rx;
 
 	

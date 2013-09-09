@@ -1,7 +1,5 @@
 #!/bin/bash
 # Coop-specific variables:
-DB_BASE="bbd"
-
 # Fancy way of determining the directory of this script
 SOURCE="${BASH_SOURCE[0]}"
 while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
@@ -10,9 +8,8 @@ while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symli
   [[ $SOURCE != /* ]] && SOURCE="$BIN_DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
 done
 BIN_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-ROOT_DIR=$( dirname "$BIN_DIR" )
-ISO_DATE=`date '+%F'`
-DB_NAME="${DB_BASE}_members"
+# File with site-specific variables
+source ${BIN_DIR}/coop_defs.sh
 
 
 
@@ -22,10 +19,12 @@ DB_NAME="${DB_BASE}_members"
 DB_CNF="${ROOT_DIR}/priv/DB_CONF.cnf"
 if [ ! -f ${DB_CNF} ]; then
 	# Generate a MySQL user for the server to connect as
+	echo "Generating new credentials in ${DB_CNF}"
 	DB_USER="${DB_BASE}-server"
 	DB_PASS=$(apg -n 1 -a 1 -m 16 -M NCL)
 	# We're using the home directory's DB connection to do this
 	eval DB_CNF="~/priv/DB_BACKUP.cnf"
+	echo "...creating new user ${DB_USER}"
 	mysql --defaults-extra-file=${DB_CNF} <<EOF
 CREATE USER '${DB_USER}'@'localhost' IDENTIFIED BY '$DB_PASS';
 GRANT ALL PRIVILEGES ON *.* TO '${DB_USER}'@'localhost' WITH GRANT OPTION;
@@ -59,6 +58,8 @@ password = ${DB_PASS}
 EOF
 		chmod 400 $DB_CNF
 	fi
+else
+	echo "Credentials in ${DB_CNF} already exist"
 fi
 
 
@@ -66,6 +67,8 @@ fi
 DB_CNF="${ROOT_DIR}/priv/DB_BACKUP.cnf"
 EMPTY_DB="${ROOT_DIR}/setup/BBD-Schema.sql"
 BACKUP_DB="${ROOT_DIR}/backups/DB-${DB_NAME}-${ISO_DATE}.sql.bz2"
+echo "Checking existence of database '${DB_NAME}'"
+
 EXIST_DB=$(mysql --defaults-extra-file="$DB_CNF" ${DB_NAME} -e 'show tables')
 
 if [ -n "$EXIST_DB" ]; then
@@ -85,7 +88,9 @@ fi
 
 if [ -z "$EXIST_DB" ]; then
 	echo "Making empty ${DB_NAME} database"
-	mysql --defaults-extra-file="$DB_CNF" ${DB_NAME} < "$EMPTY_DB"
+	mysql --defaults-extra-file=${DB_CNF} -e "create database ${DB_NAME};"
+	echo "...Reading schema from ${EMPTY_DB}"
+	mysql --defaults-extra-file=${DB_CNF} ${DB_NAME} < "$EMPTY_DB"
 fi
 
 #

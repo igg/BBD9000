@@ -1371,11 +1371,11 @@ my ($kiosk_id, $kiosk_name, $kiosk_address1, $kiosk_address2, $kiosk_city, $kios
 	my $cc_dt = DateTime->from_epoch( epoch => $cc_timestamp, formatter => $datetime_format);
 	$cc_dt->set_time_zone ($kiosk{$cc_kiosk_id}->{timezone});
 	
-	my $message;
+	my $message = $BBD->getCoopName();
 	if ($cc_trans_id) {
-		$message .= "Baltimore Biodiesel Coop Credit Card Transaction Receipt\n";
+		$message .= " Credit Card Transaction Receipt\n";
 	} else {
-		$message .= "Baltimore Biodiesel Coop Sale Receipt\n";
+		$message .= " Sale Receipt\n";
 	}
 	$message .= 'Location: '.$kiosk{$cc_kiosk_id}->{name}."\n";
 	$message .= '          '.$kiosk{$cc_kiosk_id}->{address1}."\n" if $kiosk{$cc_kiosk_id}->{address1};
@@ -1481,11 +1481,11 @@ my ($kiosk_id, $kiosk_name, $kiosk_address1, $kiosk_address2, $kiosk_city, $kios
 	}
 
 	$message .= "\nThank you for using the BBD9000 Automated Fuel Dispensing Kiosk\n";
-	$message .= "http://baltimorebiodiesel.org\n\n";
+	$message .= "http://".$BBD->getCoopDomain()."\n\n";
 	
 	$BBD->send_email (
 		To      => "$memb_name <$email>",
-		From    => 'Baltimore Biodiesel Coop <donotreply@baltimorebiodiesel.org>',
+		From    => $BBD->getCoopName().' <donotreply@'.$BBD->getCoopDomain().'>',
 		Subject => 'CC Transaction Receipt',
 		Message => $message
 	);
@@ -1549,7 +1549,7 @@ TEXT
 	}
 	$BBD->send_email (
 		To      => join (' , ',@TOs),
-		From    => 'Baltimore Biodiesel Coop <donotreply@baltimorebiodiesel.org>',
+		From    => $BBD->getCoopName().' <donotreply@'.$BBD->getCoopDomain().'>',
 		Subject => $email_subject,
 		Message => $email_message);
 	

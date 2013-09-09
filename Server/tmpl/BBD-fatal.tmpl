@@ -1,8 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
         "http://www.w3.org/TR/html4/loose.dtd">
 <html>
+<!-- Prevent script from dying if we don't use COOP_DOMAIN:
+	<TMPL_VAR ESCAPE=HTML NAME=COOP_DOMAIN>
+-->
 <head>
-	<title>Baltimore Biodiesel Coop - Error</title>
+	<title><!-- TMPL_VAR ESCAPE=HTML NAME=COOP_NAME --> - Error</title>
 	<link href="/CSS/bbd.css" rel="stylesheet" type="text/css">
 </head>
 <body>

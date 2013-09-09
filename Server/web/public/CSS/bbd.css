@@ -11,19 +11,19 @@ background:#EDEDDA;
 	
 #wrapper {
 width: 950px;
-background: #C6DFBB;
+background: #00a352;
 }
 
 .box {
 	width: 100%;
-	height:140px;
-	border-bottom:solid   #000000 10px;
+	height:175px;
+	
 	background:  url(../images/topbanner.jpg) no-repeat top left;
 	}
 	
 #nav {
 	height:27px;
-	background: #693;
+	background: #663366;
 	color:#FFFFFF;
 	list-style:none;
 	margin: 0;
@@ -72,7 +72,7 @@ cursor:default;
 #full_width {
 list-style-position: inside;
 clear:both;
-background:#C6DFBB;
+background:#FFE06A;
 padding:20px;
 font-family:Arial, Helvetica, sans-serif;
 color:#000000;
@@ -126,12 +126,14 @@ font-size:90%;
 
 #message
 {
-	background: #C6DFBB;
-	padding: 5px;
+	background: #00a352;
+	padding: 10px;
 	font-family: Arial, Helvetica, sans-serif;
-	color: #000;
+	color: #FFF;
 	font-size: 85%;
 	font-weight: bold;
+	padding:10px;
+	margin:10px;
 }
 
 
@@ -146,7 +148,7 @@ list-style-position: inside;
 clear:both;
 width: 68%;
 float:left;
-background:#C6DFBB;
+background:#fff;
 color:#000000;
 
 }
@@ -171,7 +173,9 @@ text-align:justify;
 #column1  h2 {
 margin: 0 0 1em 0;
 padding: 0;
-font-size:150%;
+font-size: 2em;
+color: #663366 ;
+padding-top: 30px;
 }
 
 #column1 h3 {
@@ -183,7 +187,8 @@ font-size:130%;
 #column1 h4 {
 margin: 0 0 .5em 0;
 padding: 0;
-text-indent:15px;
+padding-bottom:10px;
+
 font-size:110%;
 }
 
@@ -199,7 +204,7 @@ text-align:justify;
 #column2 {
 float:left;
 width: 32%;
-background: #7B9473;
+background: #00a352;
 color: #FFFFFF;
 font-family:Arial, Helvetica, sans-serif;
 }
@@ -222,7 +227,7 @@ margin:0;
 padding:12px;
 font-size:140%;
 font-weight:normal;
-color: #693;
+color:  #663366;
 background: url(../images/box_t.gif) no-repeat top left;
 }
 	
@@ -268,7 +273,7 @@ margin:0;
 padding:12px;
 font-size:140%;
 font-weight:normal;
-color: #693;
+color: #663366;
 background: url(../images/box_t.gif) no-repeat top left;
 }
 
@@ -373,8 +378,9 @@ a {
 #footer {
 	clear:both;
 	width: 100%;
-	background:#6D6E71;
-	border-top: solid #000000 15px;
+	background:#FFE06A;
+	height: 40px;
+	
 	border-bottom: solid #FFFFFF;
 	}
 	
@@ -401,5 +407,3 @@ text-indent:10px;
 	font-size:120%;
 	font-weight:bold;
 }
-
-/*http://maps.google.com/?q=2800+Sisson+St,+Baltimore,+Maryland+21211&sll=37.0625,-95.677068&sspn=26.812565,82.265625&ie=UTF8&ll=39.320786,-76.625326&spn=0.006374,0.020084&z=16&iwloc=addr&om=1*/

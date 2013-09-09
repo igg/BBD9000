@@ -1,6 +1,4 @@
 #!/usr/bin/perl -w
-# use constant DOMAIN_ROOT_CNST => '/users/home/wifixed/domains/baltimorebiodiesel.org';
-# use lib DOMAIN_ROOT_CNST."/perl5lib/lib/perl5";
 use FindBin;
 use lib $FindBin::Bin;
 

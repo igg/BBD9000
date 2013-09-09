@@ -1,4 +1,7 @@
 #!/usr/bin/perl
+use strict;
+use warnings;
+
 
 package BBD;
 our ($HTML_DIR,$TMPL_DIR,$LOGFILE,$TRACEFILE,$REQUEST_TIME_LOG,$DB_CONF,$GW_CONF_FILE,$LOGOUT_REDIRECT);
@@ -6,27 +9,29 @@ our ($LOG_DIR,$TMP_DIR,$PRIV_DIR,$TIMEZONE);
 our $URL_BASE;
 ############################################
 # Host-specific info
-use constant DOMAIN_ROOT_CNST => '/home/ubuntu/bbd9000.com/piedmontbiofuels.bbd9000.com/';
-use constant COOP_DOMAIN_CNST => 'piedmontbiofuels.bbd9000.com';
-use constant COOP_NAME_CNST => 'Piedmont Biofuels';
+# DOMAIN_ROOT is the package path up to '/bin/' or '/web/fcgi-bin'
+our $DOMAIN_ROOT = $1 if ($INC{'BBD.pm'} =~ /^(.+)\/(web\/fcgi-)?bin\//);
+#use lib $DOMAIN_ROOT."/lib/perl5/";
+#use lib $DOMAIN_ROOT."/perl5lib/lib/perl5";
 
-# Use INSTALL_BASE=DOMAIN_ROOT_CNST for perl Makefile.PL
-#use lib DOMAIN_ROOT_CNST."/lib/perl5/";
-#use lib DOMAIN_ROOT_CNST."/perl5lib/lib/perl5";
+# COOP_DOMAIN is defined as DOMAIN in setup/coop_defs.sh
+our $COOP_DOMAIN =  `bash -c 'source $DOMAIN_ROOT/setup/coop_defs.sh ; echo \$DOMAIN'`;
+chomp ($COOP_DOMAIN);
+
+# COOP_NAME is defined as COOP_NAME in setup/coop_defs.sh
+our $COOP_NAME =  `bash -c 'source $DOMAIN_ROOT/setup/coop_defs.sh ; echo \$COOP_NAME'`;
+chomp ($COOP_NAME);
 
 use constant TEST_DB => 0;
 # The coop's default timezone - each kiosk still has their own timezone.
-$TIMEZONE = 'US/Eastern';
+$TIMEZONE =  `bash -c 'source $DOMAIN_ROOT/setup/coop_defs.sh ; echo \$COOP_TIMEZONE'`;
+chomp ($TIMEZONE);
 
 # END Host-specific info
 ############################################
 # We're telling kiosks that we'll act as the CC gateway
 use constant SERVER_GW => 1;
 
-
-our $DOMAIN_ROOT = DOMAIN_ROOT_CNST;
-our $COOP_DOMAIN = COOP_DOMAIN_CNST;
-our $COOP_NAME   = COOP_NAME_CNST;
 $LOG_DIR = "$DOMAIN_ROOT/tmp";
 $TMP_DIR = "$DOMAIN_ROOT/tmp";
 $PRIV_DIR = "$DOMAIN_ROOT/priv";
@@ -57,7 +62,6 @@ if (TEST_DB) {
 
 our $VERSION = '2.2';
 
-
 use strict;
 use warnings;
 #use CGI::Carp qw(fatalsToBrowser);
@@ -71,10 +75,10 @@ use IO::Handle;
 
 
 our $KEYFILE = "$PRIV_DIR/BBD.pem";
-our $KIOSK_STATUS_FILE = "$HTML_DIR/kiosks/[kiosk-name]-status.php";
-our $FUEL_TYPE_FILE = "$HTML_DIR/kiosks/[kiosk-name]-type.php";
-our $FUEL_PRICE_FILE = "$HTML_DIR/kiosks/[kiosk-name]-price.php";
-our $FUEL_QUANTITY_FILE = "$HTML_DIR/kiosks/[kiosk-name]-quantity.php";
+our $KIOSK_STATUS_FILE = "$HTML_DIR/kiosks/[kiosk-name]/status.php";
+our $FUEL_TYPE_FILE = "$HTML_DIR/kiosks/[kiosk-name]/type.php";
+our $FUEL_PRICE_FILE = "$HTML_DIR/kiosks/[kiosk-name]/price.php";
+our $FUEL_QUANTITY_FILE = "$HTML_DIR/kiosks/[kiosk-name]/quantity.php";
 our $CARBON_TONS_FILE = "$HTML_DIR/carbon-tons.php";
 
 =pod
@@ -522,7 +526,11 @@ sub init {
 			}
 			$self->{TEMPLATE}->param (role_loop => \@role_loop);
 		}
-		$self->{TEMPLATE}->param (logged_in => 1) if $session->param ('logged_in') and $self->{TEMPLATE};
+		
+		if ($self->{TEMPLATE}) {
+			$self->{TEMPLATE}->param (logged_in => 1) if $session->param ('logged_in');
+			$self->{TEMPLATE}->param (COOP_NAME => $COOP_NAME, COOP_DOMAIN => $COOP_DOMAIN);
+		}
 
 	
 #		$self->printLog (" Calling callback: $callback\n");
@@ -1197,7 +1205,7 @@ sub setWebsiteFuel {
 	$fname =~ s/\[.+\]/$name/;
 #$self->printLog ("Updating website: $fname\n");
 	if ( open (FUEL_TYPE_FH,"> ".$fname) ) {
-		print FUEL_TYPE_FH $fuel_type;
+		print FUEL_TYPE_FH $fuel_type."\n";
 		close (FUEL_TYPE_FH);		
 	} else {
 #$self->printLog ("Error: $@\n");
@@ -1502,6 +1510,7 @@ sub send_conf_email {
 		RESET_URL => $reset_url,
 		MEMBER_URL => $memb_url,
 		LIFETIME => $lifetime,
+		COOP_NAME => $COOP_NAME,
 	);
 
 	my $message = $template->output();
@@ -1531,6 +1540,7 @@ sub send_welcome_email {
 		MEMBER_URL => $memb_url,
 		LIFETIME => $lifetime,
 		RENEWAL_FEE => $renewal_fee,
+		COOP_NAME => $COOP_NAME,
 	);
 
 	my $message = $template->output();
@@ -1568,6 +1578,7 @@ sub send_reset_email {
 		RESET_URL => "$url_base/BBD-login-reset.pl?CGISESSID=$email_sid",
 		MEMBER_URL => "$url_base/BBD-login.pl",
 		LIFETIME => $LOGIN_RESET_LIFETIME,
+		COOP_NAME => $COOP_NAME,
 	);
 
 	my $message = $template->output();
@@ -1659,6 +1670,14 @@ sub getTimezone {
 	return $TIMEZONE;
 }
 
+sub getCoopName {
+	return $COOP_NAME;
+}
+
+sub getCoopDomain {
+	return $COOP_DOMAIN;
+}
+
 sub epoch_to_ISOdate {
 	my ($self,$epoch,$timezone) = @_;
 	$timezone = $TIMEZONE unless $timezone;
@@ -1745,7 +1764,7 @@ __END__
 
 =head1 NAME
 
-BBD - Perl utilities for running the Baltimore Biodiesel Coop
+BBD - Perl utilities for running the BBD9000 coop management system
 
 =head1 SYNOPSIS
 
@@ -1754,7 +1773,8 @@ BBD - Perl utilities for running the Baltimore Biodiesel Coop
 
 =head1 DESCRIPTION
 
-This is a collection of utilities for running the Baltimore Biodiesel Coop.
+This is a collection of utilities for running the BBD9000 coop management system
+initially developed to run the Baltimore Biodiesel Coop.
 If you are running or planning to start up a biodiesel/biofuels/fuel coop,
 this may be of use to you.
 
@@ -1762,6 +1782,7 @@ Otherwise, probably not.
 
 =head1 SEE ALSO
 
+https://github.com/igg/BBD9000
 http://www.baltimorebiodiesel.org/
 
 =head1 AUTHOR
