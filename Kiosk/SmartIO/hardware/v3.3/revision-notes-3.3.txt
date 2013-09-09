@@ -88,6 +88,9 @@ Digital input protection:
     Vo-h: V output-high = 5V
     Falling voltage threshold Vth-l = ( (Rf * Vref) + (Rl * Vo-l) ) / (Rl + Rf) = 2.30 V
     Rising voltage threshold Vth-h = ( (Rf * Vref) + (Rl * Vo-h) ) / (Rl + Rf) = 2.73 V
+    @Rf = 100k
+      falling: 2.380952
+      rising:  2.619048
   pros:
     correct operation with open-collector, open-emitter, push-pull (no pullup/pulldown resistor selection)
     Voltage input tolerance (limited by wattage of load resistor):
