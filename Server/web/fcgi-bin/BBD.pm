@@ -5,27 +5,24 @@ use warnings;
 
 package BBD;
 our ($HTML_DIR,$TMPL_DIR,$LOGFILE,$TRACEFILE,$REQUEST_TIME_LOG,$DB_CONF,$GW_CONF_FILE,$LOGOUT_REDIRECT);
-our ($LOG_DIR,$TMP_DIR,$PRIV_DIR,$TIMEZONE);
+our ($LOG_DIR,$TMP_DIR,$PRIV_DIR);
 our $URL_BASE;
 ############################################
 # Host-specific info
+use constant TEST_DB => 0;
+
 # DOMAIN_ROOT is the package path up to '/bin/' or '/web/fcgi-bin'
 our $DOMAIN_ROOT = $1 if ($INC{'BBD.pm'} =~ /^(.+)\/(web\/fcgi-)?bin\//);
+# These are only necessary if we use locally-installed perl modules
 #use lib $DOMAIN_ROOT."/lib/perl5/";
 #use lib $DOMAIN_ROOT."/perl5lib/lib/perl5";
 
-# COOP_DOMAIN is defined as DOMAIN in setup/coop_defs.sh
-our $COOP_DOMAIN =  `bash -c 'source $DOMAIN_ROOT/setup/coop_defs.sh ; echo \$DOMAIN'`;
-chomp ($COOP_DOMAIN);
-
-# COOP_NAME is defined as COOP_NAME in setup/coop_defs.sh
-our $COOP_NAME =  `bash -c 'source $DOMAIN_ROOT/setup/coop_defs.sh ; echo \$COOP_NAME'`;
-chomp ($COOP_NAME);
-
-use constant TEST_DB => 0;
-# The coop's default timezone - each kiosk still has their own timezone.
-$TIMEZONE =  `bash -c 'source $DOMAIN_ROOT/setup/coop_defs.sh ; echo \$COOP_TIMEZONE'`;
-chomp ($TIMEZONE);
+# coop definitions in setup/coop_defs.sh:
+# $COOP_DOMAIN (an FQDN) is defined as DOMAIN
+# $COOP_NAME is defined as COOP_NAME
+# default timezone ($TIMEZONE) is defined as COOP_TIMEZONE (each kiosk still has their own timezone).
+our ($COOP_DOMAIN,$COOP_NAME,$TIMEZONE) =
+	split ("\n",`bash -c 'source $DOMAIN_ROOT/setup/coop_defs.sh ; echo \$DOMAIN ; echo \$COOP_NAME ; echo \$COOP_TIMEZONE'`);
 
 # END Host-specific info
 ############################################
@@ -60,7 +57,7 @@ if (TEST_DB) {
 	$LOGOUT_REDIRECT = '/';
 }
 
-our $VERSION = '2.2';
+our $VERSION = '3.3';
 
 use strict;
 use warnings;
@@ -121,6 +118,8 @@ use constant REQUEST_TIME_LOGGING => 1;
 if ($debugging) {
 	open (LOG,">> $LOGFILE") or die "Couldn't open logfile: $LOGFILE: $@\n";
 	LOG->autoflush(1);
+	# Send errors to the logfile unless STDERR is attached to a tty.
+	open(STDERR, ">>", $LOGFILE) unless -t STDERR;
 # 
 # 	my $ofh = select LOG;
 # 	$| = 1;
@@ -1277,8 +1276,7 @@ sub getKioskKey {
 	$sth->execute( $kioskID );
 	$sth->bind_columns (\$client_key_pem);
 	if ($sth->fetch()) {
-#		$self->printLog ("Client key:\n$client_key_pem\n");
-		$key = Crypt::OpenSSL::RSA->new_public_key($client_key_pem);
+		$key = Crypt::OpenSSL::RSA->new_public_key($client_key_pem) if ($client_key_pem =~ /-----BEGIN PUBLIC KEY-----/);
 		$key->use_pkcs1_oaep_padding() if $key;
 	}
 
