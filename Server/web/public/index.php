@@ -38,16 +38,21 @@ background: #FFFFFF;
 
 </center>
 
-<!-- div class="notice">
-<h2> The Power at <span class="style7">Mill Valley</span> is <span class="style8">ON</span> and the Pump is <span class="style9">UP</span></h2>
-<p> Thanks Doug. </p>
-
-</div -->
-
 <div>
-<h2>Welcome Test Coop Members</h2> 
+	<!--
+	<h2>Welcome Test Coop Members</h2>
+	-->
+	<?php
+		// Set the coop name programatically.
+		// This relies on the relative path of the coop_defs.sh file (in ../../setup/coop_defs.sh).
+		$DOMAIN_ROOT = "../..";
+		$COOP_NAME =  exec ("bash -c 'source $DOMAIN_ROOT/setup/coop_defs.sh ; echo \$COOP_NAME'");
+		echo "<h2> Welcome $COOP_NAME Members</h2>";
+	?>
 <h4>BBD9000 self-service kiosks and coop management software</h4>
-<p> The BBD9000 is a Free, Open Hardware/Open Source project now hosted at
+<p> The BBD9000 is a Free, Open Hardware/Open Source project initially developed by the
+<a href="http://baltimorebiodiesel.org">Baltimore Biodiesel Coop</a>
+and now hosted at
 <a href="https://github.com/igg/BBD9000">GitHub</a>.
 BBD9000 supports automated self-service fuel kiosks, coop membership management, sales, etc.
 </p>
