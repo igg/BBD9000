@@ -1,18 +1,16 @@
 # BBD9000
-#### A Free Software and Hardware Project for an Automated Biodiesel Dispensing Kiosk and Coop Management Software
-* The kiosk is designed to interface with a pre-existing fuel fill/transfer pump and fuel meter,
-and provide self-service credit-card purchases to coop/fleet members.
-* The Coop Management Software runs on a remote hosted server and manages coop/fleet accounts,
-communicates with kiosks, etc.
+#### A Free Software and Hardware Project for Automated Biodiesel Dispensing Kiosks and Coop Management Software
+* Kiosks interface with pre-existing fuel fill/transfer pumps and fuel meters,
+providing self-service credit-card purchases to coop/fleet members.
+* The Coop Management Software runs on a remote hosted server and manages coop/fleet accounts and one or more kiosks.
 * This software and hardware has been in operation at the [Baltimore Biodiesel Coop] (http://baltimorebiodiesel.org/) since 2009
 
 ### Kiosk Hardware:
 * SmartIO: An interface board with an 8-bit AVR microcontroller that interfaces to
 the hardware components of a fuel station:  
     Pump, fuel meter, display, keypad, credit-card reader, electric strike, motion detector, lights, etc.
-    * Serial interface to an ARM SBC in the kiosk running Linux (not part of this project)
-    that manages secure internet communication with the hosted
-Coop Management Software.
+    * Serial interface to an ARM SBC in the kiosk running Linux that manages secure internet communication with the hosted
+Coop Management Software. An off-the-shelf Linux ARM SBC is used; the ARM SBC itself is not part of this project.
     * Schematics and board layouts using [KiCad](http://www.kicad-pcb.org) in `BBD9000/Kiosk/SmartIO/hardware/v3.3/`
 * Design files for secure outdoor mounting arrangements, 12 V standalone operations, etc.
 
