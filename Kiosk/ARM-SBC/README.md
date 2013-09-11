@@ -54,23 +54,25 @@ confuse-2.5 has been successfully used previously.
 1024-bit RSA is used to communicate to the remote hosted BBD9000-CMS server.  
 To conserve bandwidth over expensive cellular M2M networks, the kiosk sends encrypted and signed message blocks over http using POST requests. Each request contains one or more binary message blocks followed by a signature block.
 The server verifies the message using the kiosk signature and responds with one or more binary 1024-bit RSA-encrypted message blocks followed by the server's signature.
-* Make a kiosk key - the number (e.g. `-0001`) should match the Kiosk ID in the server database.
-   * The Kiosk ID used to identify the kiosk to the server is stored in the `/etc/BBD9000ID` file.
-      This number must match the kiosk ID in the server's database.  In the example below, this file's contents should be
+* The Kiosk ID used to identify the kiosk to the server is stored in the `/etc/BBD9000ID` file.
+      This number must match the kiosk ID in the server's database.  In the example below for Kiosk ID = 1, this file's contents should be
 
-            1
-   * The name of the Kiosk's private key file is stored in the `BBD9000.conf` file under the `BBD9000key` setting.
+        1
+* The name of the Kiosk's private key file is stored in the `BBD9000.conf` file under the `BBD9000key` setting.
       The default setting is `BBD9000.pem` which corresponds to the `/BBD9000/BBD9000.pem` path.  In the example
-      below, the `BBD9000key` setting in `BBD9000.conf` should be changed to `BBD9000-0001.pem`.
+      below for Kiosk ID = 1, the `BBD9000key` setting in `BBD9000.conf` should be changed to `BBD9000-0001.pem`:
 
-            openssl genrsa -F4 -out BBD9000-0001.pem 1024
-            openssl rsa -in BBD9000-0001.pem -out BBD9000-0001-pub.pem -pubout
-            chmod 400 BBD9000-0001.pem
-            chmod a-w BBD9000-0001-pub.pem
+        BBD9000key         = "BBD9000-0001.pem"
+* Make a kiosk key - the number (e.g. `-0001`) should match the Kiosk ID in the server database.
+
+        openssl genrsa -F4 -out BBD9000-0001.pem 1024
+        openssl rsa -in BBD9000-0001.pem -out BBD9000-0001-pub.pem -pubout
+        chmod 400 BBD9000-0001.pem
+        chmod a-w BBD9000-0001-pub.pem
 * Copy the public `BBD9000-0001-pub.pem` to the server's `priv/` directory.
 * Keep the private `BBD9000-0001.pem` on the kiosk in the `/BBD9000/` directory, and not anywhere else.
 * Make a server key - only one key per server, regardless of number of kiosks:
- 
+
         openssl genrsa -F4 -out BBD.pem 1024
         openssl rsa -in BBD.pem -out BBD-pub.pem -pubout
         chmod 400 BBD.pem
