@@ -340,7 +340,7 @@ ssize_t res;
 	// Reset the SmartIO board and wait for it to signal "Ready".
 		fprintf (ser_fp,"\n\n\nRESET\n");
 		fflush (ser_fp);
-		if ( (res = wait_ser_resp (ser_fd, read_buf, READ_BUF_SIZE, "Ready", 200)) ) break;
+		if ( (res = wait_ser_resp (ser_fd, read_buf, READ_BUF_SIZE, "Ready", 2000)) ) break;
 		wait_ser_clear (ser_fd, 200);
 	}
 	
