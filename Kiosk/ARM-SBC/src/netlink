@@ -2,6 +2,12 @@
 # turn on line tracing
 # set -x
 
+DNS_DIG=`command -v dig`
+if [ -z "$DNS_DIG" ] ; then
+	echo "The dig command is required for DNS lookup. Exiting"
+	exit -1
+fi
+
 # This is the network status file.
 NETLOCK="/var/ramfs/BBD9000netlock"
 # This is the program for talking to the cell modem
@@ -30,9 +36,10 @@ PING_IPs="8.8.8.8 4.2.2.1 208.67.222.222"
 PING_IPs2="8.8.4.4 4.2.2.2 208.67.220.220"
 
 # Get HOSTNAME
-. /etc/sysconfig/network_cfg
+#. /etc/sysconfig/network_cfg
+HOSTNAME=`hostname`
 # Get eth0 setup
-. /etc/sysconfig/ifcfg-eth0
+#. /etc/sysconfig/ifcfg-eth0
 # Get the modem device (this has so far been in /dev/tts/, but the # can change based on address)
 dev_num=`ls /dev/tts`
 MODEM_DEV=""
