@@ -49,7 +49,7 @@ FLM:
   N.B.: The FLM1/FLM2 wires must never see more than 5 V.
     Voltages higher than 5V will destroy the SmartIO board!
 
-Internal OMNI MSR cable (4-wires)
+Internal OMNI MSR WCR3227-512C cable (4-wires)
         DB9     SmartIO
 Wire    Pin     Label
 Yel     ----- - +5v
@@ -57,7 +57,15 @@ Wht     2 Tx  - CCTX
 Grn     3 Rx  - CCRX
 Blk     5 GND - GND
 Gry     7 RTS - N/C
-Brn     8 CTS - A/C
+Brn     8 CTS - N/C
+Other variants of the Omni WCR3227-512C
+Red    +5V
+Yellow Rx
+White  Tx
+Black  ground
+purple NC
+blue   NC
+
 
 Internal MTN header:
 Blk   1 GND
