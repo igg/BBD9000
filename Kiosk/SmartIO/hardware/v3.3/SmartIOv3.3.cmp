@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by CvPcb (2013-mar-13)-testing date = Sun 04 Aug 2013 12:33:33 AM EDT
+Cmp-Mod V01 Created by CvPcb (2013-mar-13)-testing date = Sun 15 Sep 2013 07:39:16 PM EDT
 
 BeginCmp
 TimeStamp = /51952E68;
@@ -141,30 +141,30 @@ IdModule  = SM0805;
 EndCmp
 
 BeginCmp
-TimeStamp = /51F77C84;
+TimeStamp = /52361FCE;
 Reference = C25;
-ValeurCmp = 4nF100V;
+ValeurCmp = 0.2uF 50V;
 IdModule  = SM0805;
 EndCmp
 
 BeginCmp
-TimeStamp = /51F784A4;
+TimeStamp = /52363203;
 Reference = C26;
-ValeurCmp = 4nF100V;
+ValeurCmp = 0.2uF 50V;
 IdModule  = SM0805;
 EndCmp
 
 BeginCmp
 TimeStamp = /51F78842;
 Reference = C27;
-ValeurCmp = 4nF100V;
+ValeurCmp = 0.2uF 50V;
 IdModule  = SM0805;
 EndCmp
 
 BeginCmp
 TimeStamp = /51F78848;
 Reference = C28;
-ValeurCmp = 4nF100V;
+ValeurCmp = 0.2uF 50V;
 IdModule  = SM0805;
 EndCmp
 
@@ -206,6 +206,20 @@ EndCmp
 BeginCmp
 TimeStamp = /5197FF86;
 Reference = Cb6;
+ValeurCmp = 0.1uF;
+IdModule  = SM0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /523617EC;
+Reference = Cb7;
+ValeurCmp = 0.1uF;
+IdModule  = SM0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /523640EB;
+Reference = Cb8;
 ValeurCmp = 0.1uF;
 IdModule  = SM0805;
 EndCmp
@@ -514,7 +528,7 @@ EndCmp
 BeginCmp
 TimeStamp = /51F31CC7;
 Reference = R15;
-ValeurCmp = 10k;
+ValeurCmp = 5k;
 IdModule  = SM0805;
 EndCmp
 
@@ -547,21 +561,21 @@ IdModule  = SM0805;
 EndCmp
 
 BeginCmp
-TimeStamp = /51F32F22;
+TimeStamp = /523631C5;
 Reference = R20;
-ValeurCmp = 10k;
+ValeurCmp = 5k;
 IdModule  = SM0805;
 EndCmp
 
 BeginCmp
-TimeStamp = /51F32F29;
+TimeStamp = /523631CB;
 Reference = R21;
 ValeurCmp = 56.2k;
 IdModule  = SM0805;
 EndCmp
 
 BeginCmp
-TimeStamp = /51F32F2F;
+TimeStamp = /523631D1;
 Reference = R22;
 ValeurCmp = 5k 2W PR;
 IdModule  = SM2512W-1225;
@@ -570,7 +584,7 @@ EndCmp
 BeginCmp
 TimeStamp = /51F32D2D;
 Reference = R25;
-ValeurCmp = 10k;
+ValeurCmp = 5k;
 IdModule  = SM0805;
 EndCmp
 
@@ -591,7 +605,7 @@ EndCmp
 BeginCmp
 TimeStamp = /51F32CF8;
 Reference = R31;
-ValeurCmp = 10k;
+ValeurCmp = 5k;
 IdModule  = SM0805;
 EndCmp
 
@@ -607,6 +621,76 @@ TimeStamp = /51F32D05;
 Reference = R33;
 ValeurCmp = 5k 2W PR;
 IdModule  = SM2512W-1225;
+EndCmp
+
+BeginCmp
+TimeStamp = /52361FD4;
+Reference = R34;
+ValeurCmp = 5k;
+IdModule  = SM0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /52361FDA;
+Reference = R35;
+ValeurCmp = 5k;
+IdModule  = SM0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /52361EFA;
+Reference = R36;
+ValeurCmp = 5k;
+IdModule  = SM0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /52361D65;
+Reference = R37;
+ValeurCmp = 5k;
+IdModule  = SM0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /52363209;
+Reference = R38;
+ValeurCmp = 5k;
+IdModule  = SM0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /5236320F;
+Reference = R39;
+ValeurCmp = 5k;
+IdModule  = SM0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /523631FA;
+Reference = R40;
+ValeurCmp = 5k;
+IdModule  = SM0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /523631F3;
+Reference = R41;
+ValeurCmp = 5k;
+IdModule  = SM0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /52363CDA;
+Reference = R42;
+ValeurCmp = 5k;
+IdModule  = SM0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /52364229;
+Reference = R43;
+ValeurCmp = 5k;
+IdModule  = SM0805;
 EndCmp
 
 BeginCmp
@@ -647,7 +731,7 @@ EndCmp
 BeginCmp
 TimeStamp = /51955960;
 Reference = U3;
-ValeurCmp = ACS755;
+ValeurCmp = ACS758;
 IdModule  = Allegro_HallSensor_CB-PFF;
 EndCmp
 

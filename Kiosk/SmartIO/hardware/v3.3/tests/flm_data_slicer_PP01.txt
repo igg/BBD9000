@@ -1,0 +1,131 @@
+IO setup:
+input comparator set up as data slicer (as used for reading manchester encoding)
+input connected to arduino output directly (push-pull), no additional filter cap or MOSFET.
+
+component values:
+input serial, pullup, pulldown = 10k x 3
+slicer RC on - input = 4.7k, 0.22uF
+comp hysteresis = 100k feedback, 4.7k on + input
+
+Summary:
+  positive pulses:
+    500 us pulse width minimum @ 10 & 100 pulses/sec.
+    200 us pulse width minimum @ 1000 pulses/sec.
+   1000 us pulse width is the pwm-imposed minimum with 1 pulse/sec - fully detected.
+
+  negative pulses:
+    500 us pulse width minimum @ 10 & 100 pulses/sec.
+    200 us pulse width minimum @ 1000 pulses/sec.
+   1000 us pulse width is the pwm-imposed minimum with 1 pulse/sec - fully detected.
+
+
+Raw data, 1000 positive pulses/sec:
+Period = 1000 us, duty cycle = 21%, 206 us, 1999 edges counted in 1000 ms 
+Period = 1000 us, duty cycle = 20%, 195 us, 1999 edges counted in 1000 ms 
+Period = 1000 us, duty cycle = 19%, 184 us, 1999 edges counted in 1000 ms 
+Period = 1000 us, duty cycle = 18%, 173 us, 1718 edges counted in 1000 ms 
+Period = 1000 us, duty cycle = 16%, 162 us, 1333 edges counted in 1000 ms 
+Period = 1000 us, duty cycle = 15%, 151 us, 1001 edges counted in 1000 ms 
+Period = 1000 us, duty cycle = 14%, 140 us, 1000 edges counted in 1000 ms 
+Period = 1000 us, duty cycle = 13%, 129 us, 739 edges counted in 1000 ms 
+Period = 1000 us, duty cycle = 12%, 118 us, 501 edges counted in 1000 ms 
+Period = 1000 us, duty cycle = 11%, 107 us, 2 edges counted in 1000 ms 
+Period = 1000 us, duty cycle = 10%, 96 us, 0 edges counted in 1000 ms 
+Period = 1000 us, duty cycle = 9%, 85 us, 0 edges counted in 1000 ms 
+Period = 1000 us, duty cycle = 8%, 74 us, 0 edges counted in 1000 ms 
+Period = 1000 us, duty cycle = 7%, 63 us, 0 edges counted in 1000 ms 
+Period = 1000 us, duty cycle = 9%, 89 us, 0 edges counted in 1000 ms 
+Period = 1000 us, duty cycle = 10%, 98 us, 0 edges counted in 1000 ms 
+Period = 1000 us, duty cycle = 11%, 107 us, 0 edges counted in 1000 ms 
+Period = 1000 us, duty cycle = 12%, 116 us, 500 edges counted in 1000 ms 
+Period = 1000 us, duty cycle = 13%, 125 us, 667 edges counted in 1000 ms 
+Period = 1000 us, duty cycle = 14%, 134 us, 1000 edges counted in 1000 ms 
+Period = 1000 us, duty cycle = 15%, 143 us, 1000 edges counted in 1000 ms 
+Period = 1000 us, duty cycle = 15%, 152 us, 1011 edges counted in 1000 ms 
+Period = 1000 us, duty cycle = 16%, 161 us, 1333 edges counted in 1000 ms 
+Period = 1000 us, duty cycle = 17%, 170 us, 1599 edges counted in 1000 ms 
+Period = 1000 us, duty cycle = 18%, 179 us, 1999 edges counted in 1000 ms 
+Period = 1000 us, duty cycle = 19%, 188 us, 1999 edges counted in 1000 ms 
+
+Raw data, 100 positive pulses/sec:
+Period = 10000 us, duty cycle = 5%, 498 us, 200 edges counted in 1000 ms 
+Period = 10000 us, duty cycle = 5%, 478 us, 201 edges counted in 1000 ms 
+Period = 10000 us, duty cycle = 5%, 458 us, 201 edges counted in 1000 ms 
+Period = 10000 us, duty cycle = 5%, 439 us, 201 edges counted in 1000 ms 
+Period = 10000 us, duty cycle = 5%, 419 us, 201 edges counted in 1000 ms 
+Period = 10000 us, duty cycle = 4%, 400 us, 101 edges counted in 1000 ms 
+Period = 10000 us, duty cycle = 4%, 380 us, 101 edges counted in 1000 ms 
+Period = 10000 us, duty cycle = 4%, 361 us, 101 edges counted in 1000 ms 
+Period = 10000 us, duty cycle = 4%, 341 us, 101 edges counted in 1000 ms 
+Period = 10000 us, duty cycle = 4%, 322 us, 101 edges counted in 1000 ms 
+Period = 10000 us, duty cycle = 3%, 302 us, 101 edges counted in 1000 ms 
+Period = 10000 us, duty cycle = 3%, 283 us, 101 edges counted in 1000 ms 
+Period = 10000 us, duty cycle = 3%, 263 us, 101 edges counted in 1000 ms 
+Period = 10000 us, duty cycle = 3%, 244 us, 2 edges counted in 1000 ms 
+Period = 10000 us, duty cycle = 3%, 224 us, 0 edges counted in 1000 ms 
+Period = 10000 us, duty cycle = 3%, 205 us, 0 edges counted in 1000 ms 
+Period = 10000 us, duty cycle = 2%, 185 us, 0 edges counted in 1000 ms 
+
+Raw data, 10 positive pulses/sec:
+Period = 100000 us, duty cycle = 1%, 683 us, 20 edges counted in 1000 ms 
+Period = 100000 us, duty cycle = 1%, 585 us, 20 edges counted in 1000 ms 
+Period = 100000 us, duty cycle = 1%, 488 us, 20 edges counted in 1000 ms 
+Period = 100000 us, duty cycle = 1%, 390 us, 11 edges counted in 1000 ms 
+Period = 100000 us, duty cycle = 1%, 292 us, 10 edges counted in 1000 ms 
+Period = 100000 us, duty cycle = 1%, 195 us, 0 edges counted in 1000 ms 
+Period = 100000 us, duty cycle = 1%, 97 us, 0 edges counted in 1000 ms 
+Period = 100000 us, duty cycle = 1%, 97 us, 0 edges counted in 1000 ms 
+Period = 100000 us, duty cycle = 1%, 97 us, 0 edges counted in 1000 ms 
+
+Raw data, 1 positive pulses/sec (1 ms min pulse width):
+Period = 1000000 us, pulse width = 976 us (1%), 2 edges counted in 1000 ms 
+Period = 1000000 us, pulse width = 976 us (1%), 2 edges counted in 1000 ms 
+Period = 1000000 us, pulse width = 976 us (1%), 2 edges counted in 1000 ms 
+
+Raw data, 1000 negative pulses/sec:
+Period = 1000 us, pulse width = 934 us (92%), 0 edges counted in 1000 ms 
+Period = 1000 us, pulse width = 923 us (91%), 0 edges counted in 1000 ms 
+Period = 1000 us, pulse width = 912 us (90%), 0 edges counted in 1000 ms 
+Period = 1000 us, pulse width = 901 us (89%), 0 edges counted in 1000 ms 
+Period = 1000 us, pulse width = 890 us (88%), 0 edges counted in 1000 ms 
+Period = 1000 us, pulse width = 879 us (87%), 220 edges counted in 1000 ms 
+Period = 1000 us, pulse width = 868 us (86%), 657 edges counted in 1000 ms 
+Period = 1000 us, pulse width = 857 us (85%), 800 edges counted in 1000 ms 
+Period = 1000 us, pulse width = 846 us (83%), 1000 edges counted in 1000 ms 
+Period = 1000 us, pulse width = 835 us (82%), 1103 edges counted in 1000 ms 
+Period = 1000 us, pulse width = 824 us (81%), 1350 edges counted in 1000 ms 
+Period = 1000 us, pulse width = 813 us (80%), 1893 edges counted in 1000 ms 
+Period = 1000 us, pulse width = 802 us (79%), 1999 edges counted in 1000 ms 
+Period = 1000 us, pulse width = 791 us (78%), 1999 edges counted in 1000 ms 
+Period = 1000 us, pulse width = 780 us (77%), 1999 edges counted in 1000 ms 
+
+Raw data, 100 negative pulses/sec:
+Period = 10000 us, pulse width = 9775 us (96%), 0 edges counted in 1000 ms 
+Period = 10000 us, pulse width = 9755 us (96%), 0 edges counted in 1000 ms 
+Period = 10000 us, pulse width = 9736 us (96%), 0 edges counted in 1000 ms 
+Period = 10000 us, pulse width = 9716 us (96%), 99 edges counted in 1000 ms 
+Period = 10000 us, pulse width = 9697 us (96%), 101 edges counted in 1000 ms 
+Period = 10000 us, pulse width = 9677 us (95%), 101 edges counted in 1000 ms 
+Period = 10000 us, pulse width = 9658 us (95%), 101 edges counted in 1000 ms 
+Period = 10000 us, pulse width = 9638 us (95%), 101 edges counted in 1000 ms 
+Period = 10000 us, pulse width = 9619 us (95%), 101 edges counted in 1000 ms 
+Period = 10000 us, pulse width = 9599 us (95%), 101 edges counted in 1000 ms 
+Period = 10000 us, pulse width = 9580 us (94%), 101 edges counted in 1000 ms 
+Period = 10000 us, pulse width = 9560 us (94%), 101 edges counted in 1000 ms 
+Period = 10000 us, pulse width = 9541 us (94%), 199 edges counted in 1000 ms 
+Period = 10000 us, pulse width = 9521 us (94%), 201 edges counted in 1000 ms 
+Period = 10000 us, pulse width = 9501 us (94%), 201 edges counted in 1000 ms 
+Period = 10000 us, pulse width = 9482 us (93%), 200 edges counted in 1000 ms 
+
+Raw data, 10 negative pulses/sec:
+Period = 100000 us, pulse width = 99902 us (98%), 0 edges counted in 1000 ms 
+Period = 100000 us, pulse width = 99804 us (98%), 0 edges counted in 1000 ms 
+Period = 100000 us, pulse width = 99707 us (98%), 9 edges counted in 1000 ms 
+Period = 100000 us, pulse width = 99609 us (98%), 11 edges counted in 1000 ms 
+Period = 100000 us, pulse width = 99511 us (98%), 19 edges counted in 1000 ms 
+Period = 100000 us, pulse width = 99414 us (98%), 20 edges counted in 1000 ms 
+Period = 100000 us, pulse width = 99316 us (98%), 20 edges counted in 1000 ms 
+
+Raw data, 1 negative pulses/sec (1ms min pulse width):
+Period = 1000000 us, pulse width = 999023 us (98%), 2 edges counted in 1000 ms 
+Period = 1000000 us, pulse width = 999023 us (98%), 2 edges counted in 1000 ms 
