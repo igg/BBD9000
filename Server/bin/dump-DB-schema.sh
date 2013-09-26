@@ -8,8 +8,9 @@ while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symli
   [[ $SOURCE != /* ]] && SOURCE="$BIN_DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
 done
 BIN_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+ROOT_DIR=$( dirname "$BIN_DIR" )
 # File with site-specific variables
-source ${BIN_DIR}/coop_defs.sh
+source ${ROOT_DIR}/setup/coop_defs.sh
 
 DB_CNF="${ROOT_DIR}/priv/DB_BACKUP.cnf"
 SCHEMA_FILENAME="BBD-Schema-${ISO_DATE}.sql"

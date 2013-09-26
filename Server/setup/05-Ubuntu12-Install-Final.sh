@@ -7,8 +7,9 @@ while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symli
   [[ $SOURCE != /* ]] && SOURCE="$BIN_DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
 done
 BIN_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+ROOT_DIR=$( dirname "$BIN_DIR" )
 # File with site-specific variables
-source ${BIN_DIR}/coop_defs.sh
+source ${ROOT_DIR}/setup/coop_defs.sh
 
 # set up lighttpd and start it
 sudo mv /etc/lighttpd/lighttpd.conf /etc/lighttpd/lighttpd.conf-OLD
@@ -18,9 +19,9 @@ sudo service lighttpd start
 
 # cron - append to root's pre-existing crontab
 sudo bash -c "crontab -l > ${ROOT_DIR}/setup/crontab-OLD"
-sudo bash -c "cat ${ROOT_DIR}/setup/crontab >> ${ROOT_DIR}/setup/crontab-OLD"
-sudo bash -c "mv ${ROOT_DIR}/setup/crontab-OLD ${ROOT_DIR}/setup/crontab"
-sudo crontab "${ROOT_DIR}/setup/crontab"
+sudo bash -c "crontab -l > ${ROOT_DIR}/setup/crontab-NEW"
+sudo bash -c "cat ${ROOT_DIR}/setup/crontab >> ${ROOT_DIR}/setup/crontab-NEW"
+sudo crontab "${ROOT_DIR}/setup/crontab-NEW"
 
 # generate server key
 openssl genrsa -F4 -out "${ROOT_DIR}/priv/BBD.pem" 1024
@@ -31,4 +32,6 @@ chmod a-w "${ROOT_DIR}/priv/BBD-pub.pem"
 # This is a test gateway (server won't start without one):
 cp "${ROOT_DIR}/setup/GW_test.conf" "${ROOT_DIR}/priv/GW.conf"
 chmod 400 "${ROOT_DIR}/priv/GW.conf"
+# create the S3 bucket for backups
+s3cmd --config=${S3CFG} mb ${S3_BUCKET}
 # use bin/BBD-invite.pl to create the first member
