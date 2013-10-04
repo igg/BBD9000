@@ -530,7 +530,8 @@ void connect_device() {
 		tryCon = CON_RETRIES;
 		while (tryCon) {
 			com_puts(PASSWORD);
-			in = com_getc(0);
+			in = com_getc(TIMEOUT);
+			printf ("in: %d, [%c]\n",(int)in,(char)in);
 	
 			if(in == CONNECT) {
 				sendcommand(COMMAND);

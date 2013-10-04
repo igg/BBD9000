@@ -4,6 +4,7 @@ Summary:
 --------
 The two Rx lines cannot be hooked up at the same time
   need a DPDT switch to select RS232 vs. TTL (both Rx and Tx)
+*** OlinuXino Rx and Tx are reversed!
 10k pullup on uP RESET
 Killer: Big terminal mis-defined: wires go out the other way.
 Still need input protection.
@@ -71,6 +72,9 @@ Circuit changes:
 10k pullup/cap on uP RESET
 
 Replace R2 (10.2k) with 10k to reduce BOM count
+
+*** Reverse SmartIO Rx and Tx pins!!!
+  Do not reverse labels - only pin positions (so that SmartIO-Rx->OlinuXino-Tx, SmartIO-Tx->OlinuXino-Rx)
 
 Digital input protection:
   Use LM193 Comparator (296-31647-1-ND $0.65), where inputs can go higher than Vcc without device damage (30 V max).
