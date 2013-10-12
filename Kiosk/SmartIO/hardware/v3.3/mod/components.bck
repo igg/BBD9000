@@ -1,4 +1,4 @@
-EESchema-DOCLIB  Version 2.0  Date: Tue 30 Jul 2013 02:46:01 PM EDT
+EESchema-DOCLIB  Version 2.0  Date: Thu 10 Oct 2013 03:21:31 PM EDT
 #
 $CMP LM193
 D Dual Voltage Comparator
@@ -28,7 +28,7 @@ $CMP MOS_N_X2
 F transistors/mos/*.*
 $ENDCMP
 #
-$CMP TVSx2
+$CMP TVSX2
 D TVS Diode
 K TVS DIODE
 $ENDCMP
