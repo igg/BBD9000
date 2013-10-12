@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by CvPcb (2013-mar-13)-testing date = Sun 15 Sep 2013 07:39:16 PM EDT
+Cmp-Mod V01 Created by CvPcb (2013-mar-13)-testing date = Thu 10 Oct 2013 01:14:44 AM EDT
 
 BeginCmp
 TimeStamp = /51952E68;
@@ -295,6 +295,83 @@ IdModule  = SM0805;
 EndCmp
 
 BeginCmp
+TimeStamp = /5256104B;
+Reference = H1;
+ValeurCmp = Brd-Mnt;
+IdModule  = screw-4-40;
+EndCmp
+
+BeginCmp
+TimeStamp = /52561058;
+Reference = H2;
+ValeurCmp = Brd-Mnt;
+IdModule  = screw-4-40;
+EndCmp
+
+BeginCmp
+TimeStamp = /5256105E;
+Reference = H3;
+ValeurCmp = Brd-Mnt;
+IdModule  = screw-4-40;
+EndCmp
+
+BeginCmp
+TimeStamp = /52561064;
+Reference = H4;
+ValeurCmp = Brd-Mnt;
+IdModule  = screw-4-40;
+EndCmp
+
+BeginCmp
+TimeStamp = /52562E6D;
+Reference = H5;
+ValeurCmp = TCEHCBS;
+IdModule  = RICHCO-TCEHCBS-board-edge;
+EndCmp
+
+BeginCmp
+TimeStamp = /52562E73;
+Reference = H6;
+ValeurCmp = TCEHCBS;
+IdModule  = RICHCO-TCEHCBS-board-edge;
+EndCmp
+
+BeginCmp
+TimeStamp = /525631DA;
+Reference = H7;
+ValeurCmp = Zip-Mnt;
+IdModule  = screw-4-40th;
+EndCmp
+
+BeginCmp
+TimeStamp = /525631E0;
+Reference = H8;
+ValeurCmp = Zip-Mnt;
+IdModule  = screw-4-40th;
+EndCmp
+
+BeginCmp
+TimeStamp = /525631E6;
+Reference = H9;
+ValeurCmp = Zip-Mnt;
+IdModule  = screw-4-40th;
+EndCmp
+
+BeginCmp
+TimeStamp = /525631EC;
+Reference = H10;
+ValeurCmp = Zip-Mnt;
+IdModule  = screw-4-40th;
+EndCmp
+
+BeginCmp
+TimeStamp = /52563B38;
+Reference = H11;
+ValeurCmp = Zip-Mnt;
+IdModule  = screw-4-40th;
+EndCmp
+
+BeginCmp
 TimeStamp = /5190FB9A;
 Reference = J1;
 ValeurCmp = LCD;
@@ -404,6 +481,20 @@ TimeStamp = /5190FB0A;
 Reference = K1;
 ValeurCmp = CB1aH-P-12V;
 IdModule  = relay-CB1AH;
+EndCmp
+
+BeginCmp
+TimeStamp = /52560D6E;
+Reference = P1;
+ValeurCmp = LOGO-BBDC;
+IdModule  = BBDC-logo-750m.mod;
+EndCmp
+
+BeginCmp
+TimeStamp = /52560E17;
+Reference = P2;
+ValeurCmp = LOGO-OSHW;
+IdModule  = OSHW-300m;
 EndCmp
 
 BeginCmp
