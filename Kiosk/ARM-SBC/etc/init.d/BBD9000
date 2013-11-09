@@ -35,17 +35,17 @@ BBD9000_start() {
 	fi
 	
 	# Get the modem device (this has so far been in /dev/tts/, but the # can change based on address)
-	dev_num=`ls /dev/tts`
-	dev=""
-	if [ "$dev_num" != "" ]; then
-		dev="/dev/tts/${dev_num}"
-	fi
-	has_dev=`sed -n 's_\(Modemdev[^"]*"\)\('${dev}'"\)_\1'$dev'"_p' ${BBD9000ROOT}/BBD9000.conf`
-	if [ "$has_dev" = "" ]; then
-		sed 's_\(Modemdev[^"]*"\)\([^"]*\)_\1'${dev}'_' ${BBD9000ROOT}/BBD9000.conf > ${BBD9000ROOT}/BBD9000.conf~
-		mv ${BBD9000ROOT}/BBD9000.conf~ ${BBD9000ROOT}/BBD9000.conf
-		echo "Updated modem device in ${BBD9000ROOT}/BBD9000.conf"
-	fi
+# 	dev_num=`ls /dev/tts`
+# 	dev=""
+# 	if [ "$dev_num" != "" ]; then
+# 		dev="/dev/tts/${dev_num}"
+# 	fi
+# 	has_dev=`sed -n 's_\(Modemdev[^"]*"\)\('${dev}'"\)_\1'$dev'"_p' ${BBD9000ROOT}/BBD9000.conf`
+# 	if [ "$has_dev" = "" ]; then
+# 		sed 's_\(Modemdev[^"]*"\)\([^"]*\)_\1'${dev}'_' ${BBD9000ROOT}/BBD9000.conf > ${BBD9000ROOT}/BBD9000.conf~
+# 		mv ${BBD9000ROOT}/BBD9000.conf~ ${BBD9000ROOT}/BBD9000.conf
+# 		echo "Updated modem device in ${BBD9000ROOT}/BBD9000.conf"
+# 	fi
 
 	$BBD9000ROOT/BBD9000init $BBD9000ROOT/BBD9000.conf
 	if [ $? -ne 0 ] ; then
