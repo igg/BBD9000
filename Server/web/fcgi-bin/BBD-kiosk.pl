@@ -942,8 +942,8 @@ my $GW_resp = "GW";
 	} # Retry for various GW server errors
 
 # This is not exactly industrial strength, but slightly better than nothing.
-$track1 =~ s/./x/g;
-$track2 =~ s/./x/g;
+$track1 =~ s/./x/g if $track1;
+$track2 =~ s/./x/g if $track2;
 foreach ( keys (%GW_params)) {$GW_params{$_} =~ s/./x/g if $GW_params{$_};}
 
 
@@ -991,8 +991,8 @@ my %GW_reas_codes = (
 		# The gw_trans_id is send for cc processing on PreAuth and AuthCapture requests
 		# The kiosk's trans_id is send otherwise
 
-		do_notice (join ("\t","cc",time(),$member_id,$amount,$pre_auth,
-			$code,$code,$auth_code,$trans_id,$last4,$gw_message,$status) );
+		do_notice (join ("\t","cc",time(),$member_id,$amount,($pre_auth ? $pre_auth : ''),
+			$code,$code,$auth_code,$trans_id,($last4 ? $last4 : ''),($gw_message ? $gw_message : ''),$status) );
 	} elsif ($code == 2) {
 		$GW_resp .= " Declined\t";
 		$GW_resp .= join ("\t",$r_code,$r_reas_code,$r_gw_trans_id,$r_auth_code,'declined','xxxx');
@@ -1077,7 +1077,8 @@ my ($message) = @_;
 		}
 		
 		# Get a previous preauth transaction
-		my ($last_trans_id,$last_message,$DB_CC_id) = $DBH->selectrow_array (CHK_PREAUTH_CC_TRANS,undef,
+		my ($last_trans_id,$last_message,$DB_CC_id) = ('','','');
+		($last_trans_id,$last_message,$DB_CC_id) = $DBH->selectrow_array (CHK_PREAUTH_CC_TRANS,undef,
 			$kioskID, $gwy_trans_id
 		);
 		$CCid = $DB_CC_id if $DB_CC_id;
