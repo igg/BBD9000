@@ -37,7 +37,7 @@
 # MCU = attiny85
 # MCU = atmega2560
 # MCU = atmega1281
-MCU = atmega164pa
+MCU = atmega324pa
 
 # Name of the Atmel defs file for the actual MCU.
 #
@@ -55,7 +55,7 @@ MCU = atmega164pa
 # ATMEL_INC=tn85def.inc
 # ATMEL_INC = m2560def.inc
 # ATMEL_INC = m1281def.inc
-ATMEL_INC = avr-defs/m164PAdef.inc
+ATMEL_INC = avr-defs/m324PAdef.inc
 
 # Processor frequency.  The value is not critical:
 #F_CPU = 14745600
