@@ -6,19 +6,26 @@ This was then slightly modified to tolerate the absence of gawk, and other minor
 The Unix/Linux/POSIX bootloader-uploader was [contributed](http://www.avrfreaks.net/index.php?module=Freaks%20Academy&func=viewItem&item_type=project&item_id=1927) to AVR Freaks by iggie01.  The source code is in this repository under `Kiosk/ARM-SBC/src/bootloader`, and is used by the ARM-SBC to update and verify the SmartIO firmware.
 
 #### Flash bootloader onto AVR using avrdude, AVR ISP MkII, and ISP header on SmartIO
-* AVR ISP MkII connected to PC USB and plugged into ISP header on SmartIO board.
-* Fuse settings (-U lfuse:w:0xCF:m -U hfuse:w:0xD4:m -U efuse:w:0xFC:m):
+* Fuse settings calculated using [Engbedded Fuse Calculator](http://www.engbedded.com/fusecalc) for ATMEGA164PA and ATMEGA324PA
+* Fuse settings for ATMEGA164PA: `-U lfuse:w:0xCF:m -U hfuse:w:0xD4:m -U efuse:w:0xFC:m`, ATMEGA324PA: `-U lfuse:w:0xCF:m -U hfuse:w:0xD6:m -U efuse:w:0xFC:m`
   * Ext. Crystal Osc >= 8MHz; 1k CK + 65 ms startup time
   * Boot Reset vector Enabled (default address=$0000: i.e. run bootloader on reset)
-  * Boot Flash section size = 256 words, start address = $1F00
+  * Boot Flash section size = 256 words, start address = $1F00 for ATMEGA164PA, $3F00 for ATMEGA324PA
   * Preserve EEPROM through chip erase cycle
   * SPI enabled
   * Brown-out at 4.3V
 
-On PC:
+* AVR ISP MkII connected to PC USB and plugged into ISP header on SmartIO board.
+
+On PC (ATMEGA164PA):
 
     avrdude -p atmega164p -P usb -c avrispmkII -U lfuse:w:0xCF:m -U hfuse:w:0xD4:m -U efuse:w:0xFC:m
-    avrdude -p atmega164p -P usb -c avrispmkII -U flash:w:bootload.hex
+    avrdude -p atmega164p -P usb -c avrispmkII -U flash:w:bootload-ATMEGA164PA.hex
+
+On PC (ATMEGA324PA):
+
+    avrdude -p atmega324p -P usb -c avrispmkII -U lfuse:w:0xCF:m -U hfuse:w:0xD6:m -U efuse:w:0xFC:m
+    avrdude -p atmega324p -P usb -c avrispmkII -U flash:w:bootload-ATMEGA324PA.hex
 
 * Unpplug ISP MkII from ISP header.
 
