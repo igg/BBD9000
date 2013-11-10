@@ -171,12 +171,12 @@ $EndComp
 $Comp
 L TERM-3X2 J6
 U 1 1 5190E361
-P 900 1850
-F 0 "J6" H 900 2100 50  0000 C CNN
-F 1 "ISP Hdr" V 900 1900 40  0000 C CNN
-F 2 "" H 900 1850 60  0001 C CNN
-F 3 "" H 900 1850 60  0001 C CNN
-	1    900  1850
+P 950 1800
+F 0 "J6" H 950 1650 50  0000 C CNN
+F 1 "ISP Hdr" V 950 1850 40  0000 C CNN
+F 2 "" H 950 1800 60  0001 C CNN
+F 3 "" H 950 1800 60  0001 C CNN
+	1    950  1800
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -506,9 +506,9 @@ F 3 "" H 1100 1150 60  0001 C CNN
 	1    1100 1150
 	0    -1   -1   0   
 $EndComp
-Text GLabel 1100 1900 2    45   Input ~ 0
+Text GLabel 750  1850 0    45   Input ~ 0
 ~RESET
-Text GLabel 1100 1800 2    45   Input ~ 0
+Text GLabel 750  1750 0    45   Input ~ 0
 PB7
 Text GLabel 1225 7725 2    45   Input ~ 0
 PB7
@@ -518,9 +518,9 @@ Text GLabel 1225 7625 2    45   Input ~ 0
 PB6
 Text GLabel 6650 3250 2    45   Input ~ 0
 PB6
-Text GLabel 1100 1700 2    45   Input ~ 0
+Text GLabel 750  1650 0    45   Input ~ 0
 PB6
-Text GLabel 700  1800 0    45   Input ~ 0
+Text GLabel 1150 1750 2    45   Input ~ 0
 PB5
 Text GLabel 1225 7525 2    45   Input ~ 0
 PB5
@@ -546,10 +546,10 @@ Text GLabel 6650 2850 2    45   Input ~ 0
 PB2
 Text GLabel 6650 2950 2    45   Input ~ 0
 PB3
-Text GLabel 700  1900 0    45   Input ~ 0
+Text GLabel 1150 1850 2    45   Input ~ 0
 GND
 Text Notes 7600 7600 0    60   ~ 0
-Baltimore Biodiesel BBD9000 SmartIO v3.3.2
+Baltimore Biodiesel BBD9000 SmartIO v3.3.3
 $Comp
 L MAX232 U4
 U 1 1 5197B973
@@ -1386,7 +1386,7 @@ Text GLabel 800  5250 0    45   Input ~ 0
 +12V
 Text GLabel 800  6150 0    45   Input ~ 0
 +12V
-Text GLabel 700  1700 0    45   Input ~ 0
+Text GLabel 1150 1650 2    45   Input ~ 0
 +5V
 Text GLabel 2750 3750 0    45   Input ~ 0
 +5V
