@@ -19,13 +19,13 @@ The Unix/Linux/POSIX bootloader-uploader was [contributed](http://www.avrfreaks.
 
 On PC (ATMEGA164PA):
 
-    avrdude -p atmega164p -P usb -c avrispmkII -U lfuse:w:0xCF:m -U hfuse:w:0xD4:m -U efuse:w:0xFC:m
-    avrdude -p atmega164p -P usb -c avrispmkII -U flash:w:bootload-ATMEGA164PA.hex
+    avrdude -p atmega164pa -P usb -c avrispmkII -U lfuse:w:0xCF:m -U hfuse:w:0xD4:m -U efuse:w:0xFC:m
+    avrdude -p atmega164pa -P usb -c avrispmkII -U flash:w:bootload-ATMEGA164PA.hex
 
 On PC (ATMEGA324PA):
 
-    avrdude -p atmega324p -P usb -c avrispmkII -U lfuse:w:0xCF:m -U hfuse:w:0xD6:m -U efuse:w:0xFC:m
-    avrdude -p atmega324p -P usb -c avrispmkII -U flash:w:bootload-ATMEGA324PA.hex
+    avrdude -p atmega324pa -P usb -c avrispmkII -U lfuse:w:0xCF:m -U hfuse:w:0xD6:m -U efuse:w:0xFC:m
+    avrdude -p atmega324pa -P usb -c avrispmkII -U flash:w:bootload-ATMEGA324PA.hex
 
 * Unpplug ISP MkII from ISP header.
 
