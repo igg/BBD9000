@@ -16,11 +16,18 @@
 
 KEEP_FLASH = -D
 #KEEP_FLASH = 
-DEVICE     = atmega164p
+DEVICE     = atmega324pa
 PROGRAMMER = -c avrispmkII -P usb
 OBJECTS    = main.o SmartIO.o parser.o uart2.o buffer.o lcd.o
 
 # From http://www.engbedded.com/fusecalc/
+CLOCK      = 18432000
+# Fuses for atmega164pa:
+# FUSES      = -U lfuse:w:0xCF:m -U hfuse:w:0xD4:m -U efuse:w:0xFC:m
+# Fuses for atmega324pa:
+FUSES      = -U lfuse:w:0xCF:m -U hfuse:w:0xD6:m -U efuse:w:0xFC:m
+
+
 # Int. osc 8 MHz, no clock div
 #CLOCK      = 8000000
 #FUSES      = -U hfuse:w:0x99:m -U lfuse:w:0xC2:m -U efuse:w:0xFF:m
@@ -38,8 +45,6 @@ OBJECTS    = main.o SmartIO.o parser.o uart2.o buffer.o lcd.o
 #FUSES      = -U hfuse:w:0x91:m -U lfuse:w:0xF7:m -U efuse:w:0xFF:m
 # low-power osc + EESAVE + BOD - STABLE (no delay for low-power rise due to BOD) - JTAG
 # Fails when powering up with ISP plugged in but unplugged from USB
-CLOCK      = 18432000
-FUSES      = -U lfuse:w:0xCF:m -U hfuse:w:0xD4:m -U efuse:w:0xFC:m
 # low-power osc + EESAVE + BOD - STABLE (no delay for low-power rise due to BOD) - JTAG
 # With bootloader
 # Fails when powering up with ISP plugged in but unplugged from USB
