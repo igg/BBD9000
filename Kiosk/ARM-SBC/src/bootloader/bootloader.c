@@ -95,6 +95,7 @@ int main(int argc, char *argv[]) {
 	readlink("/proc/self/exe", devices_file_p, 255); // symlink to this binary
 	chp = strrchr (devices_file_p,'/');  // get the last path separator
 	if (chp) strcpy (chp+1,DEVICES_FILE); // copy the device filename after the path separator
+	else strcpy (devices_file_p,DEVICES_FILE);
 
 	// Parsing / checking parameter
 	int i;
@@ -292,6 +293,7 @@ char * readHexfile(const char * filename, int flashsize, unsigned long * lastadd
 	if (!silent) printf("File read.\n");
 	return data;
 }
+
 
 
 /**
@@ -505,7 +507,7 @@ void usage() {
 /**
  * Try to connect a device
  */
-#define CON_RETRIES 10
+#define CON_RETRIES 100
 void connect_device() {
 	const char * ANIM_CHARS = "-\\|/";
 	const char PASSWORD[6] = {'P', 'e', 'd', 'a', 0xff, 0};
@@ -530,10 +532,9 @@ void connect_device() {
 		tryCon = CON_RETRIES;
 		while (tryCon) {
 			com_puts(PASSWORD);
-			in = com_getc(TIMEOUT);
-			printf ("in: %d, [%c]\n",(int)in,(char)in);
-	
+			in = com_getc(10);
 			if(in == CONNECT) {
+				printf ("connect\n");
 				sendcommand(COMMAND);
 	
 				// Empty buffer
@@ -645,7 +646,7 @@ int read_info() {
 	} 
 	else {
 		sscanf ("(?)" , "%s", s);
-		if (!silent) printf("File \"%s\" not found!\n",DEVICES_FILE);
+		if (!silent) printf("File \"%s\" not found!\n",devices_file_p);
 	}
 
 	if (!*s) sprintf (s,"Device not in \"%s\"",DEVICES_FILE);

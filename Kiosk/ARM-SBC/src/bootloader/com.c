@@ -134,10 +134,19 @@ void com_flush() {
 }
 
 /**
+ * Clears the buffer
+ */
+void com_clear() {
+	// tcflush deletes the buffer
+	tcflush (fd,TCIFLUSH);
+}
+
+/**
  * Sends a string
  */
 void com_puts(const char *text) {
 
+	com_clear();
 	while(*text) {
 		com_flush(); // this prevents write() from waiting.
 		com_putc( *text++);

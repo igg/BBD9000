@@ -53,6 +53,11 @@ int com_getc0();
 void com_flush();
 
 /**
+ * Clears the buffer
+ */
+void com_clear();
+
+/**
  * Sends a string
  */
 void com_puts(const char *text);
