@@ -14,8 +14,9 @@
 #                is connected.
 # FUSES ........ Parameters for avrdude to flash the fuses appropriately.
 
+# KEEP_FLASH = 
 KEEP_FLASH = -D
-#KEEP_FLASH = 
+# DEVICE     = atmega164pa
 DEVICE     = atmega324pa
 PROGRAMMER = -c avrispmkII -P usb
 OBJECTS    = main.o SmartIO.o parser.o uart2.o buffer.o lcd.o
