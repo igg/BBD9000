@@ -17,3 +17,4 @@ $(TRG) : $(OBJ)
 clean:
 	rm -f $(OBJ)
 	rm -f $(TRG)
+	rm -f bootloader
