@@ -223,35 +223,35 @@ void initVars (void) {
 	SmartIOinfo.FLM_EVT_TIMER_MAX = FLM_EVT_TIMER_DEF * INT_PER_MS;
 	SmartIOinfo.MTN_STOPPED_CNT_MAX = MTN_STOPPED_CNT_DEF * INT_PER_MS;
 	SmartIOinfo.MTN_PRESENT_CNT_MAX = MTN_PRESENT_CNT_DEF * INT_PER_MS;
-	SmartIOinfo.ADC0.RAW1 = ADC0_RAW1_DEF;
-	SmartIOinfo.ADC0.CAL1 = ADC0_CAL1_DEF;
-	SmartIOinfo.ADC0.RAW2 = ADC0_RAW2_DEF;
-	SmartIOinfo.ADC0.CAL2 = ADC0_CAL2_DEF;
+	SmartIOinfo.ADC0.raw1 = ADC0_RAW1_DEF;
+	SmartIOinfo.ADC0.cal1 = ADC0_CAL1_DEF;
+	SmartIOinfo.ADC0.raw2 = ADC0_RAW2_DEF;
+	SmartIOinfo.ADC0.cal2 = ADC0_CAL2_DEF;
 
 // Slope and intercept for ADC0
-	SmartIOinfo.ADC0.M = ADC_M_FUNC(SmartIOinfo.ADC0.CAL1,SmartIOinfo.ADC0.RAW1,SmartIOinfo.ADC0.CAL2,SmartIOinfo.ADC0.RAW2);
-	SmartIOinfo.ADC0.B = ADC_B_FUNC(SmartIOinfo.ADC0.CAL1,SmartIOinfo.ADC0.RAW1,SmartIOinfo.ADC0.M);
-	SmartIOinfo.ADC0.MIN = CAL_TO_ADC(0,SmartIOinfo.ADC0.M,SmartIOinfo.ADC0.B);
+	SmartIOinfo.ADC0.cal_m = ADC_M_FUNC(SmartIOinfo.ADC0.cal1,SmartIOinfo.ADC0.raw1,SmartIOinfo.ADC0.cal2,SmartIOinfo.ADC0.raw2);
+	SmartIOinfo.ADC0.cal_b = ADC_B_FUNC(SmartIOinfo.ADC0.cal1,SmartIOinfo.ADC0.raw1,SmartIOinfo.ADC0.cal_m);
+	SmartIOinfo.ADC0.MIN = CAL_TO_ADC(0,SmartIOinfo.ADC0.cal_m,SmartIOinfo.ADC0.cal_b);
 	if (SmartIOinfo.ADC0.MIN > 1023) SmartIOinfo.ADC0.MIN = 0;
 
 // Alarm thresholds
 // N.B.: Defaults are stored as calibrated values!
 // The thresholds while running are RAW values
 	SmartIOinfo.ADC0.ON_THRESH_CAL = VIN_ALARM_THRESH_CAL_DEF;
-	SmartIOinfo.ADC0.ON_THRESH = CAL_TO_ADC(SmartIOinfo.ADC0.ON_THRESH_CAL,SmartIOinfo.ADC0.M,SmartIOinfo.ADC0.B);
+	SmartIOinfo.ADC0.ON_THRESH = CAL_TO_ADC(SmartIOinfo.ADC0.ON_THRESH_CAL,SmartIOinfo.ADC0.cal_m,SmartIOinfo.ADC0.cal_b);
 	SmartIOinfo.ADC0.OFF_THRESH_CAL = VIN_OK_THRESH_CAL_DEF;
-	SmartIOinfo.ADC0.OFF_THRESH = CAL_TO_ADC(SmartIOinfo.ADC0.OFF_THRESH_CAL,SmartIOinfo.ADC0.M,SmartIOinfo.ADC0.B);
+	SmartIOinfo.ADC0.OFF_THRESH = CAL_TO_ADC(SmartIOinfo.ADC0.OFF_THRESH_CAL,SmartIOinfo.ADC0.cal_m,SmartIOinfo.ADC0.cal_b);
 
 // ADC1 calibrations
-	SmartIOinfo.ADC1.RAW1 = ADC1_RAW1_DEF;
-	SmartIOinfo.ADC1.CAL1 = ADC1_CAL1_DEF;
-	SmartIOinfo.ADC1.RAW2 = ADC1_RAW2_DEF;
-	SmartIOinfo.ADC1.CAL2 = ADC1_CAL2_DEF;
+	SmartIOinfo.ADC1.raw1 = ADC1_RAW1_DEF;
+	SmartIOinfo.ADC1.cal1 = ADC1_CAL1_DEF;
+	SmartIOinfo.ADC1.raw2 = ADC1_RAW2_DEF;
+	SmartIOinfo.ADC1.cal2 = ADC1_CAL2_DEF;
 
 // Slope and intercept for ADC1
-	SmartIOinfo.ADC1.M = ADC_M_FUNC(SmartIOinfo.ADC1.CAL1,SmartIOinfo.ADC1.RAW1,SmartIOinfo.ADC1.CAL2,SmartIOinfo.ADC1.RAW2);
-	SmartIOinfo.ADC1.B = ADC_B_FUNC(SmartIOinfo.ADC1.CAL1,SmartIOinfo.ADC1.RAW1,SmartIOinfo.ADC1.M);
-	SmartIOinfo.ADC1.MIN = CAL_TO_ADC(0,SmartIOinfo.ADC1.M,SmartIOinfo.ADC1.B);
+	SmartIOinfo.ADC1.cal_m = ADC_M_FUNC(SmartIOinfo.ADC1.cal1,SmartIOinfo.ADC1.raw1,SmartIOinfo.ADC1.cal2,SmartIOinfo.ADC1.raw2);
+	SmartIOinfo.ADC1.cal_b = ADC_B_FUNC(SmartIOinfo.ADC1.cal1,SmartIOinfo.ADC1.raw1,SmartIOinfo.ADC1.cal_m);
+	SmartIOinfo.ADC1.MIN = CAL_TO_ADC(0,SmartIOinfo.ADC1.cal_m,SmartIOinfo.ADC1.cal_b);
 	if (SmartIOinfo.ADC1.MIN > 1023) SmartIOinfo.ADC1.MIN = 0;
 
 // Event thresholds
@@ -261,9 +261,9 @@ void initVars (void) {
 // the ADC calibration changes, or the calibrated thresholds change.
 // The calibrated values are also kept in RAM
 	SmartIOinfo.ADC1.ON_THRESH_CAL = IP_ON_THRESH_CAL_DEF;
-	SmartIOinfo.ADC1.ON_THRESH = CAL_TO_ADC(SmartIOinfo.ADC1.ON_THRESH_CAL,SmartIOinfo.ADC1.M,SmartIOinfo.ADC1.B);
+	SmartIOinfo.ADC1.ON_THRESH = CAL_TO_ADC(SmartIOinfo.ADC1.ON_THRESH_CAL,SmartIOinfo.ADC1.cal_m,SmartIOinfo.ADC1.cal_b);
 	SmartIOinfo.ADC1.OFF_THRESH_CAL = IP_OFF_THRESH_CAL_DEF;
-	SmartIOinfo.ADC1.OFF_THRESH = CAL_TO_ADC(SmartIOinfo.ADC1.OFF_THRESH_CAL,SmartIOinfo.ADC1.M,SmartIOinfo.ADC1.B);
+	SmartIOinfo.ADC1.OFF_THRESH = CAL_TO_ADC(SmartIOinfo.ADC1.OFF_THRESH_CAL,SmartIOinfo.ADC1.cal_m,SmartIOinfo.ADC1.cal_b);
 }
 
 ISR ( TIMER0_COMPA_vect ) {

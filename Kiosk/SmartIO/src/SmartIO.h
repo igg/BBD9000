@@ -46,10 +46,10 @@
 #define ADC1_CAL2_DEF     5000
 
 // Slope and intercept formulas for ADCs
-#define ADC_M_FUNC(CAL1,RAW1,CAL2,RAW2) (((long)CAL2 - (long)CAL1)*8192) / ((long)RAW2 - (long)RAW1)
-#define ADC_B_FUNC(CAL1,RAW1,ADCM) ((long)CAL1*8192) - ((long)ADCM*(long)RAW1)
-#define ADC_TO_CAL(ADC,ADCM,ADCB) (uint16_t)((((long)ADCM*ADC) + (long)ADCB) / 8192)
-#define CAL_TO_ADC(CAL,ADCM,ADCB) (uint16_t)((((long)CAL * 8192) - (long)ADCB) / (long)ADCM)
+#define ADC_M_FUNC(cal1,raw1,cal2,raw2) (((long)cal2 - (long)cal1)*8192) / ((long)raw2 - (long)raw1)
+#define ADC_B_FUNC(cal1,raw1,ADCM) ((long)cal1*8192) - ((long)ADCM*(long)raw1)
+#define ADC_TO_CAL(adc,adcm,adcb) (uint16_t)((((long)adcm*adc) + (long)adcm) / 8192)
+#define CAL_TO_ADC(cal,adcm,adcb) (uint16_t)((((long)cal * 8192) - (long)adcb) / (long)adcm)
 
 // Default threshold values
 // These are calibrated values! (centi-volts and centi-amps)
@@ -239,13 +239,13 @@ typedef struct {
 
 	// Calibration and raw values
 	// Calibrated values are in centi-volts (1/100 volt) and centi-amps (1/100 amp)
-	volatile uint16_t RAW1;
-	volatile uint16_t CAL1;
-	volatile uint16_t RAW2;
-	volatile uint16_t CAL2;
+	volatile uint16_t raw1;
+	volatile uint16_t cal1;
+	volatile uint16_t raw2;
+	volatile uint16_t cal2;
 
 	// Slope and intercepts for ADCs
-	volatile int32_t M,B;
+	volatile int32_t cal_m,cal_b;
 	// Raw ADC value to produce a calibrated value of 0
 	// Check the raw reading against this value before reporting
 	// a calibrated value to avoid reporting calibrated values below 0.

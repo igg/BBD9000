@@ -328,8 +328,8 @@ char *int16Out_buf=(char *)SmartIOinfo.int16Out_buf;
 			off = ADCinfo->OFF_THRESH_CAL;
 		}
 		
-		on_thresh = CAL_TO_ADC(on,ADCinfo->M,ADCinfo->B);
-		off_thresh = CAL_TO_ADC(off,ADCinfo->M,ADCinfo->B);
+		on_thresh = CAL_TO_ADC(on,ADCinfo->cal_m,ADCinfo->cal_b);
+		off_thresh = CAL_TO_ADC(off,ADCinfo->cal_m,ADCinfo->cal_b);
 	
 		ADCinfo->ON_THRESH_CAL  = (uint16_t) on;
 		ADCinfo->ON_THRESH      = on_thresh;
@@ -360,7 +360,7 @@ char *raw1_buf=(char *)SmartIOinfo.int1_buf;
 char *cal1_buf=(char *)SmartIOinfo.int2_buf;
 char *raw2_buf=(char *)SmartIOinfo.int3_buf;
 char *cal2_buf=(char *)SmartIOinfo.int4_buf;
-long raw1, cal1, raw2, cal2, m, b;
+long raw1, cal1, raw2, cal2, cal_m, cal_b;
 uint16_t on_thresh, off_thresh;
 char *int16Out_buf=(char *)SmartIOinfo.int16Out_buf;
 
@@ -379,34 +379,34 @@ char *int16Out_buf=(char *)SmartIOinfo.int16Out_buf;
 	
 		// Ensure the numerical range is OK
 		if (raw1 < 0 || raw1 > UINT16_MAX) {
-			raw1 = ADCinfo->RAW1;
+			raw1 = ADCinfo->raw1;
 		}	
 		if (cal1 < 0 || cal1 > UINT16_MAX) {
-			cal1 = ADCinfo->CAL1;
+			cal1 = ADCinfo->cal1;
 		}
 		if (raw2 < 0 || raw2 > UINT16_MAX) {
-			raw2 = ADCinfo->RAW2;
+			raw2 = ADCinfo->raw2;
 		}
 		if (cal2 < 0 || cal2 > UINT16_MAX) {
-			cal2 = ADCinfo->CAL2;
+			cal2 = ADCinfo->cal2;
 		}
 		
 		// Slope and intercept for ADC based on calibrations
-		m = ADC_M_FUNC(cal1,raw1,cal2,raw2);
-		b = ADC_B_FUNC(cal1,raw1,m);
+		cal_m = ADC_M_FUNC(cal1,raw1,cal2,raw2);
+		cal_b = ADC_B_FUNC(cal1,raw1,cal_m);
 		// The raw values for the thresholds need to be recalculated
-		on_thresh = CAL_TO_ADC(ADCinfo->ON_THRESH_CAL,m,b);
-		off_thresh = CAL_TO_ADC(ADCinfo->OFF_THRESH_CAL,m,b);
+		on_thresh = CAL_TO_ADC(ADCinfo->ON_THRESH_CAL,cal_m,cal_b);
+		off_thresh = CAL_TO_ADC(ADCinfo->OFF_THRESH_CAL,cal_m,cal_b);
 
-		ADCinfo->CAL1       = cal1;
-		ADCinfo->RAW1       = raw1;
-		ADCinfo->CAL2       = cal2;
-		ADCinfo->RAW2       = raw2;
-		ADCinfo->M          = m;
-		ADCinfo->B          = b;
+		ADCinfo->cal1       = cal1;
+		ADCinfo->raw1       = raw1;
+		ADCinfo->cal2       = cal2;
+		ADCinfo->raw2       = raw2;
+		ADCinfo->cal_m      = cal_m;
+		ADCinfo->cal_b      = cal_b;
 		ADCinfo->ON_THRESH  = on_thresh;
 		ADCinfo->OFF_THRESH = off_thresh;
-		ADCinfo->MIN        = CAL_TO_ADC(0,m,b);
+		ADCinfo->MIN        = CAL_TO_ADC(0,cal_m,cal_b);
 		if (ADCinfo->MIN > 1023) ADCinfo->MIN = 0;
 
 	}
@@ -415,19 +415,19 @@ char *int16Out_buf=(char *)SmartIOinfo.int16Out_buf;
 	uartSendString_P (0,(PGM_P)name);
 	uartAddToTxBuffer (0,'\t');
 
-	utoa (ADCinfo->RAW1, int16Out_buf, 10);
+	utoa (ADCinfo->raw1, int16Out_buf, 10);
 	uartSendString (0,int16Out_buf);
 	uartSendString (0,TAB);
 
-	uint16_to_string (ADCinfo->CAL1, 2, int16Out_buf);
+	uint16_to_string (ADCinfo->cal1, 2, int16Out_buf);
 	uartSendString (0,int16Out_buf);
 	uartSendString (0,TAB);
 
-	utoa (ADCinfo->RAW2, int16Out_buf, 10);
+	utoa (ADCinfo->raw2, int16Out_buf, 10);
 	uartSendString (0,int16Out_buf);
 	uartSendString (0,TAB);
 
-	uint16_to_string (ADCinfo->CAL2, 2, int16Out_buf);
+	uint16_to_string (ADCinfo->cal2, 2, int16Out_buf);
 	uartSendString (0,int16Out_buf);
 	uartSendString (0,EOL);
 	*(SmartIOinfo.int16Out_buf) = '\0';
@@ -457,7 +457,7 @@ char *int16Out_buf=(char *)SmartIOinfo.int16Out_buf;
 	uartAddToTxBuffer (0,'\t');
 
 	if (ADCinfo->avg > ADCinfo->MIN)
-		uint16_to_string (ADC_TO_CAL(ADCinfo->avg,ADCinfo->M,ADCinfo->B), 2, int16Out_buf);
+		uint16_to_string (ADC_TO_CAL(ADCinfo->avg,ADCinfo->cal_m,ADCinfo->cal_b), 2, int16Out_buf);
 	else
 		uint16_to_string (0, 2, int16Out_buf);
 	uartSendString (0,int16Out_buf);
