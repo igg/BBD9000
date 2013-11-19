@@ -172,7 +172,7 @@ char read_buf[READ_BUF_SIZE];
 		FD_ZERO(&read_fds);
 		FD_SET(ser_fd, &read_fds);
 		FD_SET(BBD9000OUT_fd, &read_fds);
-		nfds = select (FD_SETSIZE, &read_fds, NULL, NULL, NULL);
+		select (FD_SETSIZE, &read_fds, NULL, NULL, NULL);
 
 		// Read a line or more, return pointer to next line
 

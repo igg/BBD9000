@@ -204,7 +204,7 @@ struct curl_slist* responseHeaders = NULL ;
 }
 
 int sendMessage (selfStruct* self) {
-unsigned char *msg_ptr, *message;
+char *msg_ptr, *message;
 char *crypt_ptr;
 unsigned char *hash;
 long flen,msg_left,enc_len,msg_size;
@@ -242,17 +242,19 @@ int netlock_fd;
 	// process the message in blocks
 	// N.B.: terminating null is not encoded
 	msg_left = flen;
-	msg_ptr = (unsigned char *)message;
+	msg_ptr = (char *)message;
 	crypt_ptr = self->crypt_buffer;
 	self->crypt_buf_size = 0;
 	while (msg_left > 0) {
 		enc_len = msg_left;
 		if (enc_len > RSA_TEXT_SIZE) enc_len = RSA_TEXT_SIZE;
-		if (RSA_public_encrypt(enc_len, msg_ptr, crypt_ptr, self->serv_pub_key, RSA_PKCS1_OAEP_PADDING) < 0) {
-			*(message+msg_size) = '\0';
-			strcpy (shmem->net_error,"Encrypting");
-			return (ENCRYPT_ERROR);
-		}
+		if (RSA_public_encrypt(enc_len,
+				(unsigned char *)msg_ptr, (unsigned char *)crypt_ptr,
+				self->serv_pub_key, RSA_PKCS1_OAEP_PADDING) < 0) {
+					*(message+msg_size) = '\0';
+					strcpy (shmem->net_error,"Encrypting");
+					return (ENCRYPT_ERROR);
+				}
 		msg_left -= enc_len;
 		msg_ptr += enc_len;
 		crypt_ptr += RSA_BLOCK_SIZE;
@@ -267,7 +269,7 @@ int netlock_fd;
 	*(message+msg_size) = '\0';
 
 	// sign the hash with our private key
-	if (RSA_sign(NID_sha1, hash, SHA_DIGEST_LENGTH, crypt_ptr, &sig_len, self->my_priv_key) < 0) {
+	if (RSA_sign(NID_sha1, hash, SHA_DIGEST_LENGTH, (unsigned char *)crypt_ptr, &sig_len, self->my_priv_key) < 0) {
 		strcpy (shmem->net_error,"Signing");
 		return (SIGN_ERROR);
 	}
@@ -419,8 +421,8 @@ logMessage (log_fp,"retries %d; libcurl code: %d, URL:%s",retries,(int)result_co
 		// RSA_private_decrypt returns the length of the decrypted block.
 		if (blocknum < nblocks-1) {
 			if ( (pt_len = RSA_private_decrypt(RSA_BLOCK_SIZE, 
-				self->crypt_resp_buffer + (blocknum*RSA_BLOCK_SIZE),
-				self->resp+self->resp_size,
+				(unsigned char *)(self->crypt_resp_buffer + (blocknum*RSA_BLOCK_SIZE)),
+				(unsigned char *)(self->resp+self->resp_size),
 				self->my_priv_key, RSA_PKCS1_OAEP_PADDING)) < 0) {
 					strcpy (shmem->net_error,"Decryption");
 					logMessage (log_fp,"Decrypt failed:");
@@ -437,9 +439,10 @@ fflush(log_fp);
 			// NULL-terminate the response (this is not part of the signature though)
 			*(self->resp+self->resp_size) = '\0';
 			// make a hash of the plaintext
-			hash = SHA1(self->resp,self->resp_size, NULL);
+			hash = SHA1((unsigned char *)self->resp,self->resp_size, NULL);
 			if (RSA_verify(NID_sha1, hash, SHA_DIGEST_LENGTH,
-				self->crypt_resp_buffer + (blocknum*RSA_BLOCK_SIZE), RSA_BLOCK_SIZE, self->serv_pub_key) != 1) {
+				(unsigned char *)(self->crypt_resp_buffer + (blocknum*RSA_BLOCK_SIZE)),
+				RSA_BLOCK_SIZE, self->serv_pub_key) != 1) {
 				// failed
 					strcpy (shmem->net_error,"Serv. verify");
 					logMessage (log_fp,"Verify failed:");

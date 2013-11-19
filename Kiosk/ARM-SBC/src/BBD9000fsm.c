@@ -664,7 +664,6 @@ int new_state = shmem->status_idx;
 
 int doIdle           (const int evt, const char *val) {
 int new_state = shmem->status_idx;
-time_t status_t;
 int MSR_status;
 static char is_idle=0;
 char LCD1[LCD_MAX_LINE_SIZE], LCD2[LCD_MAX_LINE_SIZE];
@@ -703,8 +702,6 @@ size_t buf_siz=0;
 		doPatch();
 	// To setup the status timeout, check the last time we checked in
 	// Setup the status to comply with the maximum status interval.
-
-		status_t = (time (NULL) - shmem->last_status)*1000;
 		if ((time (NULL) - shmem->last_status) > (shmem->status_interval / 1000) || shmem->checkin_msg) {
 			doStatusTimeout();
 		} else {
@@ -4235,7 +4232,7 @@ static int operator_exit=0, do_cancel=0;
 
 int doShowStatus     (const int evt, const char *val) {
 int new_state = shmem->status_idx;
-static int operator_exit=0, do_cancel=0;
+static int operator_exit=0;
 char short_net[10];
 
 	if ( ! strcmp(shmem->net_status,"offline") ) strcpy (short_net,"O/L");
@@ -4278,7 +4275,6 @@ char short_net[10];
 			doLCD (0, 1, NULL); // release the LCD
 		}
 		operator_exit=0;
-		do_cancel = 0;
 	break;
 
 	// Prevent doOperator from canceling if door stays closed
@@ -4334,7 +4330,7 @@ char short_net[10];
 
 int doShowNetStatus     (const int evt, const char *val) {
 int new_state = shmem->status_idx;
-static int operator_exit=0, do_cancel=0;
+static int operator_exit=0;
 
 	switch (evt) {
 	// Upon entry, setup an input timeout
@@ -4367,7 +4363,6 @@ static int operator_exit=0, do_cancel=0;
 			doLCD (0, 1, NULL); // release the LCD
 		}
 		operator_exit=0;
-		do_cancel = 0;
 	break;
 
 	// Prevent doOperator from canceling if door stays closed

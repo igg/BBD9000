@@ -321,7 +321,7 @@ char got_expect=0;
 			nread_tot += nread;
 			while (*char_p) {
 				// find the end of the line
-				while (*char_p && *char_p != '\r' && *char_p != '\n') *char_p++;
+				while (*char_p && *char_p != '\r' && *char_p != '\n') char_p++;
 				if (*char_p) {
 					// find the end of \r\n, setting them to null
 					while (*char_p == '\r' || *char_p == '\n') *char_p++ = '\0';

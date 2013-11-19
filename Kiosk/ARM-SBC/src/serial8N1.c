@@ -71,8 +71,8 @@ void sigTermHandler (int signum);
 
 int main (int argc, char **argv) {
 fd_set read_fds;
-int nfds, i, baud=0, run_forever=0, doCTS=0, doCRLF=0, type=0;
-char read_buf[READ_BUF_SIZE], *char_p, *device = NULL, *in = NULL, *out = NULL;
+int i, baud=0, doCTS=0, doCRLF=0, type=0;
+char read_buf[READ_BUF_SIZE], *device = NULL, *in = NULL, *out = NULL;
 FILE *in_fp, *out_fp;
 int in_fd, out_fd;
 
@@ -82,8 +82,7 @@ int in_fd, out_fd;
 	for(i = 1; i < argc; i++) {
 		if(*argv[i] == '-') {
 			type = argv[i][1];
-			if (type == 'f') run_forever = 1;
-			else if (type == 'h') doCTS = 1;
+			if (type == 'h') doCTS = 1;
 			else if (type == 'c') doCRLF = 1;
 		} else {
 			switch(type) {
@@ -189,15 +188,15 @@ int in_fd, out_fd;
 		FD_ZERO(&read_fds);
 		FD_SET(ser_fd, &read_fds);
 		FD_SET(in_fd, &read_fds);
-		nfds = select (FD_SETSIZE, &read_fds, NULL, NULL, NULL);
+		select (FD_SETSIZE, &read_fds, NULL, NULL, NULL);
 
 		if (FD_ISSET(ser_fd, &read_fds)) {
-			char_p = fgets (read_buf,READ_BUF_SIZE,ser_fp);
+			fgets (read_buf,READ_BUF_SIZE,ser_fp);
 			fputs (read_buf,out_fp);
 		}
 
 		if (FD_ISSET(in_fd, &read_fds) && !feof(in_fp)) {
-			char_p = fgets (read_buf,READ_BUF_SIZE,in_fp);
+			fgets (read_buf,READ_BUF_SIZE,in_fp);
 			fputs (read_buf,ser_fp);
 			if (feof(in_fp)) {
 				alarm (1); // Exit when the alarm expires to read last bit of serial

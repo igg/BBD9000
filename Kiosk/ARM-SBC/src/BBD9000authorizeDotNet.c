@@ -105,7 +105,7 @@ void initPostString (srvrStruct* self);
 void catPreAuth (srvrStruct* self, float amount);
 void catCapture (srvrStruct* self, float amount);
 void catAuthCapture (srvrStruct* self, float amount);
-void catVoid (srvrStruct* self, float amount);
+void catVoid (srvrStruct* self);
 void catItemList (srvrStruct* self);
 void initCurl (srvrStruct *self);
 int sendCC_POST (srvrStruct *self);
@@ -232,8 +232,9 @@ char string[POST_VAR_SIZE];
 
 /*
   Add stuff to do a VOID transaction
+  We don't send an amount with a VOID
 */
-void catVoid (srvrStruct* self, float amount) {
+void catVoid (srvrStruct* self) {
 char string[POST_VAR_SIZE];
 
 	snprintf (string,sizeof(string),
@@ -599,17 +600,14 @@ int ret;
 
 
 int doVoid (srvrStruct *self, char *message) {
-float amount;
 int ret;
 
 	// Check we have the params we need
 	if (! *(shmem->cc_resp.trans_id) ) return BAD_PARAM;
 
-	// We don't send an amount with a VOID
-
 	// First try track 1 if it exists
 	initPostString (self);
-	catVoid (self, amount);
+	catVoid (self);
 	ret = sendCC_POST (self);
 	
 	// If we get a MESSAGE_SUCCESS with a parsed
@@ -618,7 +616,7 @@ int ret;
 		&& strlen (shmem->msr_track2) > 2) {
 			memset (shmem->msr_track1,0,sizeof(shmem->msr_track1));
 			initPostString (self);
-			catVoid (self, amount);
+			catVoid (self);
 			ret = sendCC_POST (self);
 	}
 	
