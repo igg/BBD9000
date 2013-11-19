@@ -1,5 +1,7 @@
-all: BBD9000init BBD9000temp BBD9000SmartIO BBD9000twilight BBD9000server \
-BBD9000authorizeDotNet BBD9000timer BBD9000fsm BBD9000cell BBD9000_JSON serial8N1 TS7260_5vOFF
+BINS = BBD9000init BBD9000timer BBD9000fsm BBD9000SmartIO BBD9000server BBD9000twilight  \
+BBD9000authorizeDotNet BBD9000cell BBD9000_JSON serial8N1
+
+all: $(BINS)
 
 
 BBD9000init: BBD9000init.c BBD9000cfg.o BBD9000mem.h BBD9000cfg.h
@@ -8,10 +10,6 @@ BBD9000init: BBD9000init.c BBD9000cfg.o BBD9000mem.h BBD9000cfg.h
 
 BBD9000cfg.o: BBD9000cfg.c BBD9000mem.h BBD9000cfg.h
 	gcc -Wall -c BBD9000cfg.c
-
-BBD9000temp: BBD9000temp.c BBD9000mem.h
-	gcc -Wall -o BBD9000temp BBD9000temp.c
-	strip BBD9000temp
 
 BBD9000SmartIO: BBD9000SmartIO.c BBD9000mem.h
 	gcc -Wall -o BBD9000SmartIO BBD9000SmartIO.c
@@ -55,17 +53,9 @@ serial8N1: serial8N1.c
 	gcc -Wall -o serial8N1 serial8N1.c
 	strip serial8N1
 
-TS7260_5vOFF: TS7260_5vOFF.c
-	gcc -Wall -o TS7260_5vOFF TS7260_5vOFF.c
-	strip TS7260_5vOFF
-
 install:
-	cp BBD9000init BBD9000temp BBD9000SmartIO BBD9000twilight BBD9000server \
-		BBD9000authorizeDotNet BBD9000timer BBD9000fsm BBD9000cell \
-		BBD9000_JSON serial8N1 TS7260_5vOFF ../BBD9000
+	cp $(BINS) ../BBD9000
 
 clean:
-	rm *.o
-	rm BBD9000init BBD9000temp BBD9000SmartIO BBD9000twilight BBD9000server \
-		BBD9000authorizeDotNet BBD9000timer BBD9000fsm BBD9000cell \
-		BBD9000_JSON serial8N1 TS7260_5vOFF
+	rm -f *.o
+	rm -f $(BINS)
