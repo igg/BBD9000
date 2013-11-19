@@ -36,6 +36,7 @@
 #include <termios.h>
 #include <assert.h>
 #include <math.h>
+#include <limits.h> // PATH_MAX
 
 #include "BBD9000mem.h"
 #include "BBD9000cfg.h"
@@ -67,73 +68,107 @@ int main (int argc, char **argv) {
 int shmem_fd;
 int ret_val;
 BBD9000mem shmem_s, *shmem=&shmem_s;
-char BBD9000root[PATH_SIZE], tmpPath[PATH_SIZE], str[STR_SIZE], *chp;
+char BBD9000root[PATH_MAX], tmpPath[PATH_MAX], str[STR_SIZE], *chp;
 struct stat filestat ;
-FILE *BBD9000ID_fp;
+mode_t fmode;
 
-	/* Get the path to this executable.  This establishes the BBD9000 ROOT */
-	// This is platform-specific
-	#if defined(__FreeBSD__)
-		int mib[4];
-		mib[0] = CTL_KERN;
-		mib[1] = KERN_PROC;
-		mib[2] = KERN_PROC_PATHNAME;
-		mib[3] = -1;
-		char buf[1024];
-		size_t cb = sizeof(buf);
-		sysctl(mib, 4, buf, &cb, NULL, 0);
-
-	#elif defined(linux) || defined(__linux) || defined(__linux__) || defined(__TOS_LINUX__)
-		readlink ("/proc/self/exe", BBD9000root, PATH_SIZE-1);
-
-	#elif defined(__APPLE__) || defined(__TOS_MACOS__)
-		uint32_t size = sizeof(BBD9000root);
-		_NSGetExecutablePath(BBD9000root, &size);
-
-	#endif
-
-	chp = strrchr (BBD9000root,'/');
-	if (chp) *chp = '\0';
-
-	/* chdir to the root of the filesystem to not block dismounting */
-	chdir("/");
 
 	/* initialize the whole struct to 0 */
 	memset(shmem, 0, sizeof(BBD9000mem));
 
-	/* Record time that this structure was initialized */
-	gettimeofday(&(shmem->t_start), NULL);
+	// The location of the shared memory segment must be known to all sub-processes
+	// All sub-processes depend on the BBD9000_SHMEM environment variable. They do not read the configuration file.
+	// The BBD9000run setting in BBD9000.conf specifies the directory where these files are kept.
+	// 
+	// For bootstrapping, BBD9000_CONF env variable or a parameter to this executable can be used
+	// to specify the location of BBD9000.conf
+	// If the system is already running and the shared memory segment exists, this program will exit
+	// with a line reporting the location of the shared memory segment:
+	// BBD9000_SHMEM = /path/to/shmem
+	// So, to boot-strap the system, run BBD9000init twice with the same parameters.
+	// The first run will initialize everything.  The second run will return the BBD9000_SHMEM path.
+	// If BBD9000_SHMEM already exists, a message will be sent to stderr, but the exit will be 0
+	// 
+	// The root path to BBD9000 configuration files can be provided in BBD9000_ROOT env variable,
+	// or as the only parameter to this program.  Parameter over-rides the env variable.
+	// Otherwise, we will attempt to find the path to the executable and set BBD9000_ROOT to its directory
+	// All other configuration files are expected to be in the same directory as BBD9000.conf
+	tmpPath[0] = '\0';
+	if ( argc > 1) {
+		strncpy (tmpPath, argv[1], sizeof (tmpPath));
+	} else if ( (chp = getenv ("BBD9000_ROOT")) ) {
+	// chp is not null, BBD9000_ROOT env variable exists
+		strncpy (tmpPath, chp, sizeof (tmpPath));
+	} else {
+		// Get the path to this executable.
+		// This is platform-specific
+		#if defined(__FreeBSD__)
+			int mib[4];
+			mib[0] = CTL_KERN;
+			mib[1] = KERN_PROC;
+			mib[2] = KERN_PROC_PATHNAME;
+			mib[3] = -1;
+			char buf[1024];
+			size_t cb = sizeof(buf);
+			sysctl(mib, 4, buf, &cb, NULL, 0);
 
-	// Set our BBD9000ID
-	BBD9000ID_fp = fopen (BBD9000ID_FILE,"r");
-	if (!BBD9000ID_fp) {
-		fprintf (stderr,"Initialization failed: could not open /etc/BBD9000ID: %s\n", strerror (errno));
-		exit (-1);
-	}
-	fgets (str,STR_SIZE,BBD9000ID_fp);
-	sscanf (str, "%lu", (unsigned long *)&(shmem->kiosk_id) );
-	if (shmem->kiosk_id < 1) {
-		fprintf (stderr,"Initialization failed: BBD9000 Kiosk ID undefined\n");
-		exit (-1);
-	}
-	printf ("Initializing BBD9000-%d\n",shmem->kiosk_id);
+		#elif defined(linux) || defined(__linux) || defined(__linux__) || defined(__TOS_LINUX__)
+			readlink ("/proc/self/exe", tmpPath, sizeof(tmpPath)-1);
 
-	// Upon initialization, alarms are off - SmartIO will report any alarms upon reset
-	shmem->valarm = 0;
-	shmem->pump = 0;	
-	strncpy (shmem->root_path,BBD9000root,PATH_SIZE-1);
+		#elif defined(__APPLE__) || defined(__TOS_MACOS__)
+			uint32_t size = sizeof(tmpPath);
+			_NSGetExecutablePath(tmpPath, &size);
+
+		#endif
+	}
+	// put the config file at the end of whatever path we got and make it absolute
+	snprintf (BBD9000root,sizeof(BBD9000root),"%s/%s",tmpPath,BBD9000conf_def);
+	if (! realpath(BBD9000root, tmpPath) ) {
+		fprintf (stderr,"The configuration file path %s could not be resolved: %s\n",BBD9000root, strerror(errno));
+		exit (-1);
+	} else {
+		// tmpPath is the absolute one
+		// Set up the BBD9000root - where all the configuration files live
+		chp = strrchr (tmpPath,'/');
+		if (chp) *chp = '\0';
+		strncpy (shmem->root_path,tmpPath,sizeof (shmem->root_path));
+	}
+
+	/* chdir to the root of the filesystem to not block dismounting */
+	chdir("/");
+
+	// The path from root to the main configuration file is hard-coded (BBD9000.conf)
 	snprintf (shmem->BBD9000conf,PATH_SIZE,"%s/%s",shmem->root_path,BBD9000conf_def);
-
-	// Read our configurations
-	printf ("Scanning configuration file in %s\n",shmem->BBD9000conf);
-	fflush (stdout);
+	// Read our main configuration
 	if ( conf_cfg_read (shmem) != 0 ) {
 		fprintf (stderr,"Initialization failed: Error parsing %s\n",shmem->BBD9000conf);
 		exit (-1);
 	}
 
-	printf ("Scanning configuration file in %s\n",shmem->cal_conf);
+	// The files used while running are set by cal_cfg_read().
+	// If shmem already exists, we are already running, and won't reinitialize.
+	// In this case, print BBD9000_SHMEM to stdout, print message to stderr, and exit normally
+	if ( ! stat (shmem->BBD9000mem, &filestat) ) {
+		fprintf (stdout,"BBD9000_SHMEM = %s\n",shmem->BBD9000mem);
+		fprintf (stderr,"Initialization failed: Shared memory segment already exists at %s\n",shmem->BBD9000mem);
+		fprintf (stderr,"To re-initialize, delete this file and try again.\n");
+		exit (0);
+	}
+
+	/* Record time that this structure was initialized */
+	gettimeofday(&(shmem->t_start), NULL);
+
+	printf ("Initializing BBD9000-%d\n",shmem->kiosk_id);
+	printf ("Scanned configuration file in %s\n",shmem->BBD9000conf);
 	fflush (stdout);
+
+
+	// Upon initialization, alarms are off - SmartIO will report any alarms upon reset
+	shmem->valarm = 0;
+	shmem->pump = 0;
+
+	// Read our calibrations
+	printf ("Scanning configuration file in %s\n",shmem->cal_conf);
 	if ( cal_cfg_read (shmem) != 0 ) {
 		fprintf (stderr,"Initialization failed: Error parsing %s\n",shmem->cal_conf);
 		exit (-1);
@@ -149,30 +184,21 @@ FILE *BBD9000ID_fp;
 		exit (-1);
 	}
 
-
-	/* open/create the shared memory object */
-	shmem_fd = open(BBD9000MEM, O_RDWR | O_CREAT | O_TRUNC,0666);
-	if (shmem_fd < 0) {
-		fprintf (stderr,"Could not open shared memory segment %s: %s\n",BBD9000MEM, strerror (errno));
+	// The shared memory and fifos live in the shmem->BBD9000run directory read from config
+	// The final directory component of this path may not exist and needs to be created
+	// This has to be done each time because this is a temporary filesystem.
+	fmode = S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH;
+	if ( stat (shmem->BBD9000run, &filestat) ) {
+	// returned error, create it
+		if (mkdir(shmem->BBD9000run, fmode)) {
+			fprintf (stderr,"Initialization failed: Error creating BBD9000run directory %s: %s\n",shmem->BBD9000run,strerror(errno));
+			exit (-1);
+		}
+	} else if (! (filestat.st_mode & S_IFDIR) ) {
+	// no error from fstat, but not a directory
+		fprintf (stderr,"Initialization failed: BBD9000run %s exists, but is not a directory\n",shmem->BBD9000run);
 		exit (-1);
 	}
-	fchmod (shmem_fd,0666);
-
-	/* write our structure to shared memory */
-	if ( write (shmem_fd, (void *)shmem, sizeof (BBD9000mem)) != sizeof (BBD9000mem) ) {
-		fprintf (stderr,"Could not write to shared object %s: %s\n",BBD9000MEM, strerror (errno));
-		close (shmem_fd);
-		unlink (BBD9000MEM);
-		exit (-1);
-	}
-	
-	/* Success */
-	fprintf (stdout,"Successfully innitialized %s; size=%lu bytes, %lu pages\n",
-		BBD9000MEM, (unsigned long)sizeof (BBD9000mem), (unsigned long)(SHMEM_SIZE / getpagesize())
-	);
-	close (shmem_fd);
-
-
 
 	// Check for the kiosk's key file
 	if ( stat (shmem->BBD9000key, &filestat) ) {
@@ -203,7 +229,7 @@ FILE *BBD9000ID_fp;
 	/*
 	* Verify, and if necessary reflash the SmartIO
 	*/
-	snprintf (tmpPath,PATH_SIZE,"%s/%s",BBD9000root,BBD9000SmartIOhex);
+	snprintf (tmpPath,PATH_SIZE,"%s/%s",shmem->root_path,BBD9000SmartIOhex);
 	if ( stat (tmpPath, &filestat) ) {
 		fprintf (stderr,"*** The SmartIO hex file (%s) does not exist!\n",tmpPath);
 		exit (1);
@@ -211,7 +237,7 @@ FILE *BBD9000ID_fp;
 	fprintf (stdout,"Verifying SmartIO...");
 	fflush (stdout);
 	snprintf (str,STR_SIZE,"%s/%s -d %s -b %d -r '\\n\\nRESET\\n' -a 100 -s -v %s",
-		BBD9000root,BBD9000SmartIObootloader,
+		shmem->root_path,BBD9000SmartIObootloader,
 		shmem->SmartIOdev,shmem->SmartIObaud,
 		tmpPath
 	);
@@ -219,7 +245,7 @@ FILE *BBD9000ID_fp;
 		fprintf (stdout,"Failed. Reflashing...");
 		fflush (stdout);
 		snprintf (str,STR_SIZE,"%s/%s -d %s -b %d -r '\\n\\nRESET\\n' -a 100 -s -p %s",
-			BBD9000root,BBD9000SmartIObootloader,
+			shmem->root_path,BBD9000SmartIObootloader,
 			shmem->SmartIOdev,shmem->SmartIObaud,
 			tmpPath
 		);
@@ -238,61 +264,92 @@ FILE *BBD9000ID_fp;
 	/*
 	* Create the named pipes (FIFOs)
 	*/
+	// conf_cfg_read() sets up the paths to the shared memory objects and fifos.
 
     /* Create the named pipe for events */
-	ret_val = mkfifo(BBD9000EVT, 0644);
+	fmode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
+	ret_val = mkfifo(shmem->BBD9000evt, fmode);
 	if ((ret_val != 0) && (errno != EEXIST)) {
-		fprintf(stderr,"Error creating the named pipe %s\n",BBD9000EVT);
+		fprintf(stderr,"Error creating the named pipe %s\n",shmem->BBD9000evt);
 		exit (1);
 	} else {
-		fprintf(stdout,"Created event FIFO %s\n",BBD9000EVT);
+		fprintf(stdout,"Created event FIFO %s\n",shmem->BBD9000evt);
 	}
-	chmod (BBD9000EVT,0666);
+	chmod (shmem->BBD9000evt,fmode);
 
     /* Create the named pipe for timers */
-	ret_val = mkfifo(BBD9000TIMER, 0644);
+	fmode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
+	ret_val = mkfifo(shmem->BBD9000tim, fmode);
 	if ((ret_val != 0) && (errno != EEXIST)) {
-		fprintf(stderr,"Error creating the named pipe %s\n",BBD9000TIMER);
+		fprintf(stderr,"Error creating the named pipe %s\n",shmem->BBD9000tim);
 		exit (1);
 	} else {
-		fprintf(stdout,"Created timer FIFO %s\n",BBD9000TIMER);
+		fprintf(stdout,"Created timer FIFO %s\n",shmem->BBD9000tim);
 	}
-	chmod (BBD9000TIMER,0666);
+	chmod (shmem->BBD9000tim,fmode);
 
     /* Create the named pipe for hardware output */
-	ret_val = mkfifo(BBD9000OUT, 0666);
+	fmode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
+	ret_val = mkfifo(shmem->BBD9000out, fmode);
 	if ((ret_val != 0) && (errno != EEXIST)) {
-		fprintf(stderr,"Error creating the named pipe %s\n",BBD9000OUT);
+		fprintf(stderr,"Error creating the named pipe %s\n",shmem->BBD9000out);
 		exit (1);
 	} else {
-		fprintf(stdout,"Created peripheral output FIFO %s\n",BBD9000OUT);
+		fprintf(stdout,"Created peripheral output FIFO %s\n",shmem->BBD9000out);
 	}
-	chmod (BBD9000OUT,0666);
+	chmod (shmem->BBD9000out,fmode);
 
     /* Create the named pipe for server communication */
-	ret_val = mkfifo(BBD9000srv, 0600);
+	fmode = S_IRUSR | S_IWUSR;
+	ret_val = mkfifo(shmem->BBD9000srv, fmode);
 	if ((ret_val != 0) && (errno != EEXIST)) {
-		fprintf(stderr,"Error creating the named pipe %s\n",BBD9000srv);
+		fprintf(stderr,"Error creating the named pipe %s\n",shmem->BBD9000srv);
 		exit (1);
 	} else {
-		fprintf(stdout,"Created server communications FIFO %s\n",BBD9000srv);
+		fprintf(stdout,"Created server communications FIFO %s\n",shmem->BBD9000srv);
 	}
-	chmod (BBD9000srv,0666);
+	chmod (shmem->BBD9000srv,fmode);
 
     /* Create the named pipe for CC processor communication */
-	ret_val = mkfifo(BBD9000cc, 0600);
+	fmode = S_IRUSR | S_IWUSR;
+	ret_val = mkfifo(shmem->BBD9000ccg, fmode);
 	if ((ret_val != 0) && (errno != EEXIST)) {
-		fprintf(stderr,"Error creating the named pipe %s\n",BBD9000cc);
+		fprintf(stderr,"Error creating the named pipe %s\n",shmem->BBD9000ccg);
 		exit (1);
 	} else {
-		fprintf(stdout,"Created CC processor communications FIFO %s\n",BBD9000cc);
+		fprintf(stdout,"Created CC processor communications FIFO %s\n",shmem->BBD9000ccg);
 	}
-	chmod (BBD9000cc,0666);
+	chmod (shmem->BBD9000ccg,fmode);
 
     /* update network info - this will transmit a ping packet */
 	fprintf(stdout,"Checking network status\n");
 	netlink (shmem, "check", 0);
-	chmod (BBD9000netlock,0666);
+	fmode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
+	chmod (shmem->BBD9000net,fmode);
+
+
+	// open/create the shared memory object
+	fmode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
+	shmem_fd = open(shmem->BBD9000mem, O_RDWR | O_CREAT | O_TRUNC, fmode);
+	if (shmem_fd < 0) {
+		fprintf (stderr,"Could not open shared memory segment %s: %s\n",shmem->BBD9000mem, strerror (errno));
+		exit (-1);
+	}
+	fchmod (shmem_fd,fmode);
+
+	/* write our structure to shared memory */
+	if ( write (shmem_fd, (void *)shmem, sizeof (BBD9000mem)) != sizeof (BBD9000mem) ) {
+		fprintf (stderr,"Could not write to shared object %s: %s\n",shmem->BBD9000mem, strerror (errno));
+		close (shmem_fd);
+		unlink (shmem->BBD9000mem);
+		exit (-1);
+	}
+
+	/* Success */
+	fprintf (stdout,"Successfully innitialized %s; size=%lu bytes, %lu pages\n",
+		shmem->BBD9000mem, (unsigned long)sizeof (BBD9000mem), (unsigned long)(SHMEM_SIZE / getpagesize())
+	);
+	close (shmem_fd);
 
 
 	fprintf(stdout,"Done.  BBD9000 initialized.\n");

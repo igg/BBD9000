@@ -25,6 +25,8 @@ Released to the public domain by Paul Schlyter, December 1992
 #include <assert.h>
 #include <time.h>
 #include <errno.h>
+#include <string.h> // strerror
+
 
 
 #include "BBD9000mem.h"
@@ -152,10 +154,10 @@ double GMST0( double d );
   Added sun_rise_set0 macro (sun center at horizon) to make lights come on earlier
 */
 
-int main(void)
-{
-BBD9000mem *shmem;
-int shmem_fd;
+int main (int argc, const char **argv) {
+	const char *BBD9000MEMpath;
+	BBD9000mem *shmem;
+	int shmem_fd;
 	int year,month,day;
 	double lon, lat;
 	double civ_start, civ_end;
@@ -164,14 +166,22 @@ int shmem_fd;
 	time_t t_now;
 
 
-	/* vvvv Init */
+	// This is a sub-process.
+	// The shared memory segment path must be provided in the BBD9000_SHMEM environment variable
+	if ( ! (BBD9000MEMpath = getenv ("BBD9000_SHMEM")) ) {
+		fprintf (stderr,"%s: path to shared memory segment must be specified in the BBD9000_SHMEM environment variable\n", argv[0]);
+		exit (-1);
+	}
 
 	/* chdir to the root of the filesystem to not block dismounting */
 	chdir("/");
 
 	/* open the shared memory object */
-	shmem_fd = open(BBD9000MEM, O_RDWR|O_SYNC);
-	assert(shmem_fd != -1);
+	shmem_fd = open(BBD9000MEMpath, O_RDWR|O_SYNC);
+	if (shmem_fd < 0) {
+		fprintf (stderr,"%s: Could not open shared memory segment %s: %s\n", argv[0], BBD9000MEMpath, strerror (errno));
+		exit (-1);
+	}
 
 	/* mmap our shared memory */
 	shmem = (BBD9000mem *) mmap(0, SHMEM_SIZE, PROT_READ|PROT_WRITE, MAP_SHARED, shmem_fd, 0);

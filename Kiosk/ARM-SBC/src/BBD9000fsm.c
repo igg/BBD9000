@@ -357,24 +357,29 @@ float last_ppg;
 #define DEBUGGING 1
 
 
-int main(int argc, char **argv)
-{
+int main (int argc, const char **argv) {
+const char *BBD9000MEMpath;
 int shmem_fd;
 FILE *fifo_fp = NULL;
-char buf[READ_BUF_SIZE+1], *read;
+char buf[READ_BUF_SIZE], *read;
 int nevents;
 
 
 	/* vvvv Init */
+	// This is a sub-process.
+	// The shared memory segment path must be provided in the BBD9000_SHMEM environment variable
+	if ( ! (BBD9000MEMpath = getenv ("BBD9000_SHMEM")) ) {
+		fprintf (stderr,"%s: path to shared memory segment must be specified in the BBD9000_SHMEM environment variable\n", argv[0]);
+		exit (-1);
+	}
 
 	/* chdir to the root of the filesystem to not block dismounting */
 	chdir("/");
 
- 
 	/* open the shared memory object */
-	shmem_fd = open(BBD9000MEM, O_RDWR|O_SYNC);
+	shmem_fd = open(BBD9000MEMpath, O_RDWR|O_SYNC);
 	if (shmem_fd < 0) {
-		fprintf (stderr,"Could not open shared POSIX memory segment %s: %s\n",BBD9000MEM, strerror (errno));
+		fprintf (stderr,"%s: Could not open shared memory segment %s: %s\n", argv[0], BBD9000MEMpath, strerror (errno));
 		exit (-1);
 	}
 
@@ -388,19 +393,19 @@ int nevents;
 	logMessage ("BBD9000fsm started");
 
 	/* Open the pipe for reading - this blocks until a writer opens the file */
-	fifo_fp = fopen(BBD9000EVT, "r");
+	fifo_fp = fopen(shmem->BBD9000evt, "r");
 	assert (fifo_fp != NULL);
 
 	/* open the output FIFO */
-	out_fp = fopen (BBD9000OUT,"w");
+	out_fp = fopen (shmem->BBD9000out,"w");
 	assert(out_fp != NULL);
 	
 	/* Open the server FIFO */
-	srv_fp = fopen (BBD9000srv, "w");
+	srv_fp = fopen (shmem->BBD9000srv, "w");
 	assert(srv_fp != NULL);
 
 	/* Open the timer FIFO */
-	tmr_fp = fopen (BBD9000TIMER, "w");
+	tmr_fp = fopen (shmem->BBD9000tim, "w");
 	assert (tmr_fp != NULL);
 
 	// Register our signal handlers to save state
@@ -438,7 +443,7 @@ int nevents;
 	while (1) {
 
 		/* Open the pipe for reading - this blocks until a writer opens the file */
-		if (!fifo_fp) fifo_fp = fopen(BBD9000EVT, "r");
+		if (!fifo_fp) fifo_fp = fopen(shmem->BBD9000evt, "r");
 		assert (fifo_fp != NULL);
 
 		/* Read from the pipe - this blocks only if there are writers with the file open */
@@ -464,7 +469,7 @@ int nevents;
 void pushEvent (const char *evt_txt) {
 FILE *evt_fp;
 
-	evt_fp = fopen(BBD9000EVT, "a");
+	evt_fp = fopen(shmem->BBD9000evt, "a");
 	if (evt_fp) {
 		fprintf (evt_fp,"%s\n",evt_txt);
 		fclose (evt_fp);
@@ -5034,7 +5039,7 @@ FILE *fp;
 		fflush (srv_fp);
 		// Don't clear msr yet - we have retries to do.
 	} else {
-		fp = fopen (BBD9000cc,"w");
+		fp = fopen (shmem->BBD9000ccg,"w");
 		assert (fp != NULL);
 		fprintf (fp,"%s\t%.2f\n",type,amount);
 		fflush (fp);
@@ -5158,17 +5163,17 @@ void sigPipeHandler (int signum) {
 
 	/* open the output FIFO */
 	fclose (out_fp);
-	out_fp = fopen (BBD9000OUT,"w");
+	out_fp = fopen (shmem->BBD9000out,"w");
 	assert(out_fp != NULL);
 	
 	/* Open the server FIFO */
 	fclose (srv_fp);
-	srv_fp = fopen (BBD9000srv, "w");
+	srv_fp = fopen (shmem->BBD9000srv, "w");
 	assert(srv_fp != NULL);
 
 	/* Open the timer FIFO */
 	fclose (tmr_fp);
-	tmr_fp = fopen (BBD9000TIMER, "w");
+	tmr_fp = fopen (shmem->BBD9000tim, "w");
 	assert (tmr_fp != NULL);
 }
 

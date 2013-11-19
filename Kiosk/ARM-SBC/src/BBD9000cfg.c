@@ -14,15 +14,18 @@ cfg_t *cfg;
 	// Declaration of options in the config file
 	static cfg_opt_t opts[] = {
 	/* Coop Name */
-		CFG_STR("coop-name",     "Baltimore Biodiesel", CFGF_NONE),
+		CFG_STR("coop-name",      "Baltimore Biodiesel", CFGF_NONE),
+		CFG_INT("kiosk_id",       6, CFGF_NONE),
+		CFG_STR("kiosk_name",     "Test Kiosk", CFGF_NONE),
 	/* File Paths */
-		CFG_STR("BBD9000LOG",    "BBD9000.log", CFGF_NONE),
-		CFG_STR("BBD9000-run",   "BBD9000-run.conf", CFGF_NONE),
-		CFG_STR("BBD9000-cal",   "BBD9000-cal.conf", CFGF_NONE),
-		CFG_STR("BBD9000key",    "BBD9000.pem", CFGF_NONE),
-		CFG_STR("BBD9000srv_key", "BBD-pub.pem", CFGF_NONE),
+		CFG_STR("BBD9000LOG",      "BBD9000.log", CFGF_NONE),
+		CFG_STR("BBD9000-run",     "BBD9000-run.conf", CFGF_NONE),
+		CFG_STR("BBD9000-cal",     "BBD9000-cal.conf", CFGF_NONE),
+		CFG_STR("BBD9000key",      "BBD9000.pem", CFGF_NONE),
+		CFG_STR("BBD9000srv_key",  "BBD-pub.pem", CFGF_NONE),
 		CFG_STR("BBD9000ccGWconf", "AuthDotNet.conf", CFGF_NONE),
-		CFG_STR("BBD9000patch", "BBD9000patch", CFGF_NONE),
+		CFG_STR("BBD9000patch",    "BBD9000patch", CFGF_NONE),
+		CFG_STR("BBD9000run",      "/var/run/BBD9000", CFGF_NONE),
 		
 	/* SmartIO device and baud */
 		CFG_STR("SmartIOdev", "/dev/ttyAM1", CFGF_NONE),
@@ -81,7 +84,10 @@ char tmpPath[PATH_SIZE],BBD9000root[PATH_SIZE];
 	}
 
 	// Copy stuff from the configuration
-	strncpy (shmem->coop_name, cfg_getstr (cfg, "coop-name"), COOP_NAME_SIZE);
+	strncpy (shmem->coop_name, cfg_getstr (cfg, "coop-name"), NAME_SIZE);
+
+	shmem->kiosk_id = cfg_getint (cfg,"kiosk_id");
+	strncpy (shmem->kiosk_name, cfg_getstr (cfg, "kiosk_name"), NAME_SIZE);
 
 	strncpy (tmpPath,cfg_getstr (cfg, "BBD9000LOG"),sizeof (tmpPath));
 	if (*tmpPath == '/')
@@ -125,6 +131,17 @@ char tmpPath[PATH_SIZE],BBD9000root[PATH_SIZE];
 		strncpy (shmem->BBD9000patch,tmpPath,sizeof (shmem->BBD9000patch));
 	else
 		snprintf (shmem->BBD9000patch,sizeof (shmem->BBD9000patch),"%s/%s",BBD9000root,tmpPath);
+
+	/* root directory in a shared-memory filesystem (i.e. /var/run/BBD9000) */
+	strncpy (shmem->BBD9000run,cfg_getstr (cfg, "BBD9000run"),sizeof (shmem->BBD9000run));
+	// The rest of these paths are dependent on the root
+	snprintf (shmem->BBD9000mem, sizeof (shmem->BBD9000mem), "%s/%s", shmem->BBD9000run, "BBD9000-mem");
+	snprintf (shmem->BBD9000out, sizeof (shmem->BBD9000out), "%s/%s", shmem->BBD9000run, "BBD9000-out");
+	snprintf (shmem->BBD9000evt, sizeof (shmem->BBD9000evt), "%s/%s", shmem->BBD9000run, "BBD9000-evt");
+	snprintf (shmem->BBD9000tim, sizeof (shmem->BBD9000tim), "%s/%s", shmem->BBD9000run, "BBD9000-tim");
+	snprintf (shmem->BBD9000srv, sizeof (shmem->BBD9000srv), "%s/%s", shmem->BBD9000run, "BBD9000-srv");
+	snprintf (shmem->BBD9000ccg, sizeof (shmem->BBD9000ccg), "%s/%s", shmem->BBD9000run, "BBD9000-ccg");
+	snprintf (shmem->BBD9000net, sizeof (shmem->BBD9000net), "%s/%s", shmem->BBD9000run, "BBD9000-net");	
 
 	/* SmartIO device and baud */
 	strncpy (shmem->SmartIOdev,cfg_getstr (cfg, "SmartIOdev"),sizeof (shmem->SmartIOdev));
@@ -514,7 +531,7 @@ int netlink (BBD9000mem *shmem, const char *msg, char get_lock) {
 char line[STR_SIZE];
 	
 	if (msg && (! strcmp (msg,"start") || ! strcmp (msg,"stop") || ! strcmp (msg,"restart") || ! strcmp (msg,"idle") || ! strcmp (msg,"check")) ) {
-		sprintf (line,"%s/%s %s >/dev/null 2>&1 &",shmem->root_path, BBD9000netlink, msg);
+		sprintf (line,"NETLOCK=%s %s/%s %s >/dev/null 2>&1 &",shmem->BBD9000net, shmem->root_path, BBD9000netlink, msg);
 		system (line);
 	}
 	
@@ -533,7 +550,7 @@ char bigBuf[READ_BUF_SIZE];
 long nread;
 
 	// Open the file read/write
-	if((fdlock = open(BBD9000netlock, O_RDWR, 0666)) < 0)
+	if((fdlock = open(shmem->BBD9000net, O_RDWR, 0666)) < 0)
 		return (-1);
 
  	if(flock(fdlock, LOCK_EX) == -1) {

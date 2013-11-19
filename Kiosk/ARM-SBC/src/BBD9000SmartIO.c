@@ -73,27 +73,35 @@ int getBaudID (int baud);
 // Signal handler
 void sigTermHandler (int signum);
 
-int main () {
+int main (int argc, const char **argv) {
+const char *BBD9000MEMpath;
 fd_set read_fds;
-int nfds;
-char read_buf[READ_BUF_SIZE+1];
+char read_buf[READ_BUF_SIZE];
 
 
-	/* vvvv Init */
+	// This is a sub-process.
+	// The shared memory segment path must be provided in the BBD9000_SHMEM environment variable
+	if ( ! (BBD9000MEMpath = getenv ("BBD9000_SHMEM")) ) {
+		fprintf (stderr,"%s: path to shared memory segment must be specified in the BBD9000_SHMEM environment variable\n", argv[0]);
+		exit (-1);
+	}
 
 	/* chdir to the root of the filesystem to not block dismounting */
 	chdir("/");
 
 	/* open the shared memory object */
-	shmem_fd = open(BBD9000MEM, O_RDWR|O_SYNC);
-	assert(shmem_fd != -1);
+	shmem_fd = open(BBD9000MEMpath, O_RDWR|O_SYNC);
+	if (shmem_fd < 0) {
+		fprintf (stderr,"%s: Could not open shared memory segment %s: %s\n", argv[0], BBD9000MEMpath, strerror (errno));
+		exit (-1);
+	}
 
 	/* mmap our shared memory */
 	shmem = (BBD9000mem *) mmap(0, SHMEM_SIZE, PROT_READ|PROT_WRITE, MAP_SHARED, shmem_fd, 0);
 	assert(&shmem != MAP_FAILED);
 
 	/* open the event FIFO */
-	BBD9000EVT_fp = fopen (BBD9000EVT,"w");
+	BBD9000EVT_fp = fopen (shmem->BBD9000evt,"w");
 	assert(BBD9000EVT_fp != NULL);
 
 	// Open the log
@@ -106,16 +114,16 @@ char read_buf[READ_BUF_SIZE+1];
 // the select will never block, returning an EOF every time, thus defeating the purpose of select.
 // Don't know if the EOF is ever cleared, so that select returns to blocking if other writers connect.
 // The solution is to open the FIFO read and write so that there is always at least one writer (this process).
-	BBD9000OUT_fd = open(BBD9000OUT, O_RDWR | O_NONBLOCK);
+	BBD9000OUT_fd = open(shmem->BBD9000out, O_RDWR | O_NONBLOCK);
 	if (BBD9000OUT_fd < 0) {
-		logMessage (log_fp,"Couldn't open %s: %s\n",BBD9000OUT,strerror(errno));
+		logMessage (log_fp,"Couldn't open %s: %s\n",shmem->BBD9000out,strerror(errno));
 		exit (EXIT_FAILURE);
 	}
 	// We're going to use line-buffered input to make our life easier
 	// But we need the file-descriptor for the select call also, so we open both
 	BBD9000OUT_fp = fdopen (BBD9000OUT_fd, "r");
 	if (BBD9000OUT_fp == NULL) {
-		logMessage (log_fp,"Couldn't fopen %s: %s\n",BBD9000OUT,strerror(errno));
+		logMessage (log_fp,"Couldn't fopen %s: %s\n",shmem->BBD9000out,strerror(errno));
 		exit (EXIT_FAILURE);
 	}
 // Turn off buffering on this stream to make fgets work with select()

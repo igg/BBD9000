@@ -169,7 +169,8 @@ char **getcgivars() {
 
 
 
-int main () {
+int main (int argc, const char **argv) {
+const char *BBD9000MEMpath;
 BBD9000mem *shmem;
 int shmem_fd;
 char line[256],*chp,cpuRead=0;
@@ -177,12 +178,33 @@ FILE *uptime_fp, *BBD9000OUT_fp;
 size_t n_char=255;
 float cpu1,cpu5,cpu15;
 struct timeval t_now;
+
+#ifdef DEVEL
 char **cgivars ;
 int i=0;
+#endif
 
+
+	// This is a sub-process.
+	// The shared memory segment path must be provided in the BBD9000_SHMEM environment variable
+	if ( ! (BBD9000MEMpath = getenv ("BBD9000_SHMEM")) ) {
+		fprintf (stderr,"%s: path to shared memory segment must be specified in the BBD9000_SHMEM environment variable\n", argv[0]);
+		exit (-1);
+	}
 
 	/* chdir to the root of the filesystem to not block dismounting */
 	chdir("/");
+
+	/* open the shared memory object */
+	shmem_fd = open(BBD9000MEMpath, O_RDWR|O_SYNC);
+	if (shmem_fd < 0) {
+		fprintf (stderr,"%s: Could not open shared memory segment %s: %s\n", argv[0], BBD9000MEMpath, strerror (errno));
+		exit (-1);
+	}
+
+	/* mmap our shared memory */
+	shmem = (BBD9000mem *) mmap(0, SHMEM_SIZE, PROT_READ|PROT_WRITE, MAP_SHARED, shmem_fd, 0);
+	assert(&shmem != MAP_FAILED);
 
 	/* determine our CPU load by calling uptime */
 	uptime_fp = popen ("/usr/bin/uptime","r");
@@ -194,24 +216,12 @@ int i=0;
 	}
 	pclose(uptime_fp);
 
-
-	/* open the shared memory object */
-	shmem_fd = open(BBD9000MEM, O_RDWR|O_SYNC);
-	if (shmem_fd < 0) {
-		fprintf (stderr,"Could not open shared POSIX memory segment %s: %s\n",BBD9000MEM, strerror (errno));
-		exit (-1);
-	}
-
-	/* mmap our shared memory */
-	shmem = (BBD9000mem *) mmap(0, SHMEM_SIZE, PROT_READ|PROT_WRITE, MAP_SHARED, shmem_fd, 0);
-	assert(&shmem != MAP_FAILED);
-
 	/* Success */
 
 
 	/* Get our CGI vars if any */
 	// Disabled in non-DEVEL version
-    BBD9000OUT_fp = fopen (BBD9000OUT,"w");
+    BBD9000OUT_fp = fopen (shmem->BBD9000out,"w");
 #ifdef DEVEL
     if ( (cgivars = getcgivars()) && (cgivars[0]) ) {
 		for (i=0; cgivars[i]; i+= 2) {

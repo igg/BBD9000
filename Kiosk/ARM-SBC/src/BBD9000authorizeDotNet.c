@@ -705,7 +705,8 @@ int expired_codes[] = {8,0};
 	}
 }
 
-int main () {
+int main (int argc, const char **argv) {
+const char *BBD9000MEMpath;
 int ret;
 FILE *fifo_fp=NULL;
 char buf[MAX_RESP_SIZE], *read;
@@ -719,14 +720,20 @@ srvrStruct self;
 
 
 	/* vvvv Init */
+	// This is a sub-process, so the shared memory segment must be provided as the first parameter
+	if (argc < 2) {
+		fprintf (stderr,"%s: path to shared memory segment is a required parameter\n", argv[0]);
+		exit (-1);
+	}
+	BBD9000MEMpath = argv[1];
 
 	/* chdir to the root of the filesystem to not block dismounting */
 	chdir("/");
 
 	/* open the shared memory object */
-	shmem_fd = open(BBD9000MEM, O_RDWR|O_SYNC);
+	shmem_fd = open(BBD9000MEMpath, O_RDWR|O_SYNC);
 	if (shmem_fd < 0) {
-		fprintf (stderr,"Could not open shared POSIX memory segment %s: %s\n",BBD9000MEM, strerror (errno));
+		fprintf (stderr,"%s: Could not open shared memory segment %s: %s\n", argv[0], BBD9000MEMpath, strerror (errno));
 		exit (-1);
 	}
 
@@ -735,7 +742,7 @@ srvrStruct self;
 	assert(&shmem != MAP_FAILED);
 
 	/* open the event FIFO */
-	evt_fp = fopen (BBD9000EVT,"w");
+	evt_fp = fopen (shmem->BBD9000evt,"w");
 	assert(evt_fp != NULL);
 	
 	// Open the log
@@ -763,7 +770,7 @@ srvrStruct self;
 	while (1) {
 
 		/* Open the pipe for reading - this blocks until a writer opens the file */
-		if (!fifo_fp) fifo_fp = fopen(BBD9000cc, "r");
+		if (!fifo_fp) fifo_fp = fopen(shmem->BBD9000ccg, "r");
 		assert (fifo_fp != NULL);
 
 		/* Read from the pipe - this blocks only if there are writers with the file open */

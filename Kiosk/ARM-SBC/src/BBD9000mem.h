@@ -59,17 +59,7 @@
 
 #define BBD9000ID_FILE "/etc/BBD9000ID"
 
-// Where all the FIFOs are.
-
-#define BBD9000MEM        "/var/ramfs/BBD9000MEM"
-#define BBD9000OUT        "/var/ramfs/BBD9000OUT"
-#define BBD9000EVT        "/var/ramfs/BBD9000EVT"
-#define BBD9000TIMER      "/var/ramfs/BBD9000TIMER"
-#define BBD9000srv        "/var/ramfs/BBD9000srv"
-#define BBD9000cc         "/var/ramfs/BBD9000cc"
-// The network status file, and how to control the network
-#define BBD9000netlock    "/var/ramfs/BBD9000netlock"
-#define BBD9000netlink    "netlink" // relative to shmem->root_path
+#define BBD9000netlink    "netlink" // binary, relative to shmem->root_path
 // This contains an adjtimex command to set the frequency and ticks for the system clock
 #define BBD9000timeDrift  "/etc/init.d/adjtimex"
 // These are relative to BBD9000root
@@ -185,7 +175,17 @@ typedef struct {
 	char BBD9000srv_key[PATH_SIZE];
 	char BBD9000ccGWconf[PATH_SIZE];
 	char BBD9000patch[PATH_SIZE];
-	
+	char BBD9000run[PATH_SIZE];
+// Where all the FIFOs are (set up by BBD9000cfg/conf_cfg_read() from BBD9000run)
+// BBD9000init starts sub-processes with a parameter to the main shared memory segment
+	char BBD9000mem[PATH_SIZE];
+	char BBD9000out[PATH_SIZE];
+	char BBD9000evt[PATH_SIZE];
+	char BBD9000tim[PATH_SIZE];
+	char BBD9000srv[PATH_SIZE];
+	char BBD9000ccg[PATH_SIZE];
+	char BBD9000net[PATH_SIZE];
+
 	/* SmartIO device and baudrate */
 	char SmartIOdev[PATH_SIZE];
 	int SmartIObaud;

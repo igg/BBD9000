@@ -9,10 +9,13 @@ if [ -z "$DNS_DIG" ] ; then
 fi
 
 # This is the network status file.
-NETLOCK="/var/ramfs/BBD9000netlock"
+# NETLOCK has to be passed from the environment
+if [ -z "$NETLOCK" ] ; then
+	echo "NETLOCK environment variable is required. Exiting"
+	exit -1
+fi
 # This is the program for talking to the cell modem
 CELL_COMS="/BBD9000/BBD9000cell"
-NETLOCK="/var/ramfs/BBD9000netlock"
 
 NET_STATUS=""
 ETH_STATUS=""

@@ -464,7 +464,8 @@ fflush(log_fp);
 
 }
 
-int main () {
+int main (int argc, const char **argv) {
+const char *BBD9000MEMpath;
 selfStruct *self;
 FILE *key_fp, *state_fp, *fifo_fp;
 int shmem_fd;
@@ -474,15 +475,20 @@ long nread;
 struct timeval wait_timeval, *wait_timeval_p;
 int rv=0;
 
-	/* vvvv Init */
+	// This is a sub-process.
+	// The shared memory segment path must be provided in the BBD9000_SHMEM environment variable
+	if ( ! (BBD9000MEMpath = getenv ("BBD9000_SHMEM")) ) {
+		fprintf (stderr,"%s: path to shared memory segment must be specified in the BBD9000_SHMEM environment variable\n", argv[0]);
+		exit (-1);
+	}
 
 	/* chdir to the root of the filesystem to not block dismounting */
 	chdir("/");
 
 	/* open the shared memory object */
-	shmem_fd = open(BBD9000MEM, O_RDWR|O_SYNC);
+	shmem_fd = open(BBD9000MEMpath, O_RDWR|O_SYNC);
 	if (shmem_fd < 0) {
-		fprintf (stderr,"Could not open shared POSIX memory segment %s: %s\n",BBD9000MEM, strerror (errno));
+		fprintf (stderr,"%s: Could not open shared memory segment %s: %s\n", argv[0], BBD9000MEMpath, strerror (errno));
 		exit (-1);
 	}
 
@@ -522,7 +528,7 @@ int rv=0;
 
 
 	/* open the event FIFO */
-	evt_fp = fopen (BBD9000EVT,"w");
+	evt_fp = fopen (shmem->BBD9000evt,"w");
 	assert(evt_fp != NULL);
 
 	/* ^^^^ Init */
@@ -558,9 +564,9 @@ int rv=0;
 	// and select() doesn't end up giving the fd a stuck EOF when a writer disconnects and reconnects
 	// That's a weird thing that happens with FIFOs that doesn't happen with regular files.
 	// They can have an EOF that magically goes away without us doing anything.
-	fifo_fd = open(BBD9000srv, O_RDWR);
+	fifo_fd = open(shmem->BBD9000srv, O_RDWR);
 	assert (fifo_fd > -1);
-	fifo_fp = fopen(BBD9000srv, "r+");
+	fifo_fp = fopen(shmem->BBD9000srv, "r+");
 	assert (fifo_fp != NULL);
 	logMessage (log_fp,"Reading FIFO...");
 
@@ -594,7 +600,7 @@ int rv=0;
 			} else if (nread == 0) {
 				logMessage (log_fp,"got EOF");
 				close (fifo_fd);
-				fifo_fd = open(BBD9000srv, O_RDWR);
+				fifo_fd = open(shmem->BBD9000srv, O_RDWR);
 			} else {
 				// set terminating NULL
 				self->buf_size += nread;
