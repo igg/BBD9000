@@ -80,14 +80,15 @@ mode_t fmode;
 	// All sub-processes depend on the BBD9000_SHMEM environment variable. They do not read the configuration file.
 	// The BBD9000run setting in BBD9000.conf specifies the directory where these files are kept.
 	// 
-	// For bootstrapping, BBD9000_CONF env variable or a parameter to this executable can be used
+	// For bootstrapping, BBD9000_ROOT env variable or a parameter to this executable can be used
 	// to specify the location of BBD9000.conf
 	// If the system is already running and the shared memory segment exists, this program will exit
-	// with a line reporting the location of the shared memory segment:
+	// with a line to stdout reporting the location of the shared memory segment:
 	// BBD9000_SHMEM = /path/to/shmem
 	// So, to boot-strap the system, run BBD9000init twice with the same parameters.
-	// The first run will initialize everything.  The second run will return the BBD9000_SHMEM path.
-	// If BBD9000_SHMEM already exists, a message will be sent to stderr, but the exit will be 0
+	// The first run will initialize everything.
+	// The second run will return the BBD9000_SHMEM path on stdout.
+	// If BBD9000_SHMEM already exists, a message will also be sent to stderr, but the exit will be 0
 	// 
 	// The root path to BBD9000 configuration files can be provided in BBD9000_ROOT env variable,
 	// or as the only parameter to this program.  Parameter over-rides the env variable.
