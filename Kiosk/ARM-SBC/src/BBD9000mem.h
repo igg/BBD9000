@@ -80,12 +80,12 @@
 // RESET is how often we update the timer
 #define WATCHDOG_RESET 30 // Seconds!!!
 
-#define EVT_NAME_SIZE  31
-#define EVT_VALUE_SIZE 255
+#define NAME_SIZE  32
+#define EVT_VALUE_SIZE 256
 #define N_EVT 21
 typedef struct {
-	char name[EVT_NAME_SIZE+1];
-	char value[EVT_VALUE_SIZE+1];
+	char name[NAME_SIZE];
+	char value[EVT_VALUE_SIZE];
 	struct timeval time;
 } event;
 
@@ -103,7 +103,6 @@ typedef struct {
 #define STR_SIZE 256
 #define READ_BUF_SIZE 511
 #define MD5_SIZE 36
-#define COOP_NAME_SIZE 32
 
 #define CC_RESP_CODE_SIZE 16
 #define CC_MESSAGE_SIZE 64
@@ -150,7 +149,8 @@ typedef struct {
 typedef struct {
 	char root_path [PATH_SIZE];
 	u_int32_t  kiosk_id;
-	char       coop_name[COOP_NAME_SIZE];
+	char       kiosk_name[NAME_SIZE];
+	char       coop_name[NAME_SIZE];
 	char       status[STATUS_SIZE];
 	int        status_idx;
 	// This is set to "restart" by default.

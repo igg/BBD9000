@@ -80,7 +80,7 @@ typedef struct {
 	CURL* curl;
 	char post [POST_VAR_SIZE];
 	char response [MAX_RESP_SIZE];
-	char response_msg [EVT_NAME_SIZE];
+	char response_msg [NAME_SIZE];
 	size_t resp_len;
 	size_t resp_capacity;
 
@@ -155,7 +155,7 @@ void initPostString (srvrStruct* self) {
 
 	parse_GWstring (self);
 
-	snprintf (self->post,POST_VAR_SIZE,
+	snprintf (self->post,sizeof(self->post),
 		"x_cpversion=%s&x_market_type=%s&x_device_type=%s"
 		"&x_response_format=1&x_delim_char=|"
 		"&x_login=%s&x_tran_key=%s"
@@ -175,15 +175,15 @@ void catPreAuth (srvrStruct* self, float amount) {
 char string[POST_VAR_SIZE];
 
 	if ( *(shmem->msr_track1) ) {
-		snprintf (string,POST_VAR_SIZE-1,
+		snprintf (string,sizeof(string),
 			"&x_track1=%s",shmem->msr_track1);
 	} else if ( *(shmem->msr_track2) ) {
-		snprintf (string,POST_VAR_SIZE-1,
+		snprintf (string,sizeof(string),
 			"&x_track2=%s",shmem->msr_track2);
 	}
 	strcat (self->post,string);
 
-	snprintf (string,POST_VAR_SIZE-1,
+	snprintf (string,sizeof(string),
 		"&x_type=AUTH_ONLY"
 		"&x_amount=%.2f",
 		amount);
@@ -198,7 +198,7 @@ char string[POST_VAR_SIZE];
 void catCapture (srvrStruct* self, float amount) {
 char string[POST_VAR_SIZE];
 
-	snprintf (string,POST_VAR_SIZE-1,
+	snprintf (string,sizeof(string),
 		"&x_type=PRIOR_AUTH_CAPTURE"
 		"&x_ref_trans_id=%s"
 		"&x_amount=%.2f",
@@ -216,15 +216,15 @@ void catAuthCapture (srvrStruct* self, float amount) {
 char string[POST_VAR_SIZE];
 
 	if ( *(shmem->msr_track1) ) {
-		snprintf (string,POST_VAR_SIZE-1,
+		snprintf (string,sizeof(string),
 			"&x_track1=%s",shmem->msr_track1);
 	} else if ( *(shmem->msr_track2) ) {
-		snprintf (string,POST_VAR_SIZE-1,
+		snprintf (string,sizeof(string),
 			"&x_track2=%s",shmem->msr_track2);
 	}
 	strcat (self->post,string);
 
-	snprintf (string,POST_VAR_SIZE-1,
+	snprintf (string,sizeof(string),
 		"&x_type=AUTH_CAPTURE"
 		"&x_amount=%.2f",amount);
 	strcat (self->post,string);
@@ -236,7 +236,7 @@ char string[POST_VAR_SIZE];
 void catVoid (srvrStruct* self, float amount) {
 char string[POST_VAR_SIZE];
 
-	snprintf (string,POST_VAR_SIZE-1,
+	snprintf (string,sizeof(string),
 		"&x_type=VOID"
 		"&x_ref_trans_id=%s",
 		shmem->cc_resp.trans_id
@@ -256,21 +256,21 @@ void catItemList (srvrStruct* self) {
 // x_line_item=item2<|>golf bag<|>Wilson golf carry bag, red<|>1<|>39.99<|>Y
 	item_num = 1;
 	if (shmem->memb_gallons > 0.0) {
-		snprintf (item_string,POST_VAR_SIZE,
+		snprintf (item_string,sizeof(item_string),
 			"&x_line_item=item%d<|>Fuel<|><|>%.3f<|>%.2f<|>NO",
 			item_num,shmem->memb_gallons,shmem->memb_ppg);
 		item_num++;
 		strcat (self->post,item_string);
 	}
 	if (shmem->memb_renewal_sale) {
-		snprintf (item_string,POST_VAR_SIZE,
+		snprintf (item_string,sizeof(item_string),
 			"&x_line_item=item%d<|>Membership renewal<|><|>1<|>%.2f<|>NO",
 			item_num,shmem->renewal_fee);
 		item_num++;
 		strcat (self->post,item_string);
 	}
 	if (shmem->memb_upgrade_sale) {
-		snprintf (item_string,POST_VAR_SIZE,
+		snprintf (item_string,sizeof(item_string),
 			"&x_line_item=item%d<|>Membership upgrade<|><|>1<|>%.2f<|>NO",
 			item_num,shmem->upgrade_fee);
 		item_num++;
@@ -283,14 +283,14 @@ void catItemList (srvrStruct* self) {
 // N.B.:  CC transactions are rejected if the amounts or quantities are negative!
 // Does auth.net add them up to match the total?  They don't say either way - may in the future.
 	if (shmem->memb_credit > 0) {
-		snprintf (item_string,POST_VAR_SIZE,
+		snprintf (item_string,sizeof(item_string),
 			"&x_line_item=item%d<|>Credit<|><|>1<|>%.2f<|>NO",
 			item_num,shmem->memb_credit);
 		item_num++;
 		strcat (self->post,item_string);
 	}
 	if (shmem->memb_credit < 0) {
-		snprintf (item_string,POST_VAR_SIZE,
+		snprintf (item_string,sizeof(item_string),
 			"&x_line_item=item%d<|>Debt<|><|>1<|>%.2f<|>NO",
 			item_num,-(shmem->memb_credit));
 		item_num++;
@@ -528,7 +528,7 @@ int ret;
 	// response containing a reason_code of 88, wipe out track1 and try again with track2
 	if (ret == MESSAGE_SUCCESS && shmem->cc_resp.code == 3 && shmem->cc_resp.reas_code == 88
 		&& *(shmem->msr_track2) ) {
-			memset (shmem->msr_track1,0,MSR_BUF_SIZE);
+			memset (shmem->msr_track1,0,sizeof(shmem->msr_track1));
 			initPostString (self);
 			catPreAuth (self, amount);
 			ret = sendCC_POST (self);
@@ -557,7 +557,7 @@ int ret;
 	// response containing a reason_code of 88, wipe out track1 and try again with track2
 	if (ret == MESSAGE_SUCCESS && shmem->cc_resp.code == 3 && shmem->cc_resp.reas_code == 88
 		&& strlen (shmem->msr_track2) > 2) {
-			memset (shmem->msr_track1,0,MSR_BUF_SIZE);
+			memset (shmem->msr_track1,0,sizeof(shmem->msr_track1));
 			initPostString (self);
 			catCapture (self, amount);
 			catItemList (self);
@@ -587,7 +587,7 @@ int ret;
 	// response containing a reason_code of 88, wipe out track1 and try again with track2
 	if (ret == MESSAGE_SUCCESS && shmem->cc_resp.code == 3 && shmem->cc_resp.reas_code == 88
 		&& strlen (shmem->msr_track2) > 2) {
-			memset (shmem->msr_track1,0,MSR_BUF_SIZE);
+			memset (shmem->msr_track1,0,sizeof(shmem->msr_track1));
 			initPostString (self);
 			catAuthCapture (self, amount);
 			catItemList (self);
@@ -616,7 +616,7 @@ int ret;
 	// response containing a reason_code of 88, wipe out track1 and try again with track2
 	if (ret == MESSAGE_SUCCESS && shmem->cc_resp.code == 3 && shmem->cc_resp.reas_code == 88
 		&& strlen (shmem->msr_track2) > 2) {
-			memset (shmem->msr_track1,0,MSR_BUF_SIZE);
+			memset (shmem->msr_track1,0,sizeof(shmem->msr_track1));
 			initPostString (self);
 			catVoid (self, amount);
 			ret = sendCC_POST (self);
@@ -760,8 +760,8 @@ srvrStruct self;
 
 
 	// initialize our self structure
-	memset (&self,0,sizeof(srvrStruct));
-	self.resp_capacity = MAX_RESP_SIZE;
+	memset (&self,0,sizeof(self));
+	self.resp_capacity = sizeof(self.response);
 
 	// cURL initialization
 	initCurl(&self);
@@ -774,11 +774,11 @@ srvrStruct self;
 		assert (fifo_fp != NULL);
 
 		/* Read from the pipe - this blocks only if there are writers with the file open */
-		read = fgets(buf, STR_SIZE, fifo_fp);
+		read = fgets(buf, sizeof(buf), fifo_fp);
 		while (read) {
-			memset(type, 0, STR_SIZE);
-			memset(message, 0, STR_SIZE);
-			memset(resp, 0, STR_SIZE);
+			memset(type, 0, sizeof(type));
+			memset(message, 0, sizeof(message));
+			memset(resp, 0, sizeof(resp));
 			sscanf (buf,"%[^\t]\t%[^\n]",type,message);
 #ifdef DEBUGGING
 logMessage ("Type: [%s] Message: [%s]",type,message);
@@ -809,7 +809,7 @@ logMessage ("Ret: [%d]",ret);
 			fflush (evt_fp);
 
 
-			read = fgets(buf, STR_SIZE, fifo_fp);
+			read = fgets(buf, sizeof(buf), fifo_fp);
 		} 
 		// all writers exited and we're getting eofs
 		fclose (fifo_fp);
@@ -845,12 +845,12 @@ void parse_GWstring (srvrStruct *self) {
 
 void clear_GWinfo (srvrStruct *self) {
 
-	memset(self->CC_URL, 0, STR_SIZE);
-	memset(self->x_cpversion, 0, STR_SIZE);
-	memset(self->x_login, 0, STR_SIZE);
-	memset(self->x_market_type, 0, STR_SIZE);
-	memset(self->x_device_type, 0, STR_SIZE);
-	memset(self->x_tran_key, 0, STR_SIZE);
+	memset(self->CC_URL, 0, sizeof(self->CC_URL));
+	memset(self->x_cpversion, 0, sizeof(self->x_cpversion));
+	memset(self->x_login, 0, sizeof(self->x_login));
+	memset(self->x_market_type, 0, sizeof(self->x_market_type));
+	memset(self->x_device_type, 0, sizeof(self->x_device_type));
+	memset(self->x_tran_key, 0, sizeof(self->x_tran_key));
 	// We can't clear the track info here because FSM may try again
 }
 
@@ -859,11 +859,11 @@ void clear_GWinfo (srvrStruct *self) {
 void logMessage (const char *template, ...) {
 va_list ap;
 time_t t_now;
-char buf[STR_SIZE+1];
+char buf[STR_SIZE];
 
 
 	t_now = time(NULL);
-	strftime (buf, STR_SIZE, "%Y-%m-%d %H:%M:%S", localtime (&t_now));
+	strftime (buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", localtime (&t_now));
 	fprintf (log_fp,"gateway %s: ",buf);
 
 	// process the printf-style parameters

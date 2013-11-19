@@ -55,7 +55,7 @@
 #define DEBUGGING 1
 
 typedef struct {
-	char name[EVT_NAME_SIZE];
+	char name[NAME_SIZE];
 	char val[EVT_VALUE_SIZE];
 	Timer_q_double_node node;
 	char active;
@@ -304,7 +304,7 @@ const struct timeval *tv = NULL;
 		// Didn't timeout  - a new request
 			while (fgets (read_buf, MAX_BUF_SIZE, input_fp)) {
 				memset (mode,0,8);
-				memset (name,0,EVT_NAME_SIZE);
+				memset (name,0,NAME_SIZE);
 				memset (val,0,EVT_VALUE_SIZE);
 				sscanf (read_buf,"%[^\t]\t%[^\t\n]\t%[^\n]",mode,name,val);
 				if (*mode && *name) {

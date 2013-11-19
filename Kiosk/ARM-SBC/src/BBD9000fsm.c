@@ -138,7 +138,7 @@ int doShowNetStatus   (const int evt, const char *val);
 
 
 typedef struct {
-	char name[EVT_NAME_SIZE+1];
+	char name[NAME_SIZE];
 	int (*handler)(const int evt, const char *val);
 	int can_enter_operator; // numeric keypad input cannot be confused with operator code
 } state_hndlr;
@@ -246,7 +246,7 @@ state_hndlr state_handlers[] = {
 // Note that this array gets sorted for getting IDs by name
 
 typedef struct {
-	char name[EVT_NAME_SIZE+1];
+	char name[NAME_SIZE];
 	int  ID;
 } evt_def;
 
@@ -447,10 +447,10 @@ int nevents;
 		assert (fifo_fp != NULL);
 
 		/* Read from the pipe - this blocks only if there are writers with the file open */
-		read = fgets(buf, READ_BUF_SIZE, fifo_fp);
+		read = fgets(buf, sizeof(buf), fifo_fp);
 		while (read) {
 			processEvent (read);
-			read = fgets(buf, READ_BUF_SIZE, fifo_fp);
+			read = fgets(buf, sizeof(buf), fifo_fp);
 		} 
 		// all writers exited and we're getting eofs
 		fclose (fifo_fp);
@@ -479,7 +479,7 @@ FILE *evt_fp;
 
 void processEvent (const char *evt_txt) {
 int i,evtID;
-char evt[EVT_NAME_SIZE+1],val[EVT_VALUE_SIZE+1];
+char evt[NAME_SIZE],val[EVT_VALUE_SIZE];
 int old_state = shmem->status_idx;
 int new_state;
 
@@ -490,14 +490,21 @@ int new_state;
 // The first flowmeter count outside this window sets the count on the SmartIO to 0.
 // check to see if we're inhibiting
 static struct timeval t_pump;
+static char format_str[64];
 struct timeval t_now;
 static char is_inhibit=0;
 unsigned long inhibit_ms=300;
 static u_int32_t flm_counts=0;
 float max_cnts_per_ms=0;
 
+	if (!format_str[0])
+		// Escaaape!! Keep Escaping!!
+		// This should turn into something like:
+		// %4[^\t\r\n]%*[\t\r\n]%5[^\r\n]
+		snprintf (format_str,64,"%%%d[^\\t\\r\\n]%%*[\\t\\r\\n]%%%d[^\\r\\n]",NAME_SIZE-1,EVT_VALUE_SIZE-1);
+
 	*evt = *val = '\0';
-	sscanf (evt_txt,"%" xstr(EVT_NAME_SIZE) "[^\t\r\n]%*[\t\r\n]%" xstr(EVT_VALUE_SIZE) "[^\r\n]",evt,val);
+	sscanf (evt_txt, format_str, evt, val);
 
 // Get the event ID
 	evtID = getEvt (evt);
@@ -538,8 +545,8 @@ float max_cnts_per_ms=0;
 		memmove (&(shmem->event_queue[0]),&(shmem->event_queue[1]),sizeof (event)*(N_EVT-1));
 		i--;
 	}
-	snprintf (shmem->event_queue[i].name,EVT_NAME_SIZE,evt);
-	snprintf (shmem->event_queue[i].value,EVT_VALUE_SIZE,val);
+	snprintf (shmem->event_queue[i].name,sizeof(shmem->event_queue[i].name),evt);
+	snprintf (shmem->event_queue[i].value,sizeof(shmem->event_queue[i].value),val);
 	gettimeofday(&(shmem->event_queue[i].time), NULL);
 	
 // Call the Global handler
@@ -619,7 +626,7 @@ int new_state = shmem->status_idx;
 	
 	case KeypadValid_Evt:
 		if ( checkOperator (0) ) {
-			memset (shmem->keypad_buffer,0,KEYPAD_BUFF_SIZE);
+			memset (shmem->keypad_buffer,0,sizeof(shmem->keypad_buffer));
 			new_state = Operator_State;
 		}
 	break;
@@ -660,7 +667,7 @@ int new_state = shmem->status_idx;
 time_t status_t;
 int MSR_status;
 static char is_idle=0;
-char LCD1[LCD_MAX_LINE_SIZE+1], LCD2[LCD_MAX_LINE_SIZE+1];
+char LCD1[LCD_MAX_LINE_SIZE], LCD2[LCD_MAX_LINE_SIZE];
 time_t t_now;
 size_t buf_siz=0;
 
@@ -668,16 +675,16 @@ size_t buf_siz=0;
 	t_now = time(NULL);
 	if (shmem->sched_maint_start) {
 		if (t_now < shmem->sched_maint_start) { // start is in the future
-			buf_siz += snprintf (LCD1+buf_siz, LCD_MAX_LINE_SIZE-buf_siz, "%s", shmem->coop_name);
-			buf_siz += strftime( LCD1+buf_siz, LCD_MAX_LINE_SIZE-buf_siz, " - Refueling shutdown %-m/%-e %-l",
+			buf_siz += snprintf (LCD1+buf_siz, sizeof(LCD1)-buf_siz, "%s", shmem->coop_name);
+			buf_siz += strftime( LCD1+buf_siz, sizeof(LCD1)-buf_siz, " - Refueling shutdown %-m/%-e %-l",
 				localtime(&(shmem->sched_maint_start)) );
-			buf_siz += strftime( LCD1+buf_siz,  LCD_MAX_LINE_SIZE-buf_siz, "-%-l%P !", localtime(&(shmem->sched_maint_end)) );
+			buf_siz += strftime( LCD1+buf_siz,  sizeof(LCD1)-buf_siz, "-%-l%P !", localtime(&(shmem->sched_maint_end)) );
 			sprintf (LCD2,"%s $%4.2f/gal. Swipe CC to begin.",shmem->fuel_type,shmem->last_ppg);
 		} else if (t_now >= shmem->sched_maint_start && t_now <= shmem->sched_maint_end) { // in window
 			sprintf (LCD1,shmem->coop_name);
-			buf_siz = strftime( LCD2, LCD_MAX_LINE_SIZE, "Refueling shutdown %-m/%-e %-l",
+			buf_siz = strftime( LCD2, sizeof(LCD2), "Refueling shutdown %-m/%-e %-l",
 				localtime(&(shmem->sched_maint_start)) );
-			buf_siz = strftime( LCD2+buf_siz, LCD_MAX_LINE_SIZE, "-%-l%P", localtime(&(shmem->sched_maint_end)) );
+			buf_siz = strftime( LCD2+buf_siz, sizeof(LCD2)-buf_siz, "-%-l%P", localtime(&(shmem->sched_maint_end)) );
 		} else { // start has passed
 			shmem->sched_maint_start = shmem->sched_maint_end = 0;
 		}
@@ -933,7 +940,7 @@ static char wait_door_closed=0;
 		if (checkOperator (1)) {
 			fprintf (out_fp,"PumpRly\t0\n");
 			fprintf (out_fp,"StrikeRly\t0\n");
-			memset (shmem->keypad_buffer,0,KEYPAD_BUFF_SIZE);
+			memset (shmem->keypad_buffer,0,sizeof(shmem->keypad_buffer));
 			doLCD (1, 1, "Operator Canceled");
 			if (shmem->door_open && shmem->has_DRSN) {
 				doLCD (2, 1, "Please shut the door");
@@ -1329,8 +1336,8 @@ int new_state = shmem->status_idx;
 		// N.B.: network_timeout is in seconds
 		doTimeout ((shmem->network_timeout*1100)+30000,"ServerResp");
 
-		strcpy (shmem->memb_spn,shmem->keypad_buffer);
-		memset (shmem->keypad_buffer,0,KEYPAD_BUFF_SIZE);
+		strncpy (shmem->memb_spn,shmem->keypad_buffer,sizeof(shmem->memb_spn));
+		memset (shmem->keypad_buffer,0,sizeof(shmem->keypad_buffer));
 	
 		doLCD (2, 1, "Authorizing...");
 		fprintf (srv_fp,"auth\t%s\t%s\t%s\n",shmem->msr_CCname,shmem->msr_last4,shmem->memb_spn);
@@ -1770,7 +1777,7 @@ int new_state = shmem->status_idx;
 	case EnterState_Evt:
 		doLCD (1, 1, "Re-key SPN to Accept");
 		doLCD (2, 1, "Membership Agreement");
-		memset (shmem->keypad_buffer,0,KEYPAD_BUFF_SIZE);
+		memset (shmem->keypad_buffer,0,sizeof(shmem->keypad_buffer));
 		doTimeout (shmem->input_timeout,"Input");
 		cancelTimeout ("LCD");
 		checkLights();
@@ -2139,7 +2146,7 @@ int preauth;
 	// which may also include a membership fee.
 	// Setup an input timeout.
 	case EnterState_Evt:
-		memset (shmem->keypad_buffer,0,KEYPAD_BUFF_SIZE);
+		memset (shmem->keypad_buffer,0,sizeof(shmem->keypad_buffer));
 		doLCD (1, 1, "Max. Fuel Purchase:");
 		doLCD (2, 1, "$%3d (*=clr #=enter)", shmem->memb_fuel_pre_auth);
 		doTimeout (shmem->input_timeout,"Input");
@@ -2811,12 +2818,12 @@ static int operator_exit=0, do_cancel=0;
 		checkLights();
 		operator_exit=0;
 		do_cancel = 0;
-		memset (shmem->keypad_buffer,0,KEYPAD_BUFF_SIZE);
+		memset (shmem->keypad_buffer,0,sizeof(shmem->keypad_buffer));
 	break;
 
 	case ExitState_Evt:
 		cancelTimeout ("Input");
-		memset (shmem->keypad_buffer,0,KEYPAD_BUFF_SIZE);
+		memset (shmem->keypad_buffer,0,sizeof(shmem->keypad_buffer));
 		if (operator_exit && operator_exit != new_state) {
 			// Enter operator state to reset its substate
 			doOperator (EnterState_Evt,"");
@@ -2921,13 +2928,13 @@ static int operator_exit=0, do_cancel=0;
 		doTimeout (shmem->smartIO_interval,"SmartIO");
 		operator_exit=0;
 		do_cancel=0;
-		memset (shmem->keypad_buffer,0,KEYPAD_BUFF_SIZE);
+		memset (shmem->keypad_buffer,0,sizeof(shmem->keypad_buffer));
 	break;
 
 	case ExitState_Evt:
 		cancelTimeout ("Input");
 		cancelTimeout ("SmartIO");
-		memset (shmem->keypad_buffer,0,KEYPAD_BUFF_SIZE);
+		memset (shmem->keypad_buffer,0,sizeof(shmem->keypad_buffer));
 		if (operator_exit && operator_exit != new_state) {
 			// Enter operator state to reset its substate
 			doOperator (EnterState_Evt,"");
@@ -3052,13 +3059,13 @@ static int operator_exit=0, do_cancel=0;
 		doTimeout (shmem->smartIO_interval,"SmartIO");
 		operator_exit=0;
 		do_cancel=0;
-		memset (shmem->keypad_buffer,0,KEYPAD_BUFF_SIZE);
+		memset (shmem->keypad_buffer,0,sizeof(shmem->keypad_buffer));
 	break;
 
 	case ExitState_Evt:
 		cancelTimeout ("Input");
 		cancelTimeout ("SmartIO");
-		memset (shmem->keypad_buffer,0,KEYPAD_BUFF_SIZE);
+		memset (shmem->keypad_buffer,0,sizeof(shmem->keypad_buffer));
 		if (operator_exit && operator_exit != new_state) {
 			// Enter operator state to reset its substate
 			doOperator (EnterState_Evt,"");
@@ -3180,12 +3187,12 @@ static int operator_exit=0, do_cancel=0;
 		checkLights();
 		operator_exit=0;
 		do_cancel=0;
-		memset (shmem->keypad_buffer,0,KEYPAD_BUFF_SIZE);
+		memset (shmem->keypad_buffer,0,sizeof(shmem->keypad_buffer));
 	break;
 
 	case ExitState_Evt:
 		cancelTimeout ("Input");
-		memset (shmem->keypad_buffer,0,KEYPAD_BUFF_SIZE);
+		memset (shmem->keypad_buffer,0,sizeof(shmem->keypad_buffer));
 		if (operator_exit && operator_exit != new_state) {
 			// Enter operator state to reset its substate
 			doOperator (EnterState_Evt,"");
@@ -3295,12 +3302,12 @@ static int operator_exit=0, do_cancel=0;
 		checkLights();
 		operator_exit=0;
 		do_cancel=0;
-		memset (shmem->keypad_buffer,0,KEYPAD_BUFF_SIZE);
+		memset (shmem->keypad_buffer,0,sizeof(shmem->keypad_buffer));
 	break;
 
 	case ExitState_Evt:
 		cancelTimeout ("Input");
-		memset (shmem->keypad_buffer,0,KEYPAD_BUFF_SIZE);
+		memset (shmem->keypad_buffer,0,sizeof(shmem->keypad_buffer));
 		if (operator_exit && operator_exit != new_state) {
 			// Enter operator state to reset its substate
 			doOperator (EnterState_Evt,"");
@@ -3408,12 +3415,12 @@ static int operator_exit=0, do_cancel=0;
 		checkLights();
 		operator_exit=0;
 		do_cancel=0;
-		memset (shmem->keypad_buffer,0,KEYPAD_BUFF_SIZE);
+		memset (shmem->keypad_buffer,0,sizeof(shmem->keypad_buffer));
 	break;
 
 	case ExitState_Evt:
 		cancelTimeout ("Input");
-		memset (shmem->keypad_buffer,0,KEYPAD_BUFF_SIZE);
+		memset (shmem->keypad_buffer,0,sizeof(shmem->keypad_buffer));
 		if (operator_exit && operator_exit != new_state) {
 			// Enter operator state to reset its substate
 			doOperator (EnterState_Evt,"");
@@ -3522,12 +3529,12 @@ static int operator_exit=0, do_cancel=0;
 		checkLights();
 		operator_exit=0;
 		do_cancel=0;
-		memset (shmem->keypad_buffer,0,KEYPAD_BUFF_SIZE);
+		memset (shmem->keypad_buffer,0,sizeof(shmem->keypad_buffer));
 	break;
 
 	case ExitState_Evt:
 		cancelTimeout ("Input");
-		memset (shmem->keypad_buffer,0,KEYPAD_BUFF_SIZE);
+		memset (shmem->keypad_buffer,0,sizeof(shmem->keypad_buffer));
 		if (operator_exit && operator_exit != new_state) {
 			// Enter operator state to reset its substate
 			doOperator (EnterState_Evt,"");
@@ -3637,7 +3644,7 @@ static int operator_exit=0, do_cancel=0;
 		checkLights();
 		operator_exit=0;
 		do_cancel=0;
-		memset (shmem->keypad_buffer,0,KEYPAD_BUFF_SIZE);
+		memset (shmem->keypad_buffer,0,sizeof(shmem->keypad_buffer));
 
 	break;
 
@@ -3646,7 +3653,7 @@ static int operator_exit=0, do_cancel=0;
 		// We zero it out only if we're canceling.
 		cancelTimeout ("Input");
 		if (operator_exit && operator_exit != new_state) {
-			memset (shmem->keypad_buffer,0,KEYPAD_BUFF_SIZE);
+			memset (shmem->keypad_buffer,0,sizeof(shmem->keypad_buffer));
 			// Enter operator state to reset its substate
 			doOperator (EnterState_Evt,"");
 			doOperator (ExitState_Evt,"");
@@ -3659,7 +3666,7 @@ static int operator_exit=0, do_cancel=0;
 		// Reset calibration settings
 			doLCD (1, 1, "Settings Unchanged");
 			cal_cfg_from_mem (cal_cfg,shmem);
-			memset (shmem->keypad_buffer,0,KEYPAD_BUFF_SIZE);
+			memset (shmem->keypad_buffer,0,sizeof(shmem->keypad_buffer));
 		}
 		do_cancel = 0;
 	break;
@@ -3777,15 +3784,15 @@ static char prev_spn[KEYPAD_BUFF_SIZE];
 		operator_exit=0;
 		do_cancel=0;
 		// Copy the keypad buffer for comparisson
-		memset (prev_spn,0,KEYPAD_BUFF_SIZE);
+		memset (prev_spn,0,sizeof(prev_spn));
 		strcpy (prev_spn,shmem->keypad_buffer);
-		memset (shmem->keypad_buffer,0,KEYPAD_BUFF_SIZE);
+		memset (shmem->keypad_buffer,0,sizeof(shmem->keypad_buffer));
 	break;
 
 	case ExitState_Evt:
 		cancelTimeout ("Input");
-		memset (shmem->keypad_buffer,0,KEYPAD_BUFF_SIZE);
-		memset (prev_spn,0,KEYPAD_BUFF_SIZE);
+		memset (shmem->keypad_buffer,0,sizeof(shmem->keypad_buffer));
+		memset (prev_spn,0,sizeof(prev_spn));
 		if (operator_exit && operator_exit != new_state) {
 			// Enter operator state to reset its substate
 			doOperator (EnterState_Evt,"");
@@ -3911,12 +3918,12 @@ static int operator_exit=0, do_cancel=0;
 		checkLights();
 		operator_exit=0;
 		do_cancel=0;
-		memset (shmem->keypad_buffer,0,KEYPAD_BUFF_SIZE);
+		memset (shmem->keypad_buffer,0,sizeof(shmem->keypad_buffer));
 	break;
 
 	case ExitState_Evt:
 		cancelTimeout ("Input");
-		memset (shmem->keypad_buffer,0,KEYPAD_BUFF_SIZE);
+		memset (shmem->keypad_buffer,0,sizeof(shmem->keypad_buffer));
 		if (operator_exit && operator_exit != new_state) {
 			// Enter operator state to reset its substate
 			doOperator (EnterState_Evt,"");
@@ -4006,7 +4013,7 @@ static int operator_exit=0, do_cancel=0;
 		} else if (atoi(shmem->keypad_buffer) <= 100) {
 			snprintf (fuel_type,8,"B%d",atoi(shmem->keypad_buffer));
 		} else {
-			memset (shmem->keypad_buffer,0,KEYPAD_BUFF_SIZE);
+			memset (shmem->keypad_buffer,0,sizeof(shmem->keypad_buffer));
 			snprintf (fuel_type,8,"%s",shmem->fuel_type);
 		}
 	}
@@ -4028,12 +4035,12 @@ static int operator_exit=0, do_cancel=0;
 		checkLights();
 		operator_exit=0;
 		do_cancel=0;
-		memset (shmem->keypad_buffer,0,KEYPAD_BUFF_SIZE);
+		memset (shmem->keypad_buffer,0,sizeof(shmem->keypad_buffer));
 	break;
 
 	case ExitState_Evt:
 		cancelTimeout ("Input");
-		memset (shmem->keypad_buffer,0,KEYPAD_BUFF_SIZE);
+		memset (shmem->keypad_buffer,0,sizeof(shmem->keypad_buffer));
 		if (operator_exit && operator_exit != new_state) {
 			// Enter operator state to reset its substate
 			doOperator (EnterState_Evt,"");
@@ -4118,7 +4125,7 @@ static int operator_exit=0, do_cancel=0;
 		last_ppg = (float) atoi(shmem->keypad_buffer) / 100.0;
 		if (last_ppg > 9.99) {
 			last_ppg = shmem->last_ppg;
-			memset (shmem->keypad_buffer,0,KEYPAD_BUFF_SIZE);
+			memset (shmem->keypad_buffer,0,sizeof(shmem->keypad_buffer));
 		}
 	}
 
@@ -4139,12 +4146,12 @@ static int operator_exit=0, do_cancel=0;
 		checkLights();
 		operator_exit=0;
 		do_cancel=0;
-		memset (shmem->keypad_buffer,0,KEYPAD_BUFF_SIZE);
+		memset (shmem->keypad_buffer,0,sizeof(shmem->keypad_buffer));
 	break;
 
 	case ExitState_Evt:
 		cancelTimeout ("Input");
-		memset (shmem->keypad_buffer,0,KEYPAD_BUFF_SIZE);
+		memset (shmem->keypad_buffer,0,sizeof(shmem->keypad_buffer));
 		if (operator_exit && operator_exit != new_state) {
 			// Enter operator state to reset its substate
 			doOperator (EnterState_Evt,"");
@@ -4255,14 +4262,13 @@ char short_net[10];
 		cancelTimeout ("LCD");
 		checkLights();
 		operator_exit=0;
-		do_cancel=0;
-		memset (shmem->keypad_buffer,0,KEYPAD_BUFF_SIZE);
+		memset (shmem->keypad_buffer,0,sizeof(shmem->keypad_buffer));
 	break;
 
 	case ExitState_Evt:
 		cancelTimeout ("Input");
 		cancelTimeout ("SmartIO");
-		memset (shmem->keypad_buffer,0,KEYPAD_BUFF_SIZE);
+		memset (shmem->keypad_buffer,0,sizeof(shmem->keypad_buffer));
 		if (operator_exit && operator_exit != new_state) {
 			// Enter operator state to reset its substate
 			doOperator (EnterState_Evt,"");
@@ -4346,13 +4352,12 @@ static int operator_exit=0, do_cancel=0;
 		cancelTimeout ("LCD");
 		checkLights();
 		operator_exit=0;
-		do_cancel=0;
-		memset (shmem->keypad_buffer,0,KEYPAD_BUFF_SIZE);
+		memset (shmem->keypad_buffer,0,sizeof(shmem->keypad_buffer));
 	break;
 
 	case ExitState_Evt:
 		cancelTimeout ("Input");
-		memset (shmem->keypad_buffer,0,KEYPAD_BUFF_SIZE);
+		memset (shmem->keypad_buffer,0,sizeof(shmem->keypad_buffer));
 		if (operator_exit && operator_exit != new_state) {
 			// Enter operator state to reset its substate
 			doOperator (EnterState_Evt,"");
@@ -4716,8 +4721,8 @@ time_t t_now = time (NULL);
 void doLCD (int line, int force, const char *message, ...) {
 va_list ap;
 static struct timeval last_update[2];
-static char LCD[2][LCD_MAX_LINE_SIZE+1];
-char parsed_msg[LCD_MAX_LINE_SIZE+1];
+static char LCD[2][LCD_MAX_LINE_SIZE];
+char parsed_msg[LCD_MAX_LINE_SIZE];
 unsigned long msg_size;
 static int first=1;
 struct timeval t_now;
@@ -4728,7 +4733,7 @@ int idx = line-1;
 
 	if (message) {
 		va_start (ap, message);
-		vsnprintf (parsed_msg, LCD_MAX_LINE_SIZE+1, message, ap);
+		vsnprintf (parsed_msg, sizeof(parsed_msg), message, ap);
 		va_end (ap);
 		msg_size = strlen (parsed_msg);
 		if (msg_size > LCD_LINE_SIZE) {
@@ -4744,9 +4749,9 @@ int idx = line-1;
 	if (first) {
 		last_update[0] = t_now;
 		last_update[1] = t_now;
-		memset (LCD[0],0,LCD_MAX_LINE_SIZE+1);
-		memset (LCD[1],0,LCD_MAX_LINE_SIZE+1);
-		memset (parsed_msg,0,LCD_MAX_LINE_SIZE+1);
+		memset (LCD[0],0,sizeof(LCD[0]));
+		memset (LCD[1],0,sizeof(LCD[1]));
+		memset (parsed_msg,0,sizeof(parsed_msg));
 		first = 0;
 	}
 
@@ -4848,7 +4853,7 @@ char date_str[STR_SIZE];
 	// Read our run-time save state if it exists
 	run_cfg_read(shmem);
 	if (shmem->boot_time)
-		strftime( date_str, STR_SIZE, "%F %T", localtime(&(shmem->boot_time)) );
+		strftime( date_str, sizeof(date_str), "%F %T", localtime(&(shmem->boot_time)) );
 
 	// Avoid filling up the server queue if its already full.
 	if (shmem->server_msg_size < (RSA_TEXT_SIZE*4) ) {
@@ -4911,7 +4916,7 @@ char date_str[STR_SIZE];
 void logMessage (const char *template, ...) {
 va_list ap;
 time_t t_now;
-char buf[STR_SIZE+1];
+char buf[STR_SIZE];
 
 
 	t_now = time(NULL);
@@ -5083,17 +5088,17 @@ int i=0;
 long nbytes=0,size=0;
 
 	if (! shmem->npatches ) return;
-	nbytes = snprintf (cmd+size,BIG_BUFFER_SIZE-size,
+	nbytes = snprintf (cmd+size,sizeof(cmd)-size,
 		"%s %s",shmem->BBD9000patch,shmem->patch_server);
-	if (nbytes < BIG_BUFFER_SIZE-size) size += nbytes;
-	else size = BIG_BUFFER_SIZE-1;
+	if (nbytes < sizeof(cmd)-size) size += nbytes;
+	else size = sizeof(cmd)-1;
 
 	for (i=0; i < MAX_PATCHES; i++) {
-		nbytes = snprintf (cmd+size,BIG_BUFFER_SIZE-size,
+		nbytes = snprintf (cmd+size,sizeof(cmd)-size,
 			" %s %s %s",shmem->patches[i].path,shmem->patches[i].srcMD5,shmem->patches[i].dstMD5);
-		if (nbytes < BIG_BUFFER_SIZE-size) size += nbytes;
+		if (nbytes < sizeof(cmd)-size) size += nbytes;
 		else {
-			size = BIG_BUFFER_SIZE-1;
+			size = sizeof(cmd)-1;
 		}
 		memset (&(shmem->patches[i]),0,sizeof(patch));
 	}
@@ -5104,7 +5109,7 @@ long nbytes=0,size=0;
 
 
 	// Note that no patches are applied if we had a buffer overrun.
-	if (size < BIG_BUFFER_SIZE-1) {
+	if (size < sizeof(cmd)-1) {
 	// This program will receive a SIGTERM from /etc/init.d/BBD9000 stop regardless of outcome
 	// After this final patch cleanup is done, the computer is rebooted.
 	// The only reason system (cmd) would return here is if there was an error starting it up.

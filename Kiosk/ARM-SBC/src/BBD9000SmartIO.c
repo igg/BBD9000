@@ -177,13 +177,13 @@ char read_buf[READ_BUF_SIZE];
 		// Read a line or more, return pointer to next line
 
 		if (FD_ISSET(ser_fd, &read_fds)) {
-			while (fgets (read_buf,READ_BUF_SIZE,ser_fp)) {
+			while (fgets (read_buf,sizeof(read_buf),ser_fp)) {
 				doSer (read_buf,BBD9000EVT_fp);
 			}
 		}
 
 		if (FD_ISSET(BBD9000OUT_fd, &read_fds)) {
-			while (fgets (read_buf,READ_BUF_SIZE,BBD9000OUT_fp)) {
+			while (fgets (read_buf,sizeof(read_buf),BBD9000OUT_fp)) {
 				doFifoIN (read_buf,ser_fp);
 //				usleep (10000); // don't overwhelm the SmartIO
 			}
@@ -193,31 +193,40 @@ char read_buf[READ_BUF_SIZE];
 
 
 void getSetting (const char *buf, FILE* ser_fp, FILE *fifo_out) {
-char read_buf[READ_BUF_SIZE+1], *char_p;
+char read_buf[READ_BUF_SIZE], *char_p;
 
 	fprintf (ser_fp,"%s\n",buf);
 	fflush (ser_fp);
 	char_p = NULL;
 	while (! char_p ) {
 		usleep (10000);
-		char_p = fgets (read_buf,READ_BUF_SIZE,ser_fp);
+		char_p = fgets (read_buf,sizeof(read_buf),ser_fp);
 		if (strncmp (read_buf,buf,strlen(buf)) ) char_p = NULL;
 		else doSer (read_buf,BBD9000EVT_fp);
 	}
 }
 
 void doSer (const char *buf, FILE *fifo_out) {
-char evt[EVT_NAME_SIZE+1],val[EVT_VALUE_SIZE+1];
+static char format_str[64];
+char evt[NAME_SIZE],val[EVT_VALUE_SIZE];
 unsigned long val_ul;
 float val_f,val_f2;
 double val_d;
 int i,val_i,nscanned;
 struct timeval t_now;
 
-	gettimeofday(&t_now, NULL);
+	if (!format_str[0])
+		// Escaaape!! Keep Escaping!!
+		// This should turn into something like:
+		// %4[^\t\r\n]%*[\t\r\n]%5[^\r\n]
+		snprintf (format_str,64,"%%%d[^\\t\\r\\n]%%*[\\t\\r\\n]%%%d[^\\r\\n]",NAME_SIZE-1,EVT_VALUE_SIZE-1);
 
 	*evt = *val = '\0';
-	sscanf (buf,"%" xstr(EVT_NAME_SIZE) "[^\t\r\n]%*[\t\r\n]%" xstr(EVT_VALUE_SIZE) "[^\r\n]",evt,val);
+
+	sscanf (buf, format_str, evt, val);
+
+	gettimeofday(&t_now, NULL);
+
 //logMessage (log_fp,"SmartIO Line:[%s]",buf);
 	if (!strcmp (evt,"FLM") ) {
 		nscanned = sscanf (val,"%lu",&val_ul);
@@ -243,11 +252,11 @@ struct timeval t_now;
 		if (*val == '#') {
 			fprintf (fifo_out,"Keypad Valid\n");
 		} else if (*val == '*') {
-			memset (shmem->keypad_buffer,0,KEYPAD_BUFF_SIZE);
+			memset (shmem->keypad_buffer,0,sizeof(shmem->keypad_buffer));
 		} else {
 			for (i=0; shmem->keypad_buffer[i]; i++) {};
-			if (i >= KEYPAD_BUFF_SIZE-1) {
-				memmove (&(shmem->keypad_buffer[0]),&(shmem->keypad_buffer[1]),KEYPAD_BUFF_SIZE-1);
+			if (i >= sizeof(shmem->keypad_buffer)-1) {
+				memmove (&(shmem->keypad_buffer[0]),&(shmem->keypad_buffer[1]),sizeof(shmem->keypad_buffer)-1);
 				i--;
 			}
 			shmem->keypad_buffer[i] = *val;
@@ -352,16 +361,23 @@ struct timeval t_now;
 }
 
 void doFifoIN (const char *buf, FILE *ser_fp) {
-char evt[EVT_NAME_SIZE+1],val[EVT_VALUE_SIZE+1];
+static char format_str[64];
+char evt[NAME_SIZE],val[EVT_VALUE_SIZE];
 unsigned long val_ul;
 struct timeval t_now;
 
-//logMessage (log_fp,"FIFO Line:[%s]",buf);
-	gettimeofday(&t_now, NULL);
+	if (!format_str[0])
+		// Escaaape!! Keep Escaping!!
+		// This should turn into something like:
+		// %4[^\t\r\n]%*[\t\r\n]%5[^\r\n]
+		snprintf (format_str,64,"%%%d[^\\t\\r\\n]%%*[\\t\\r\\n]%%%d[^\\r\\n]",NAME_SIZE-1,EVT_VALUE_SIZE-1);
 
 	*evt = *val = '\0';
-	sscanf (buf,"%" xstr(EVT_NAME_SIZE) "[^\t\r\n]%*[\t\r\n]%" xstr(EVT_VALUE_SIZE) "[^\r\n]",evt,val);
+	sscanf (buf, format_str, evt, val);
 	sscanf (val,"%lu",&val_ul);
+
+//logMessage (log_fp,"FIFO Line:[%s]",buf);
+	gettimeofday(&t_now, NULL);
 
 	if (*val && !strcmp (evt,"LightsRly") ) {
 		if (val_ul) shmem->LightsRly = 1;
@@ -381,10 +397,10 @@ struct timeval t_now;
 		else shmem->AuxRly = 0;
 		fprintf (ser_fp,"AUX\t%d\n",shmem->AuxRly);
 	} else if (!strcmp (evt,"LCD1") ) {
-		strncpy (shmem->LCD1,val,LCD_MAX_LINE_SIZE);
+		strncpy (shmem->LCD1,val,sizeof(shmem->LCD1));
 		fprintf (ser_fp,"LCD1\t%s\n",shmem->LCD1);
 	} else if (!strcmp (evt,"LCD2") ) {
-		strncpy (shmem->LCD2,val,LCD_MAX_LINE_SIZE);
+		strncpy (shmem->LCD2,val,sizeof(shmem->LCD2));
 		fprintf (ser_fp,"LCD2\t%s\n",shmem->LCD2);
 	} else if (*val && !strcmp (evt,"Flow") ) {
 		shmem->t_update_flowmeter = t_now;
@@ -520,7 +536,7 @@ void sigTermHandler (int signum) {
 void logMessage (FILE *log_fp, const char *template, ...) {
 va_list ap;
 time_t t_now;
-char buf[STR_SIZE+1];
+char buf[STR_SIZE];
 
 
 	t_now = time(NULL);
