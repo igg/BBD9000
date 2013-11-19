@@ -1,4 +1,4 @@
-EESchema-DOCLIB  Version 2.0  Date: Fri 02 Aug 2013 01:00:01 AM EDT
+EESchema-DOCLIB  Version 2.0  Date: Tue 19 Nov 2013 05:47:00 AM EST
 #
 $CMP TERM-3
 D General connector
@@ -17,6 +17,11 @@ $ENDCMP
 #
 $CMP TERM-5
 D Symbole general de connecteur
+K CONN
+$ENDCMP
+#
+$CMP TERM-6
+D ymbole general de connecteur
 K CONN
 $ENDCMP
 #

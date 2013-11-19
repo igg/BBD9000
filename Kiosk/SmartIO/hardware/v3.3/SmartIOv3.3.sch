@@ -831,64 +831,64 @@ NB: NT/GND pin\nused for EMI return ONLY\nNOT power return!
 $Comp
 L TERM-CPU J11
 U 1 1 51C4790A
-P 7800 3300
-F 0 "J11" V 7750 3300 50  0000 C CNN
-F 1 "TTL UART" V 7850 3300 50  0000 C CNN
-F 2 "" H 7800 3300 60  0000 C CNN
-F 3 "" H 7800 3300 60  0000 C CNN
-	1    7800 3300
+P 7600 3300
+F 0 "J11" V 7600 3350 50  0000 C CNN
+F 1 "TTL UART" V 7700 3350 50  0000 C CNN
+F 2 "" H 7600 3300 60  0000 C CNN
+F 3 "" H 7600 3300 60  0000 C CNN
+	1    7600 3300
 	1    0    0    -1  
 $EndComp
-Text GLabel 7400 3100 0    45   Input ~ 0
+Text GLabel 7300 3350 0    45   Input ~ 0
 V-TTL
-Text GLabel 7400 3200 0    45   Input ~ 0
+Text GLabel 7300 3050 0    45   Input ~ 0
 TTL-Tx
-Text GLabel 7400 3300 0    45   Input ~ 0
+Text GLabel 7300 3150 0    45   Input ~ 0
 TTL-Rx
-Text GLabel 7400 3400 0    45   Input ~ 0
+Text GLabel 7300 3550 0    45   Input ~ 0
 +5V
-Text GLabel 7400 3500 0    45   Input ~ 0
+Text GLabel 7300 3450 0    45   Input ~ 0
 GND
 $Comp
 L MOSFET_N Q5
 U 1 1 51C47B69
-P 8700 3400
-F 0 "Q5" V 8500 3350 60  0000 R CNN
-F 1 "BSS138K" V 8900 3600 60  0000 R CNN
-F 2 "" H 8700 3400 60  0000 C CNN
-F 3 "" H 8700 3400 60  0000 C CNN
-	1    8700 3400
+P 8900 3400
+F 0 "Q5" V 8700 3350 60  0000 R CNN
+F 1 "BSS138K" V 9100 3600 60  0000 R CNN
+F 2 "" H 8900 3400 60  0000 C CNN
+F 3 "" H 8900 3400 60  0000 C CNN
+	1    8900 3400
 	0    1    1    0   
 $EndComp
-Text GLabel 8350 3100 0    45   Input ~ 0
+Text GLabel 8550 3100 0    45   Input ~ 0
 V-TTL
 $Comp
 L R2 R11
 U 1 1 51C47BA6
-P 8450 3300
-F 0 "R11" V 8550 3500 50  0000 C CNN
-F 1 "10k" V 8450 3500 50  0000 C CNN
-F 2 "" H 8450 3300 60  0001 C CNN
-F 3 "" H 8450 3300 60  0001 C CNN
-	1    8450 3300
+P 8650 3300
+F 0 "R11" V 8750 3500 50  0000 C CNN
+F 1 "10k" V 8650 3500 50  0000 C CNN
+F 2 "" H 8650 3300 60  0001 C CNN
+F 3 "" H 8650 3300 60  0001 C CNN
+	1    8650 3300
 	0    -1   -1   0   
 $EndComp
-Text GLabel 8350 3500 0    45   Input ~ 0
+Text GLabel 8550 3500 0    45   Input ~ 0
 TTL-Rx
 $Comp
 L R2 R12
 U 1 1 51C47CC6
-P 9000 3300
-F 0 "R12" V 9100 3300 50  0000 C CNN
-F 1 "10k" V 9000 3300 50  0000 C CNN
-F 2 "" H 9000 3300 60  0001 C CNN
-F 3 "" H 9000 3300 60  0001 C CNN
-	1    9000 3300
+P 9200 3300
+F 0 "R12" V 9300 3300 50  0000 C CNN
+F 1 "10k" V 9200 3300 50  0000 C CNN
+F 2 "" H 9200 3300 60  0001 C CNN
+F 3 "" H 9200 3300 60  0001 C CNN
+	1    9200 3300
 	0    -1   -1   0   
 $EndComp
-Text GLabel 8900 3500 2    45   Input ~ 0
+Text GLabel 9100 3500 2    45   Input ~ 0
 Rx0-TTL
-Text GLabel 8900 3100 2    45   Input ~ 0
+Text GLabel 9100 3100 2    45   Input ~ 0
 +5V
 $Comp
 L DIODESCH D3
@@ -953,45 +953,45 @@ PD7
 $Comp
 L MOSFET_N Q6
 U 1 1 51C4CC9A
-P 8700 4100
-F 0 "Q6" V 8500 4050 60  0000 R CNN
-F 1 "BSS138K" V 8900 4300 60  0000 R CNN
-F 2 "" H 8700 4100 60  0000 C CNN
-F 3 "" H 8700 4100 60  0000 C CNN
-	1    8700 4100
+P 8900 4100
+F 0 "Q6" V 8700 4050 60  0000 R CNN
+F 1 "BSS138K" V 9100 4300 60  0000 R CNN
+F 2 "" H 8900 4100 60  0000 C CNN
+F 3 "" H 8900 4100 60  0000 C CNN
+	1    8900 4100
 	0    1    1    0   
 $EndComp
-Text GLabel 8350 3800 0    45   Input ~ 0
+Text GLabel 8550 3800 0    45   Input ~ 0
 V-TTL
 $Comp
 L R2 R13
 U 1 1 51C4CCA1
-P 8450 4000
-F 0 "R13" V 8550 4200 50  0000 C CNN
-F 1 "10k" V 8450 4200 50  0000 C CNN
-F 2 "" H 8450 4000 60  0001 C CNN
-F 3 "" H 8450 4000 60  0001 C CNN
-	1    8450 4000
+P 8650 4000
+F 0 "R13" V 8750 4200 50  0000 C CNN
+F 1 "10k" V 8650 4200 50  0000 C CNN
+F 2 "" H 8650 4000 60  0001 C CNN
+F 3 "" H 8650 4000 60  0001 C CNN
+	1    8650 4000
 	0    -1   -1   0   
 $EndComp
-Text GLabel 8350 4200 0    45   Input ~ 0
+Text GLabel 8550 4200 0    45   Input ~ 0
 TTL-Tx
 $Comp
 L R2 R14
 U 1 1 51C4CCA8
-P 9000 4000
-F 0 "R14" V 9100 4000 50  0000 C CNN
-F 1 "10k" V 9000 4000 50  0000 C CNN
-F 2 "" H 9000 4000 60  0001 C CNN
-F 3 "" H 9000 4000 60  0001 C CNN
-	1    9000 4000
+P 9200 4000
+F 0 "R14" V 9300 4000 50  0000 C CNN
+F 1 "10k" V 9200 4000 50  0000 C CNN
+F 2 "" H 9200 4000 60  0001 C CNN
+F 3 "" H 9200 4000 60  0001 C CNN
+	1    9200 4000
 	0    -1   -1   0   
 $EndComp
-Text GLabel 8900 4200 2    45   Input ~ 0
+Text GLabel 9100 4200 2    45   Input ~ 0
 Tx0-TTL
-Text GLabel 8900 3800 2    45   Input ~ 0
+Text GLabel 9100 3800 2    45   Input ~ 0
 +5V
-Text Notes 7000 3000 0    60   ~ 0
+Text Notes 7700 2950 0    60   ~ 0
 TTL UART Voltage Conv.
 $Comp
 L C C24
@@ -1017,7 +1017,7 @@ F 3 "" H 4600 1550 60  0001 C CNN
 $EndComp
 Text GLabel 4100 1750 0    45   Input ~ 0
 GND
-Text Notes 7000 3700 0    60   ~ 0
+Text Notes 7100 3900 0    60   ~ 0
 Serial comms select
 $Comp
 L TERM-4 J12
@@ -1454,52 +1454,52 @@ AUXin
 $Comp
 L SW-DP3T SW2
 U 1 1 51F6CE29
-P 9950 3400
-F 0 "SW2" H 9950 3050 40  0000 C CNN
-F 1 "SW-DP3T" H 9950 3750 40  0000 C CNN
-F 2 "" H 9700 3600 60  0000 C CNN
-F 3 "" H 9700 3600 60  0000 C CNN
-	1    9950 3400
+P 10000 3400
+F 0 "SW2" H 10000 3050 40  0000 C CNN
+F 1 "SW-DP3T" H 10000 3750 40  0000 C CNN
+F 2 "" H 9750 3600 60  0000 C CNN
+F 3 "" H 9750 3600 60  0000 C CNN
+	1    10000 3400
 	1    0    0    -1  
 $EndComp
-Text GLabel 9800 3150 0    45   Input ~ 0
+Text GLabel 9850 3150 0    45   Input ~ 0
 +5Vout
-Text GLabel 9800 3650 0    45   Input ~ 0
+Text GLabel 9850 3650 0    45   Input ~ 0
 +12V
-Text Notes 9450 3000 0    60   ~ 0
+Text Notes 9500 3000 0    60   ~ 0
 FLM+ select
-Text GLabel 10150 3400 2    45   Input ~ 0
+Text GLabel 10200 3400 2    45   Input ~ 0
 FLM+
-NoConn ~ 9800 3250
-NoConn ~ 9800 3550
+NoConn ~ 9850 3250
+NoConn ~ 9850 3550
 $Comp
 L SW-DP3T SW1
 U 1 1 51F6F1A3
-P 7550 4100
-F 0 "SW1" H 7550 3750 40  0000 C CNN
-F 1 "SW-DP3T" H 7550 4450 40  0000 C CNN
-F 2 "" H 7300 4300 60  0000 C CNN
-F 3 "" H 7300 4300 60  0000 C CNN
-	1    7550 4100
+P 7650 4300
+F 0 "SW1" H 7650 3950 40  0000 C CNN
+F 1 "SW-DP3T" H 7650 4650 40  0000 C CNN
+F 2 "" H 7400 4500 60  0000 C CNN
+F 3 "" H 7400 4500 60  0000 C CNN
+	1    7650 4300
 	1    0    0    -1  
 $EndComp
-Text GLabel 7700 3950 2    45   Input ~ 0
+Text GLabel 7800 4150 2    45   Input ~ 0
 Tx0
-Text GLabel 7700 4250 2    45   Input ~ 0
+Text GLabel 7800 4450 2    45   Input ~ 0
 Rx0
-Text GLabel 7400 3850 0    45   Input ~ 0
+Text GLabel 7500 4050 0    45   Input ~ 0
 Tx0-TTL
-Text GLabel 7400 4050 0    45   Input ~ 0
+Text GLabel 7500 4250 0    45   Input ~ 0
 Tx0-Ser
-Text GLabel 7400 4150 0    45   Input ~ 0
+Text GLabel 7500 4350 0    45   Input ~ 0
 Rx0-TTL
-Text GLabel 7400 4350 0    45   Input ~ 0
+Text GLabel 7500 4550 0    45   Input ~ 0
 Rx0-Ser
-NoConn ~ 7400 3950
-NoConn ~ 7400 4250
-Text GLabel 9800 3450 0    45   Input ~ 0
+NoConn ~ 7500 4150
+NoConn ~ 7500 4450
+Text GLabel 9850 3450 0    45   Input ~ 0
 +5Vout
-Text GLabel 9800 3350 0    45   Input ~ 0
+Text GLabel 9850 3350 0    45   Input ~ 0
 +12V
 Text Notes 550  3450 0    60   ~ 0
 Optional headers
@@ -1609,11 +1609,11 @@ Wire Wire Line
 	4150 1950 4650 1950
 Connection ~ 5800 1350
 Wire Wire Line
-	8350 3500 8500 3500
+	8550 3500 8700 3500
 Wire Wire Line
-	8350 3100 8700 3100
+	8550 3100 8900 3100
 Wire Wire Line
-	8700 3100 8700 3200
+	8900 3100 8900 3200
 Wire Wire Line
 	6300 600  6300 1350
 Connection ~ 6300 1000
@@ -1752,11 +1752,11 @@ Wire Wire Line
 Wire Wire Line
 	9500 5250 9100 5250
 Wire Wire Line
-	8350 4200 8500 4200
+	8550 4200 8700 4200
 Wire Wire Line
-	8350 3800 8700 3800
+	8550 3800 8900 3800
 Wire Wire Line
-	8700 3800 8700 3900
+	8900 3800 8900 3900
 Wire Wire Line
 	9500 5850 9500 5650
 Connection ~ 9200 5850
@@ -1827,10 +1827,10 @@ Wire Wire Line
 	3550 1800 3550 1800
 Connection ~ 3150 1300
 Wire Wire Line
-	10100 3250 10100 3550
+	10150 3250 10150 3550
 Wire Wire Line
-	10150 3400 10100 3400
-Connection ~ 10100 3400
+	10200 3400 10150 3400
+Connection ~ 10150 3400
 Wire Wire Line
 	3550 6250 3550 6100
 Wire Wire Line
@@ -2338,4 +2338,14 @@ Text Label 2700 6350 0    25   ~ 0
 AUXin-C
 Text Label 2750 7250 0    25   ~ 0
 DRSNin-C
+Text GLabel 7300 3250 0    45   Input ~ 0
+GND
+Text GLabel 8000 3450 2    45   Input ~ 0
+GND
+Text GLabel 8000 3550 2    45   Input ~ 0
++5V
+NoConn ~ 8000 3350
+NoConn ~ 8000 3250
+NoConn ~ 8000 3150
+NoConn ~ 8000 3050
 $EndSCHEMATC

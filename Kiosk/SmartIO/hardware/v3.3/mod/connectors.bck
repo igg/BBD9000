@@ -1,8 +1,4 @@
-EESchema-DOCLIB  Version 2.0  Date: Mon 29 Jul 2013 05:44:11 PM EDT
-#
-$CMP SW-PWR-3
-D Switched power terminals
-$ENDCMP
+EESchema-DOCLIB  Version 2.0  Date: Tue 19 Nov 2013 04:21:26 AM EST
 #
 $CMP TERM-3
 D General connector
@@ -21,6 +17,11 @@ $ENDCMP
 #
 $CMP TERM-5
 D Symbole general de connecteur
+K CONN
+$ENDCMP
+#
+$CMP TERM-6
+D ymbole general de connecteur
 K CONN
 $ENDCMP
 #
