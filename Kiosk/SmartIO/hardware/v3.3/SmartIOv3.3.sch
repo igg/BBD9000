@@ -2344,8 +2344,10 @@ Text GLabel 8000 3450 2    45   Input ~ 0
 GND
 Text GLabel 8000 3550 2    45   Input ~ 0
 +5V
-NoConn ~ 8000 3350
 NoConn ~ 8000 3250
-NoConn ~ 8000 3150
 NoConn ~ 8000 3050
+Text GLabel 8000 3150 2    45   Input ~ 0
+GND
+Text GLabel 8000 3350 2    45   Input ~ 0
+GND
 $EndSCHEMATC
