@@ -1,0 +1,15 @@
+Errata in v3.3.2
+The 3.3.2 boards are functional with some modifications.
+
+Assembly of V3.3.2 boards:
+The Labels for R1 and R2 are reversed
+The pins (not the circuit) for OlinuXino Rx and Tx are reversed
+  This requires two trace cuts and two green wires
+  Bottom, on back, two pairs of vias are used for Rx and Tx
+  Cut the traces b/w the two vias, use wires to connect them in reverse
+The right angle headers for keypad and LCD are too close together for two IDC ribbon connectors
+  Use non-IDC stackable connectors with crimp terminals.
+
+Layout changes for 3.3.3 do not require a new stencil.
+The pads for 2W resistors were made slightly narrower.
+Traces were made wider where possible, and some fill zones were added.
