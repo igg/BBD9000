@@ -25,7 +25,7 @@
 #ifndef SmartIO_h
 #define SmartIO_h
 
-#define VERSION_STR "BBD9000 v3.2.4"
+#define VERSION_STR "BBD9000 v3.3.3"
 //
 // ADC setup
 //
