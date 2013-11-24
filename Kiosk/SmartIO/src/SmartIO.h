@@ -35,14 +35,14 @@
 #define NSAMPLES   256  // if more than 64, adc_sum needs to be uint32_t
 #define NCHANNELS    2
 // ADC0 calibration points - raw ADC readings and "centi-volts" (1/100 of a volt)
-#define ADC0_RAW1_DEF     100
+#define ADC0_RAW1_DEF       0
 #define ADC0_CAL1_DEF       0
-#define ADC0_RAW2_DEF     782
-#define ADC0_CAL2_DEF    1482
+#define ADC0_RAW2_DEF     614
+#define ADC0_CAL2_DEF    1200
 // ADC1 calibration points - raw ADC readings and "centi-amps" (1/100 of an amp)
 #define ADC1_RAW1_DEF      127
 #define ADC1_CAL1_DEF        0
-#define ADC1_RAW2_DEF      615
+#define ADC1_RAW2_DEF      820
 #define ADC1_CAL2_DEF     5000
 
 // Slope and intercept formulas for ADCs
