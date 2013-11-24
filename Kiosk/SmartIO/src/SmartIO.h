@@ -46,10 +46,10 @@
 #define ADC1_CAL2_DEF     5000
 
 // Slope and intercept formulas for ADCs
-#define ADC_M_FUNC(cal1,raw1,cal2,raw2) (((long)cal2 - (long)cal1)*8192) / ((long)raw2 - (long)raw1)
-#define ADC_B_FUNC(cal1,raw1,ADCM) ((long)cal1*8192) - ((long)ADCM*(long)raw1)
-#define ADC_TO_CAL(adc,adcm,adcb) (uint16_t)((((long)adcm*adc) + (long)adcm) / 8192)
-#define CAL_TO_ADC(cal,adcm,adcb) (uint16_t)((((long)cal * 8192) - (long)adcb) / (long)adcm)
+#define ADC_M_FUNC(cal1,raw1,cal2,raw2) ( (((long)cal2 - (long)cal1)*8192) / ((long)raw2 - (long)raw1) )
+#define ADC_B_FUNC(cal1,raw1,ADCM) ( ((long)cal1*8192) - ((long)ADCM*(long)raw1) )
+#define ADC_TO_CAL(adc,adcm,adcb) ( (uint16_t)((((long)adcm*adc) + (long)adcb) / 8192) )
+#define CAL_TO_ADC(cal,adcm,adcb) ( (uint16_t)((((long)cal * 8192) - (long)adcb) / (long)adcm) )
 
 // Default threshold values
 // These are calibrated values! (centi-volts and centi-amps)
@@ -118,6 +118,11 @@
 #define DRSN_PIN  PIND
 #define DRSN_DDR  DDRD
 #define DRSN_BIT  6
+#define AUXI_PORT   PORTA
+#define AUXI_BIT    4
+#define AUXI_DDR    DDRA
+#define AUXI_PIN    PINA
+
 // bit mask for the keypad input bits
 #define KP_INPUTS  ((1 << KP_R1) | (1 << KP_R2) | (1 << KP_R3) | (1 << KP_R4))
 // bit mask for the keypad output bits
@@ -127,12 +132,14 @@
 // NaPion is *NOT* open-collector
 // May need pull-down!
 // #define PORTA_PULLUPS  (1 << MTN_BIT)
-// Bits 2, 3 and 4 are led to a header, but have no software function
-#define PORTA_PULLUPS  ((1 << 2) | (1 << 3) | (1 << 4))
+// Bits 2 and 3 and 4 are led to an ADC header, but have no software function
+#define PORTA_PULLUPS  ((1 << 2) | (1 << 3))
 #define PORTA_PULLDOWNS  (1 << MTN_BIT)
 #define PORTB_PULLUPS  KP_INPUTS
 #define PORTB_PULLDOWNS  KP_OUTPUTS
-#define PORTD_PULLUPS  ((1 << FLM1_BIT) | (1 << FLM2_BIT) | (1 << DRSN_BIT))
+// Since hardware 3.3.2, DIOs are tied to a comparator
+//#define PORTD_PULLUPS  ((1 << FLM1_BIT) | (1 << FLM2_BIT) | (1 << DRSN_BIT))
+#define PORTD_PULLUPS  (0)
 #define PORTD_PULLDOWNS  (0)
 
 // DIO debounce counter values (# of interrupts)
