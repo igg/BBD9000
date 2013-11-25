@@ -13,5 +13,5 @@ The 2.5 Vref is too low for DRSN and AUX inputs.
   Change R18 to 5k
 
 Layout changes for 3.3.3 do not require a new stencil.
-The pads for 2W resistors were made slightly narrower.
-Traces were made wider where possible, and some fill zones were added.
+  The pads for 2W resistors were made slightly narrower.
+  Traces were made wider where possible, and some fill zones were added.

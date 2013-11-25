@@ -1195,17 +1195,6 @@ F 3 "" H 3750 6150 60  0001 C CNN
 	1    3750 6150
 	-1   0    0    1   
 $EndComp
-$Comp
-L R2 R18
-U 1 1 51F31F35
-P 3350 6150
-F 0 "R18" H 3300 6300 40  0000 C CNN
-F 1 "10k" H 3450 6300 40  0000 C CNN
-F 2 "" H 3350 6150 60  0001 C CNN
-F 3 "" H 3350 6150 60  0001 C CNN
-	1    3350 6150
-	-1   0    0    1   
-$EndComp
 Text GLabel 3950 6250 2    45   Input ~ 0
 GND
 Text GLabel 2200 4500 0    45   Input ~ 0
@@ -1525,11 +1514,11 @@ AD2
 Text GLabel 6650 2150 2    45   Input ~ 0
 AUX
 Text GLabel 3550 6100 2    45   Input ~ 0
-Vref2.5
+Vref3.3
 Text GLabel 3350 7850 0    45   Input ~ 0
-Vref2.5
+Vref3.3
 Text GLabel 3350 6950 0    45   Input ~ 0
-Vref2.5
+Vref3.3
 $Comp
 L C C27
 U 1 1 51F78842
@@ -2344,8 +2333,21 @@ Text GLabel 8000 3450 2    45   Input ~ 0
 GND
 Text GLabel 8000 3550 2    45   Input ~ 0
 +5V
-NoConn ~ 8000 3350
 NoConn ~ 8000 3250
-NoConn ~ 8000 3150
 NoConn ~ 8000 3050
+Text GLabel 8000 3150 2    45   Input ~ 0
+GND
+Text GLabel 8000 3350 2    45   Input ~ 0
+GND
+$Comp
+L R2 R18
+U 1 1 5292EC73
+P 3350 6150
+F 0 "R18" H 3250 6300 40  0000 C CNN
+F 1 "5k" H 3400 6300 40  0000 C CNN
+F 2 "" H 3350 6150 60  0001 C CNN
+F 3 "" H 3350 6150 60  0001 C CNN
+	1    3350 6150
+	-1   0    0    1   
+$EndComp
 $EndSCHEMATC
