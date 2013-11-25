@@ -9,6 +9,8 @@ The pins (not the circuit) for OlinuXino Rx and Tx are reversed
   Cut the traces b/w the two vias, use wires to connect them in reverse
 The right angle headers for keypad and LCD are too close together for two IDC ribbon connectors
   Use non-IDC stackable connectors with crimp terminals.
+The 2.5 Vref is too low for DRSN and AUX inputs.
+  Change R18 to 5k
 
 Layout changes for 3.3.3 do not require a new stencil.
 The pads for 2W resistors were made slightly narrower.
