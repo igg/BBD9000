@@ -711,6 +711,7 @@ size_t buf_siz=0;
 		doTimeout (shmem->lcd_timeout,"LCD");
 		doTimeout (shmem->netIdle_timeout,"Net Idle");
 		is_idle = 0;
+		run_cfg_write (shmem);
 	break;
 
 	// Upon exit, cancel the LCD and status timeouts
@@ -1069,7 +1070,6 @@ int new_state = shmem->status_idx;
 	// The only way to get out of this state is with a VoltageAlarm_Reset_Evt
 	case VoltageAlarm_Reset_Evt:
 		system(BBD9000_PWR_OK_CMD);
-		unlink (shmem->run_conf);
 		memset (shmem->patch_status,0,sizeof (shmem->patch_status));
 		memset (shmem->boot_reason,0,sizeof (shmem->boot_reason));
 		strcpy (shmem->boot_reason,"restart");
@@ -4890,8 +4890,6 @@ char date_str[STR_SIZE];
 		fflush (srv_fp);
 	}
 
-	// Delete the runtime configuration
-	unlink (shmem->run_conf);
 	memset (shmem->patch_status,0,sizeof (shmem->patch_status));
 	memset (shmem->boot_state,0,sizeof (shmem->boot_state));
 	memset (shmem->boot_reason,0,sizeof (shmem->boot_reason));
