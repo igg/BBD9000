@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by CvPcb (2013-mar-13)-testing date = Fri 13 Dec 2013 05:41:37 PM EST
+Cmp-Mod V01 Created by PcbNew date = Mon 16 Dec 2013 03:36:55 PM EST
 
 BeginCmp
 TimeStamp = /51952E68;
@@ -494,14 +494,14 @@ BeginCmp
 TimeStamp = /52560D6E;
 Reference = P1;
 ValeurCmp = LOGO-BBDC;
-IdModule  = BBDC-logo-750m.mod;
+IdModule  = BBDC-logo-675m;
 EndCmp
 
 BeginCmp
 TimeStamp = /52560E17;
 Reference = P2;
 ValeurCmp = LOGO-OSHW;
-IdModule  = OSHW-300m;
+IdModule  = OSHW-400m;
 EndCmp
 
 BeginCmp
