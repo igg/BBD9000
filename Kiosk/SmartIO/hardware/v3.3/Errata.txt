@@ -15,3 +15,30 @@ The 2.5 Vref is too low for DRSN and AUX inputs.
 Layout changes for 3.3.3 do not require a new stencil.
   The pads for 2W resistors were made slightly narrower.
   Traces were made wider where possible, and some fill zones were added.
+
+R25, R31, Cb8, U7pin8 should connect to 5Vout, not 5V
+  to protect the 5V supply from input transients.
+
+UPS capacitor bank needs current limit
+  Add through-hole 75 ohm 3W resistor (R44) in series b/w C12 pin1(+) and D8 (instead of direct-connect)
+  Add D11 (sames as D1-4, etc.) parallel to series resistor (points at D8) to discharge UPS through diode instead of R
+
+12V input needs undervoltage cutoff
+  Use LM192 as window comparator to shutdown < 10V > 15V
+  Replace PTC fuse with ZXCT1032, AUIR3315 use same TVS as on dig inputs (high-V replaced by comparator)
+  AUIR with 3k Rifb has 10A current limit (which is probably OK).
+  **10V is way too low in low-load.  An idle system, drawing < .1CA needs to shutdown @ 11.5V or higher!
+    At the same time, a 0.3 C load may drop the voltage to 10.5V.
+    A fixed cutoff is useless on lead-acid systems.
+  
+  Variable cutoff:
+    High cutoff set by voltage detector for turn-on.  11.5 - 12 V.
+    Voltage detector has software over-ride for maintaining on-state with higher loads
+    Software enables/disables over-ride depending on pump status, or measured load (requires current accuracy).
+    Override - pull-down of PFET gate using DIO output.
+    Gate gets pulled down automatically using voltage detector.
+    Voltage detector:  Use another dual comparator and a Vref (new) to monitor 12V input voltage and 5V regulator input voltage
+    Comparators pull down PFET gates to turn on high-side.
+    Vref: http://www.digikey.com/product-detail/en/ZR431F005TA/ZR431F005TACT-ND/463807
+    
+  
