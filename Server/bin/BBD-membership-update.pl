@@ -35,6 +35,7 @@ use constant UPDATE_MEMBERSHIP_RENEWAL => <<"SQL";
 	SET ms.status = 'ASK_RENEWAL'
 		WHERE ms.type != 'ONE-DAY'
 		AND ms.type != 'SUPPLIER'
+		AND ms.type != 'EMPLOYEE'
 		AND ms.status != 'ASK_RENEWAL'
 		AND ms.status != 'EXPIRED'
 		AND TO_DAYS(ms.expires)-TO_DAYS(NOW())<?;
@@ -45,6 +46,7 @@ use constant UPDATE_MEMBERSHIP_EXPIRED => <<"SQL";
 	SET ms.status = 'EXPIRED'
 		WHERE ms.type != 'ONE-DAY'
 		AND ms.type != 'SUPPLIER'
+		AND ms.type != 'EMPLOYEE'
 		AND ms.status != 'EXPIRED'
 		AND TO_DAYS(NOW())-TO_DAYS(ms.expires)>?;
 SQL
