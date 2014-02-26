@@ -812,8 +812,8 @@ size_t buf_siz=0;
 		// Effectively, this means the user is still there, but there may not be motion detected
 			doTimeout (shmem->input_timeout,"LCD");
 			checkLights();
-			doLCD (1, 0, LCD1);
-			doLCD (2, 0, LCD2);
+			doLCD (1, 1, LCD1);
+			doLCD (2, 1, LCD2);
 		}
 	break;
 
@@ -2379,15 +2379,16 @@ int new_state = shmem->status_idx;
 				(shmem->memb_temp_membership_sale ? shmem->temp_membership_fee : 0) +
 				(shmem->memb_upgrade_sale ? shmem->upgrade_fee : 0)
 			;
-			if (other_chrgs >= 0.0) {
-				doLCD (1, 1, "$%.2f Fuel +$%.2f Fees",
-					(shmem->memb_gallons * shmem->memb_ppg),other_chrgs);
+			float fuel_dollars = shmem->memb_gallons * shmem->memb_ppg;
+			if (other_chrgs >= 0.01) {
+				doLCD (1, 1, "$%.2f Fuel +$%.2f Fees = $%.2f",
+					fuel_dollars, other_chrgs, fuel_dollars + other_chrgs);
 			} else {
-				doLCD (1, 1, "$%.2f Fuel",shmem->memb_gallons * shmem->memb_ppg);
+				doLCD (1, 1, "$%.2f Fuel",fuel_dollars);
 			}
 		}
-		if ( shmem->memb_dollars > shmem->memb_credit ) {
-				doLCD (2, 1, "$%.2f Credit Remaining",shmem->memb_dollars - shmem->memb_credit);
+		if ( shmem->memb_dollars <= 0.0 ) {
+				doLCD (2, 1, "$%.2f Credit Remaining", -shmem->memb_dollars);
 		}
 		fprintf (out_fp,"PMP\nVIN\n");
 		fflush (out_fp);
