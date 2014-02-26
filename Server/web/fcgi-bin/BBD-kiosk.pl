@@ -635,7 +635,7 @@ my $message = shift;
 # Member found.  Send membership modification options if applicable.
 	my ($memb_name,$memb_fname,$memb_lname,$id,$login,$type,$status,$credit,$fuel_preauth,$ms_id,$ms_num,$start,$renew,$email,$ad1,$ad2,$city,$state,$zip,$h_ph,$w_ph,$m_ph) =
 		$DBH->selectrow_array (GET_USER_INFO_BY_ID,undef,$auth_memb_id);
-	my $ppg = $BBD->getFuelPrice('FULL', $kioskID);
+	my $ppg = $BBD->getFuelPrice($type, $kioskID);
 	$fuel_preauth = $BBD->getDefaultFuelPreauth() unless $fuel_preauth;
 	$resp .= sprintf ("%d\t%s\t%s\t%.2f\t%.2f\t%.2f\t%s",$id,$type,$status,$ppg,$fuel_preauth,$credit,$ms_num);
 
@@ -653,7 +653,7 @@ my $message = shift;
 		$trial_fee = $BBD->getTrialSurcharge ();
 	}
 # Upgrades
-	if ($type ne 'FULL') {
+	if ($type ne 'FULL' and $type ne 'EMPLOYEE') {
 		$trial_fee = $BBD->getTrialSurcharge ();
 		if ($type eq 'ONE-DAY') {
 			$upgrade_fee = $BBD->getMembershipPrice ($kioskID);
@@ -722,7 +722,8 @@ my $message = shift;
 	$DBH->do (UPDATE_MEMB_ID_PREAUTH_CC_TRANS, undef, $new_member_id, $CC_id, $kioskID, $gw_trans_id);
 
 	# Register the sale if full membership
-	if ($type eq 'FULL') {
+	# Can't really sell and EMPLOYEE membership, but including it here for completeness/parallel structure
+	if ($type eq 'FULL' or $type eq 'EMPLOYEE') {
 		do_notice (join ("\t",'sale',time(),$new_member_id,'membership',1,$price,$price));
 	}
 	

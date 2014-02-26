@@ -311,6 +311,10 @@ use constant GET_TRIAL_SURCHARGE_PRICE => <<"SQL";
 	SELECT price FROM item_prices WHERE item = "trial_surcharge"
 SQL
 
+use constant GET_EMPLOYEE_DISCOUNT_PRICE => <<"SQL";
+	SELECT price FROM item_prices WHERE item = "employee_discount"
+SQL
+
 use constant GET_MEMBERSHIP_PROMO_PRICE => <<"SQL";
 	SELECT price FROM promotions
 	WHERE
@@ -1041,8 +1045,10 @@ my $self = shift;
 	my $kiosk_id = shift;
 
 	my ($fuel_price) = $self->{DBH}->selectrow_array (GET_FUEL_PRICE, undef, $kiosk_id);
-	if (uc($type) ne 'FULL') {
+	if (uc($type) ne 'FULL' and uc($type) ne 'EMPLOYEE') {
 		$fuel_price += $self->getTrialSurcharge();
+	} elsif ( uc($type) eq 'EMPLOYEE' ) {
+		$fuel_price -= $self->getEmployeeDiscount();
 	}
 	return ($fuel_price);
 }
@@ -1120,6 +1126,14 @@ sub getTrialSurcharge {
 my $self = shift;
 
 	my ($price) = $self->{DBH}->selectrow_array (GET_TRIAL_SURCHARGE_PRICE);
+	return ($price);
+
+}
+
+sub getEmployeeDiscount {
+my $self = shift;
+
+	my ($price) = $self->{DBH}->selectrow_array (GET_EMPLOYEE_DISCOUNT_PRICE);
 	return ($price);
 
 }

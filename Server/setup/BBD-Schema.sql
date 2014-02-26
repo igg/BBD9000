@@ -83,6 +83,7 @@ INSERT INTO `item_prices` VALUES ('fuel',3.6,'Fuel price for a FULL membership. 
 INSERT INTO `item_prices` VALUES ('membership',100,'Full membership fee');
 INSERT INTO `item_prices` VALUES ('renewal',30,'Renew an EXPIRED membership.  ONE-DAY memberships never expire!');
 INSERT INTO `item_prices` VALUES ('trial_surcharge',0.75,'Per-gallon surcharge for EXPIRED and ONE-DAY memberships');
+INSERT INTO `item_prices` VALUES ('employee_discount', 0.0, 'Discount for \'EMPLOYEE\' membership types (subtracted from base fuel price)');
 INSERT INTO `item_prices` VALUES ('upgrade',70,'Upgrade fee for a non-ONE-DAY membership to FULL.  ONE-DAY memberhip upgrade to FULL is the full membership price');
 /*!40000 ALTER TABLE `item_prices` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -416,7 +417,7 @@ CREATE TABLE `memberships` (
   `membership_number` int(11) NOT NULL,
   `start_date` datetime NOT NULL,
   `expires` datetime DEFAULT NULL,
-  `type` enum('FULL','ONE-DAY','NON-FUELING','SUPPLIER') NOT NULL,
+  `type` enum('FULL','EMPLOYEE','ONE-DAY','NON-FUELING','SUPPLIER') NOT NULL,
   `status` enum('ACTIVE','PENDING','ASK_RENEWAL','EXPIRED') NOT NULL,
   `last_renewal` datetime NOT NULL,
   PRIMARY KEY (`membership_id`),

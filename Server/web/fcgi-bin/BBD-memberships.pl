@@ -149,6 +149,8 @@ sub do_request {
 	$BBD->relogin () unless $member_info->{ms_id};
 	
 	%membership_types = $BBD->get_membership_types();
+	my $def_membership_type;
+	$def_membership_type = 'FULL' if exists $membership_types{'FULL'};
 	%membership_statuses = $BBD->get_membership_statuses();
 	
 	
@@ -171,7 +173,7 @@ sub do_request {
 			-values=> [sort { $membership_types{$a} cmp $membership_types{$b} } keys %membership_types],
 			-labels=>\%membership_types,
 			-class => 'popup_menu',
-			-default => $BBD->safeCGIparam ('new_type_popup') ? $BBD->safeCGIparam ('new_type_popup') : undef,
+			-default => $BBD->safeCGIparam ('new_type_popup') ? $BBD->safeCGIparam ('new_type_popup') : $def_membership_type,
 			-override => 1,
 		),
 		new_status_popup => $CGI->popup_menu(
@@ -226,7 +228,7 @@ sub do_request {
 				$BBD->safeCGIparam ('new_status_popup')
 			) or return undef;
 	
-		if ( ($new_type eq 'FULL' or $new_type eq 'ONE-DAY') and $new_status ne 'PENDING') {
+		if ( ($new_type eq 'FULL' or $new_type eq 'ONE-DAY' or $new_type eq 'EMPLOYEE') and $new_status ne 'PENDING') {
 			$BBD->error ('Fueling memberships should start with a PENDING status.');
 			show_form();
 			return undef;
