@@ -711,7 +711,7 @@ my $message = shift;
 	$properName=~s/\b(\w)/\u$1/g;
 	# This call will update promos if any
 	my $new_member_id = 
-		$BBD->new_membership (time(),$type,'ACTIVE',$properName,"",$pin_in,$fuel_preauth,$price,$kioskID);
+		$BBD->new_membership (time(),undef,$type,'ACTIVE',$properName,"",$pin_in,$fuel_preauth,$price,$kioskID);
 	
 	
 	# The membership has a pre-auth CC transaction in the DB with a bogus member_ID

@@ -986,7 +986,7 @@ my $self = shift;
 
 sub new_membership {
 my $self = shift;
-my ($new_start,$new_type,$new_status,$new_name,$new_email,$new_spn,$fuel_preauth,$price,$kiosk_id) = @_;
+my ($new_start,$new_expires,$new_type,$new_status,$new_name,$new_email,$new_spn,$fuel_preauth,$price,$kiosk_id) = @_;
 
 	my $DBH = $self->{DBH};
 
@@ -995,6 +995,9 @@ my ($new_start,$new_type,$new_status,$new_name,$new_email,$new_spn,$fuel_preauth
 	my $first_name = $1 if $new_name =~ /^(\S+)/;
 	my $last_name = $1 if $new_name =~ /(\S+)$/;
 	
+	if (not $new_expires) {
+		$new_expires = DateTime->from_epoch( epoch => $new_start, time_zone => $TIMEZONE)->add(years=>1)->epoch();
+	}
 	# Get an available membership_number - need to get a write lock on the memberships table.
 	$DBH->do (LOCK_MEMBERSHIPS_TABLE);
 	my $new_membership_number = $DBH->selectrow_array (GET_NEW_MEMBERSHIP_NUMBER);
@@ -1003,7 +1006,7 @@ my ($new_start,$new_type,$new_status,$new_name,$new_email,$new_spn,$fuel_preauth
 		$new_membership_number,
 		$new_start,
 		$new_start,
-		DateTime->from_epoch( epoch => $new_start, time_zone => $TIMEZONE)->add(years=>1)->epoch(),
+		$new_expires,
 		$new_type,
 		$new_status
 	);

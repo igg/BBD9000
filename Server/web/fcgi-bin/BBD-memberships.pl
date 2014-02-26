@@ -44,7 +44,7 @@ SQL
 
 use constant GET_MEMBERSHIP_BY_ID => <<"SQL";
 	SELECT m.member_id,m.name,m.email,ms.membership_id,ms.membership_number,
-		ms.type,ms.status,UNIX_TIMESTAMP(ms.start_date),UNIX_TIMESTAMP(ms.last_renewal)
+		ms.type,ms.status,UNIX_TIMESTAMP(ms.start_date),UNIX_TIMESTAMP(ms.last_renewal),UNIX_TIMESTAMP(ms.expires)
 	FROM members m, memberships ms
 	WHERE m.membership_id = ms.membership_id
 	AND m.is_primary = 1
@@ -64,6 +64,7 @@ use constant UPDATE_MEMBERSHIP => <<"SQL";
 	UPDATE memberships SET
 		membership_number = ?,
 		start_date = FROM_UNIXTIME(?),
+		expires = FROM_UNIXTIME(?),
 		last_renewal = FROM_UNIXTIME(?),
 		type = ?,
 		status = ?
@@ -167,6 +168,7 @@ sub do_request {
 		new_name => $BBD->safeCGIparam ('new_name'),
 		new_email => $BBD->safeCGIparam ('new_email'),
 		new_start => $BBD->safeCGIparam ('new_start'),
+		new_expires => $BBD->safeCGIparam ('new_expires'),
 		new_type_popup => $CGI->popup_menu(
 			-name=>'new_type_popup',
 			# Sort by the values rather than the keys
@@ -220,9 +222,10 @@ sub do_request {
 				$new_membership_tmpl_params->{new_name},
 				$new_membership_tmpl_params->{new_email},
 			) or return undef;
-		my ($new_start,undef,$new_type,$new_status) =
+		my ($new_start,$new_expires,undef,$new_type,$new_status) =
 			verify_ms_info (
 				$new_membership_tmpl_params->{new_start},
+				$new_membership_tmpl_params->{new_expires},
 				$new_membership_tmpl_params->{new_start},
 				$BBD->safeCGIparam ('new_type_popup'),
 				$BBD->safeCGIparam ('new_status_popup')
@@ -235,14 +238,16 @@ sub do_request {
 		}
 		
 		my $new_member_id = 
-			$BBD->new_membership ($new_start,$new_type,$new_status,$new_name,$new_email,undef,undef,undef);
+			$BBD->new_membership ($new_start,$new_expires,$new_type,$new_status,$new_name,$new_email,undef,undef,undef);
 
 		$CGI->param ('new_name',undef);
 		$CGI->param ('new_email',undef);
 		$CGI->param ('new_start',undef);
+		$CGI->param ('new_expires',undef);
 		$new_membership_tmpl_params->{new_name} = undef;
 		$new_membership_tmpl_params->{new_email} = undef;
 		$new_membership_tmpl_params->{new_start} = undef;
+		$new_membership_tmpl_params->{new_expires} = undef;
 	
 		show_form();
 		return undef;
@@ -250,9 +255,10 @@ sub do_request {
 	###
 	# update_memb button
 	} elsif ( $BBD->safeCGIparam ('update_ms') and $edit_membership_ms_id ) {
-		my ($upd_start,$upd_renew,$upd_type,$upd_status) =
+		my ($upd_start,$upd_expires,$upd_renew,$upd_type,$upd_status) =
 			verify_ms_info (
 				$BBD->safeCGIparam ('edit_start'),
+				$BBD->safeCGIparam ('edit_expires'),
 				$BBD->safeCGIparam ('edit_renew'),
 				$BBD->safeCGIparam ('edit_type_popup'),
 				$BBD->safeCGIparam ('edit_status_popup')
@@ -278,6 +284,7 @@ sub do_request {
 		$DBH->do (UPDATE_MEMBERSHIP,undef,
 			$upd_ms_num,
 			$upd_start,
+			$upd_expires,
 			$upd_renew,
 			$upd_type,
 			$upd_status,
@@ -341,7 +348,7 @@ sub select_edit_memb {
 
 	# Make sure the membership exists
 	my ($memb_id,$memb_name,$memb_email,$ms_membership_id,$ms_membership_number,
-		$ms_type,$ms_status,$ms_start,$ms_renew) = $DBH->selectrow_array (GET_MEMBERSHIP_BY_ID,undef,$membership);
+		$ms_type,$ms_status,$ms_start,$ms_renew,$ms_expires) = $DBH->selectrow_array (GET_MEMBERSHIP_BY_ID,undef,$membership);
 
 	return undef unless $ms_membership_id;
 
@@ -359,6 +366,7 @@ sub select_edit_memb {
 		edit_membership_ms_num  => $ms_membership_number,		
 		edit_start => $BBD->epoch_to_ISOdatetime ($ms_start),
 		edit_renew => $BBD->epoch_to_ISOdate ($ms_renew,'GMT'),
+		edit_expires => $BBD->epoch_to_ISOdate ($ms_expires,'GMT'),
 		edit_type_popup => $CGI->popup_menu(
 			-name=>'edit_type_popup',
 			# Sort by the values rather than the keys
@@ -459,11 +467,17 @@ sub verify_member_info {
 }
 
 sub verify_ms_info {
-	my ($new_start,$new_renew,$new_type,$new_status) = @_;
+	my ($new_start,$new_expires,$new_renew,$new_type,$new_status) = @_;
 	
 	# Javascript should have converted to a local unix timestamp
 	if (!$new_start or not looks_like_number ($new_start) ) {
 		$BBD->error ('Invalid start date format');
+		show_form();
+		return undef;
+	}
+	
+	if (!$new_expires or not looks_like_number ($new_expires) ) {
+		$BBD->error ('Invalid expiration date format');
 		show_form();
 		return undef;
 	}
@@ -486,7 +500,7 @@ sub verify_ms_info {
 		return undef;
 	}
 	
-	return ($new_start,$new_renew,$new_type,$new_status);
+	return ($new_start,$new_expires,$new_renew,$new_type,$new_status);
 }
 
 

@@ -32,6 +32,7 @@
 		<td class="data">Name</td>
 		<td class="data">Email</td>
 		<td class="data">Started</td>
+		<td class="data">Expires</td>
 		<td class="data">Type</td>
 		<td class="data">Status</td>
 		<td class="data" align="center">---</td>
@@ -43,6 +44,10 @@
 	<td class="data" align="left"><input name="new_start" type="text" size="15" value="<!-- TMPL_VAR NAME=new_start -->"
 		onclick="javascript:new_start_cal.popup();" readonly>
 		<a href="javascript:new_start_cal.popup();"><img src="/JavaScript/calendar/img/cal.gif" width="16" height="16" border="0" title="Pick date and time" alt="Pick date + time"></a>
+	</td>
+	<td class="data" align="left"><input name="new_expires" type="text" size="15" value="<!-- TMPL_VAR NAME=new_expires -->"
+		onclick="javascript:new_expires_cal.popup();" readonly>
+		<a href="javascript:new_expires_cal.popup();"><img src="/JavaScript/calendar/img/cal.gif" width="16" height="16" border="0" title="Pick date and time" alt="Pick date + time"></a>
 	</td>
 	<td class="data" align="left"> <!-- TMPL_VAR NAME=new_type_popup --> </td>
 	<td class="data" align="left"> <!-- TMPL_VAR NAME=new_status_popup --> </td>
@@ -63,6 +68,7 @@
 		<td class="data">Number</td>
 		<td class="data">Started</td>
 		<td class="data">Renewed</td>
+		<td class="data">Expires</td>
 		<td class="data">Type</td>
 		<td class="data">Status</td>
 		<td class="data">Primary</td>
@@ -78,6 +84,10 @@
 	<td class="data" align="left"><input name="edit_renew" type="text" size="10" value = "<!-- TMPL_VAR NAME=edit_renew -->"
 		onclick="javascript:edit_renew_cal.popup();" readonly>
 		<a href="javascript:edit_renew_cal.popup();"><img src="/JavaScript/calendar/img/cal.gif" width="16" height="16" border="0" title="Pick a date" alt="Pick a date"></a>
+	</td>
+	<td class="data" align="left"><input name="edit_expires" type="text" size="10" value = "<!-- TMPL_VAR NAME=edit_expires -->"
+		onclick="javascript:edit_expires_cal.popup();" readonly>
+		<a href="javascript:edit_expires_cal.popup();"><img src="/JavaScript/calendar/img/cal.gif" width="16" height="16" border="0" title="Pick a date" alt="Pick a date"></a>
 	</td>
 	<td class="data" align="left"> <!-- TMPL_VAR NAME=edit_type_popup --> </td>
 	<td class="data" align="left"> <!-- TMPL_VAR NAME=edit_status_popup --> </td>
@@ -176,6 +186,13 @@ Last <input name="last_n_memberships" type="text" size="4" value="<!-- TMPL_VAR 
 	new_start_cal.year_scroll = false;
 	new_start_cal.time_comp = true;
 	document.forms['primary'].elements['new_start'].value = iso_datetime (new Date());
+	var new_expires_cal = new calendar3(document.forms['primary'].elements['new_expires']);
+	var yearFromNow = new Date();
+	yearFromNow.setFullYear(yearFromNow.getFullYear()+1)
+	new_expires_cal.year_scroll = false;
+	new_expires_cal.time_comp = true;
+	document.forms['primary'].elements['new_expires'].value = iso_datetime (yearFromNow);
+	
 //	<!-- TMPL_IF NAME=edit_membership_ms_id -->
 	
 		var edit_start_cal = new calendar3(document.forms['primary'].elements['edit_start']);
@@ -185,6 +202,10 @@ Last <input name="last_n_memberships" type="text" size="4" value="<!-- TMPL_VAR 
 		var edit_renew_cal = new calendar3(document.forms['primary'].elements['edit_renew']);
 		edit_renew_cal.year_scroll = true;
 		edit_renew_cal.time_comp = false;
+	
+		var edit_expires_cal = new calendar3(document.forms['primary'].elements['edit_expires']);
+		edit_expires_cal.year_scroll = true;
+		edit_expires_cal.time_comp = false;
 //	<!-- /TMPL_IF -->
 
 	
@@ -211,12 +232,17 @@ Last <input name="last_n_memberships" type="text" size="4" value="<!-- TMPL_VAR 
 	function toUnixTime () {
 		document.forms['primary'].elements['new_start'].value = 
 			new_start_cal.prs_tsmp (document.forms['primary'].elements['new_start'].value).getTime() / 1000;
+		document.forms['primary'].elements['new_expires'].value = 
+			new_expires_cal.prs_tsmp (document.forms['primary'].elements['new_expires'].value).getTime() / 1000;
 //	<!-- TMPL_IF NAME=edit_membership_ms_id -->
 		document.forms['primary'].elements['edit_start'].value = 
 			edit_start_cal.prs_tsmp (document.forms['primary'].elements['edit_start'].value).getTime() / 1000;
 	//	To get to midnight GMT, we have to subtract the timezone offset
 		var localDate = edit_renew_cal.prs_tsmp (document.forms['primary'].elements['edit_renew'].value);
 		document.forms['primary'].elements['edit_renew'].value = 
+			(localDate.getTime() / 1000) - (localDate.getTimezoneOffset() * 60);
+		localDate = edit_expires_cal.prs_tsmp (document.forms['primary'].elements['edit_expires'].value);
+		document.forms['primary'].elements['edit_expires'].value = 
 			(localDate.getTime() / 1000) - (localDate.getTimezoneOffset() * 60);
 //	<!-- /TMPL_IF -->
 
