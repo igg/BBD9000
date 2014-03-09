@@ -18,7 +18,7 @@
 KEEP_FLASH = -D
 # DEVICE     = atmega164pa
 DEVICE     = atmega324pa
-# One of these must be defined (SMARTIO_V3_2 or SMARTIO_V3_3)
+# One of these must be defined (3_2 or 3_3)
 SMART_IO_V    = 3_3
 PROGRAMMER = -c avrispmkII -P usb
 OBJECTS    = main.o SmartIO.o parser.o uart2.o buffer.o lcd.o
