@@ -18,8 +18,11 @@
 KEEP_FLASH = -D
 # DEVICE     = atmega164pa
 DEVICE     = atmega324pa
+# One of these must be defined (SMARTIO_V3_2 or SMARTIO_V3_3)
+SMART_IO_V    = 3_3
 PROGRAMMER = -c avrispmkII -P usb
 OBJECTS    = main.o SmartIO.o parser.o uart2.o buffer.o lcd.o
+
 
 # From http://www.engbedded.com/fusecalc/
 CLOCK      = 18432000
@@ -61,7 +64,7 @@ FUSES      = -U lfuse:w:0xCF:m -U hfuse:w:0xD6:m -U efuse:w:0xFC:m
 # Tune the lines below only if you know what you are doing:
 
 AVRDUDE = avrdude $(KEEP_FLASH) $(PROGRAMMER) -p $(DEVICE)
-COMPILE = avr-gcc -Wall -Os -DF_CPU=$(CLOCK) -mmcu=$(DEVICE)
+COMPILE = avr-gcc -Wall -Os -DF_CPU=$(CLOCK) -mmcu=$(DEVICE) -DSMARTIO_V$(SMART_IO_V)
 
 # symbolic targets:
 all:	main.hex
@@ -106,6 +109,7 @@ main.elf: $(OBJECTS)
 main.hex: main.elf
 	rm -f main.hex
 	avr-objcopy -j .text -j .data -O ihex main.elf main.hex
+	cp main.hex SmartIO-$(DEVICE)-v$(SMART_IO_V).hex
 # If you have an EEPROM section, you must also create a hex file for the
 # EEPROM and add it to the "flash" target.
 main.eep: main.elf

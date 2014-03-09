@@ -25,7 +25,11 @@
 #ifndef SmartIO_h
 #define SmartIO_h
 
-#define VERSION_STR "BBD9000 v3.3.3"
+#ifdef SMARTIO_V3_2
+#define VERSION_STR "BBD9000 v3.2.4"
+#else
+#define VERSION_STR "BBD9000 v3.3.4"
+#endif
 //
 // ADC setup
 //
@@ -118,10 +122,14 @@
 #define DRSN_PIN  PIND
 #define DRSN_DDR  DDRD
 #define DRSN_BIT  6
+
+// Aux input only on 3.3 boards
+#ifdef SMARTIO_V3_3
 #define AUXI_PORT   PORTA
 #define AUXI_BIT    4
 #define AUXI_DDR    DDRA
 #define AUXI_PIN    PINA
+#endif
 
 // bit mask for the keypad input bits
 #define KP_INPUTS  ((1 << KP_R1) | (1 << KP_R2) | (1 << KP_R3) | (1 << KP_R4))
@@ -132,14 +140,21 @@
 // NaPion is *NOT* open-collector
 // May need pull-down!
 // #define PORTA_PULLUPS  (1 << MTN_BIT)
-// Bits 2 and 3 and 4 are led to an ADC header, but have no software function
+// Bits 2 and 3 are led to an ADC header, but have no software function
+// On SmartIO 3.2 boards, bit 4 is led to ADC header
+// On SmartIO 3.3.x boards, bit 4 is used for aux input (AUXI_BIT)
+// Since hardware 3.3.2, DIOs are tied to a comparator
+#ifdef SMARTIO_V3_2
+#define PORTA_PULLUPS  ((1 << 2) | (1 << 3) | (1 << 4))
+#define PORTD_PULLUPS  ((1 << FLM1_BIT) | (1 << FLM2_BIT) | (1 << DRSN_BIT))
+#else
 #define PORTA_PULLUPS  ((1 << 2) | (1 << 3))
+#define PORTD_PULLUPS  (0)
+#endif
+
 #define PORTA_PULLDOWNS  (1 << MTN_BIT)
 #define PORTB_PULLUPS  KP_INPUTS
 #define PORTB_PULLDOWNS  KP_OUTPUTS
-// Since hardware 3.3.2, DIOs are tied to a comparator
-//#define PORTD_PULLUPS  ((1 << FLM1_BIT) | (1 << FLM2_BIT) | (1 << DRSN_BIT))
-#define PORTD_PULLUPS  (0)
 #define PORTD_PULLDOWNS  (0)
 
 // DIO debounce counter values (# of interrupts)
@@ -275,7 +290,7 @@ typedef struct {
 // LCD info structure
 //
 #define LCD_CHARS_MAX 80
-#define LCD_SCROLL_INTR 500 // Number of interrupts between scrolls
+#define LCD_SCROLL_INTR 700 // Number of interrupts between scrolls
 typedef struct {
 	volatile char line[LCD_CHARS_MAX+1];
 	volatile uint8_t scrollPos,len;
