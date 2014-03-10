@@ -1,4 +1,7 @@
 EESchema Schematic File Version 2
+LIBS:components
+LIBS:connectors
+LIBS:SmartIOv3.3-cache
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -29,9 +32,6 @@ LIBS:opto
 LIBS:atmel
 LIBS:contrib
 LIBS:valves
-LIBS:SmartIOv3.3-cache
-LIBS:connectors
-LIBS:components
 LIBS:SmartIOv3.3-cache
 EELAYER 24 0
 EELAYER END
@@ -267,7 +267,7 @@ GND
 Text GLabel 8400 1050 2    45   Input ~ 0
 GND
 $Comp
-L ACS75X_CURRENT_SENSOR U3
+L ACS75x_CURRENT_SENSOR U3
 U 1 1 51955960
 P 9100 2050
 F 0 "U3" H 8900 2000 60  0000 C CNN
@@ -665,7 +665,7 @@ LCD Header, BL, cntrst  (Port C)
 Text Notes 500  2175 0    60   ~ 0
 Screw Terminals
 $Comp
-L CSMALL C19
+L Csmall C19
 U 1 1 5197ECE5
 P 4150 2050
 F 0 "C19" H 4175 2100 30  0000 L CNN
@@ -676,7 +676,7 @@ F 3 "~" H 4150 2050 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L CSMALL C20
+L Csmall C20
 U 1 1 5197ED13
 P 4150 2450
 F 0 "C20" H 4175 2500 30  0000 L CNN
@@ -1139,7 +1139,7 @@ Text Notes 1875 625  0    60   ~ 0
 Text GLabel 4650 1850 0    45   Input ~ 0
 ~RESET
 $Comp
-L LM193SM U6
+L LM193sm U6
 U 1 1 51F31B63
 P 3650 4600
 F 0 "U6" H 3700 4700 60  0000 C CNN
@@ -1200,7 +1200,7 @@ GND
 Text GLabel 2200 4500 0    45   Input ~ 0
 FLM1in
 $Comp
-L TVSX2 D7
+L TVSx2 D7
 U 1 1 51F3204F
 P 2600 4700
 F 0 "D7" V 2550 4550 40  0000 C CNN
@@ -1217,7 +1217,7 @@ Digital inputs
 Text GLabel 3850 4600 2    45   Input ~ 0
 FLM1
 $Comp
-L LM193SM U7
+L LM193sm U7
 U 2 1 51F32D25
 P 3650 7750
 F 0 "U7" H 3700 7850 60  0000 C CNN
@@ -1271,7 +1271,7 @@ GND
 Text GLabel 3850 7750 2    45   Input ~ 0
 DRSN
 $Comp
-L LM193SM U7
+L LM193sm U7
 U 1 1 51F32CF0
 P 3650 6850
 F 0 "U7" H 3700 6950 60  0000 C CNN
@@ -1542,7 +1542,7 @@ F 3 "" H 2900 6700 60  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L TVSX2 D10
+L TVSx2 D10
 U 1 1 51F80F47
 P 2750 7600
 F 0 "D10" V 2700 7750 40  0000 C CNN
@@ -1553,7 +1553,7 @@ F 3 "" H 2750 7600 60  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L TVSX2 D10
+L TVSx2 D10
 U 2 1 51F80F56
 P 2700 6700
 F 0 "D10" V 2650 6850 40  0000 C CNN
@@ -1969,7 +1969,7 @@ Wire Wire Line
 Wire Wire Line
 	2200 4250 2350 4250
 $Comp
-L LM193SM U6
+L LM193sm U6
 U 2 1 523631BE
 P 3650 5550
 F 0 "U6" H 3700 5650 60  0000 C CNN
@@ -2017,7 +2017,7 @@ $EndComp
 Text GLabel 2200 5450 0    45   Input ~ 0
 FLM2in
 $Comp
-L TVSX2 D7
+L TVSx2 D7
 U 2 1 523631D8
 P 2600 5650
 F 0 "D7" V 2550 5500 40  0000 C CNN
