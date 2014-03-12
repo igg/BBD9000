@@ -20,10 +20,13 @@ R25, R31, Cb8, U7pin8 should connect to 5Vout, not 5V
   to protect the 5V supply from input transients.
 
 UPS capacitor bank needs current limit
-  Add through-hole 75 ohm 3W resistor (R44) in series b/w C12 pin1(+) and D8 (instead of direct-connect)
+  Add 2x through-hole 75 ohm 3W resistor (R44/R45) in series b/w C12 pin1(+) and D8 (instead of direct-connect)
   Add D11 (sames as D1-4, etc.) parallel to series resistor (points at D8) to discharge UPS through diode instead of R
+    v3.3.2 correction: free-build 2xR+D11 on C12 pin1 (bend C12p1 up along C body). Lead D11 cathode to board's C12+ pad.
 
 12V input needs undervoltage cutoff
+  Without shutoff, the circuit continues to drain the battery after shutdown.
+  Problem mainly in 12V/solar applications.
   Use LM192 as window comparator to shutdown < 10V > 15V
   Replace PTC fuse with ZXCT1032, AUIR3315 use same TVS as on dig inputs (high-V replaced by comparator)
   AUIR with 3k Rifb has 10A current limit (which is probably OK).
@@ -33,6 +36,9 @@ UPS capacitor bank needs current limit
   
   Variable cutoff:
     High cutoff set by voltage detector for turn-on.  11.5 - 12 V.
+    http://electronics.stackexchange.com/questions/19714/adding-voltage-cutoff-to-a-circuit
+    Vref (low cath current, high cath voltage, Vref=1.25), $0.65:
+        http://www.digikey.com/product-detail/en/LMV431AIM5%2FNOPB/LMV431AIM5%2FNOPBCT-ND/364384
     Voltage detector has software over-ride for maintaining on-state with higher loads
     Software enables/disables over-ride depending on pump status, or measured load (requires current accuracy).
     Override - pull-down of PFET gate using DIO output.
@@ -40,5 +46,13 @@ UPS capacitor bank needs current limit
     Voltage detector:  Use another dual comparator and a Vref (new) to monitor 12V input voltage and 5V regulator input voltage
     Comparators pull down PFET gates to turn on high-side.
     Vref: http://www.digikey.com/product-detail/en/ZR431F005TA/ZR431F005TACT-ND/463807
+    Comparator/Vref advantage: Vref can also be used to calibrate analog inputs.
+      Shunt Adjustable Vref used without comparator: smaller component count, but no Vref out.
+      ~4V high enough without being too high (Vref must be <= Vcc):
+        4.096V 0.1% $3.01: http://www.digikey.com/product-detail/en/LM4050AIM3-4.1%2FNOPB/LM4050AIM3-4.1%2FNOPBCT-ND/364017
+        4.096V 0.2% $2.07: http://www.digikey.com/product-detail/en/TL4050B41QDBZT/296-32350-1-ND/3506198
+        standard resistors in BOM are 0.5%
+      voltage divide Vin to 4V
+      Vin min of 11.5V
     
   
