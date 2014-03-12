@@ -13,59 +13,10 @@ ROOT_DIR=$( dirname "$BIN_DIR" )
 source ${ROOT_DIR}/setup/coop_defs.sh
 
 
-
-# Create new priv/DB_CONF.cnf and priv/DB_BACKUP.cnf MySQL connection files
-# If the files do not exist, a new DB user & password will be created
-# The credentials in ~/priv/DB_BACKUP.cnf will be used to make the new user
-DB_CNF="${ROOT_DIR}/priv/DB_CONF.cnf"
-if [ ! -f ${DB_CNF} ]; then
-	# Generate a MySQL user for the server to connect as
-	echo "Generating new credentials in ${DB_CNF}"
-	DB_USER="${DB_BASE}-server"
-	DB_PASS=$(apg -n 1 -a 1 -m 16 -M NCL)
-	# We're using the home directory's DB connection to do this
-	eval DB_CNF="~/priv/DB_BACKUP.cnf"
-	echo "...creating new user ${DB_USER}"
-	mysql --defaults-extra-file=${DB_CNF} <<EOF
-CREATE USER '${DB_USER}'@'localhost' IDENTIFIED BY '$DB_PASS';
-GRANT ALL PRIVILEGES ON *.* TO '${DB_USER}'@'localhost' WITH GRANT OPTION;
-\q
-EOF
-	mkdir priv
-	chmod 700 priv
-	# Generate the credential file used by the server scripts
-	DB_CNF="${ROOT_DIR}/priv/DB_CONF.cnf"
-	cat > "${DB_CNF}" <<EOF
-# DB_CONF.cnf
-
-[client]
-host     = localhost
-database = ${DB_NAME}
-user     = ${DB_USER}
-password = ${DB_PASS}
-EOF
-	chmod 400 $DB_CNF
-
-	# Generate an equivalent credential file used by the backup/maintenance script
-	DB_CNF="${ROOT_DIR}/priv/DB_BACKUP.cnf"
-	if [ ! -f ${DB_CNF} ]; then
-		cat > "${DB_CNF}" <<EOF
-# DB_BACKUP.cnf 
-
-[client]
-host     = localhost
-user     = ${DB_USER}
-password = ${DB_PASS}
-EOF
-		chmod 400 $DB_CNF
-	fi
-else
-	echo "Credentials in ${DB_CNF} already exist"
-fi
-
-
 # Generate an empty database.  Backup any existing database.
-DB_CNF="${ROOT_DIR}/priv/DB_BACKUP.cnf"
+# The credentials in ~/priv/DB_BACKUP.cnf will be used to make the new user
+#   in other words, the root or top-level of any multi-database setup.
+eval DB_CNF="~/priv/DB_BACKUP.cnf"
 EMPTY_DB="${ROOT_DIR}/setup/BBD-Schema.sql"
 BACKUP_DB="${ROOT_DIR}/backups/DB-${DB_NAME}-${ISO_DATE}.sql.bz2"
 echo "Checking existence of database '${DB_NAME}'"
@@ -94,4 +45,55 @@ if [ -z "$EXIST_DB" ]; then
 	mysql --defaults-extra-file=${DB_CNF} ${DB_NAME} < "$EMPTY_DB"
 fi
 
-#
+
+# Create new priv/DB_CONF.cnf and priv/DB_BACKUP.cnf MySQL connection files
+# If the files do not exist, a new DB user & password will be created
+CNF_FILENAME="DB_CONF.cnf"
+CNF_FILE="${ROOT_DIR}/priv/${CNF_FILENAME}"
+if [ ! -f ${CNF_FILE} ]; then
+	# Generate a MySQL user for the server to connect as
+	DB_USER="${DB_BASE}-server"
+	echo "Generating new credentials in ${CNF_FILE} for read/write user ${DB_USER}"
+	DB_PASS=$(apg -n 1 -a 1 -m 16 -M NCL)
+	echo "...creating new DB user ${DB_USER}"
+	mysql --defaults-extra-file=${DB_CNF} <<EOF
+CREATE USER '${DB_USER}'@'localhost' IDENTIFIED BY '$DB_PASS';
+GRANT ALL PRIVILEGES ON ${DB_NAME}.* TO '${DB_USER}'@'localhost' WITH GRANT OPTION;
+\q
+EOF
+	mkdir priv
+	chmod 700 priv
+	# Generate the credential file used by the server scripts
+	cat > "${CNF_FILE}" <<EOF
+# ${CNF_FILENAME}
+
+[client]
+host     = localhost
+database = ${DB_NAME}
+user     = ${DB_USER}
+password = ${DB_PASS}
+EOF
+	chmod 400 $CNF_FILE
+
+	# Generate an equivalent credential file used by the backup/maintenance script
+	CNF_FILENAME="DB_BACKUP.cnf"
+	CNF_FILE="${ROOT_DIR}/priv/${CNF_FILENAME}"
+	if [ ! -f ${CNF_FILE} ]; then
+		cat > "${CNF_FILE}" <<EOF
+# ${CNF_FILENAME}
+
+[client]
+host     = localhost
+user     = ${DB_USER}
+password = ${DB_PASS}
+EOF
+		chmod 400 $CNF_FILE
+	fi
+else
+	echo "Credentials in ${CNF_FILE} already exist"
+fi
+
+
+
+# Make a readonly account for this DB
+bash ${ROOT_DIR}/setup/add_readonly.sh
