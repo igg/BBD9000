@@ -51,8 +51,8 @@ UPS capacitor bank needs current limit
       ~4V high enough without being too high (Vref must be <= Vcc):
         4.096V 0.1% $3.01: http://www.digikey.com/product-detail/en/LM4050AIM3-4.1%2FNOPB/LM4050AIM3-4.1%2FNOPBCT-ND/364017
         4.096V 0.2% $2.07: http://www.digikey.com/product-detail/en/TL4050B41QDBZT/296-32350-1-ND/3506198
-        standard resistors in BOM are 0.5%
-      voltage divide Vin to 4V
-      Vin min of 11.5V
+      voltage divide Vin (min 11.5) to 4V
+        standard resistors in BOM are 0.5%, 30.9k (RR12P30.9KDCT-ND) works with 56.2k (11.55 v)
+        lower draw: 10RR1220P-1023-D-M (102k) + 56.2k
     
   
