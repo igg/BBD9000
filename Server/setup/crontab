@@ -1,4 +1,4 @@
-00 * * * * find /home/ubuntu/ -path '*/bin/BBD-alert-kiosk-status.pl' -exec {} \; # Check for off-line kiosks
-05 7 * * * find /home/ubuntu/ -path '*/bin/BBD-clean_sessions.pl' -exec {} \;     # Clean out expired sessions
-10 7 * * * find /home/ubuntu/ -path '*/bin/BBD-membership-update.pl' -exec {} \;  # Update membership status to ASK_RENEWAL and EXPIRED
-15 7 * * * find /home/ubuntu/ -path '*/bin/site-backup' -exec {} \;               # Backup web pages, CGIs and bbd_members DB
+00 * * * * find /home/ubuntu/  -not -path '*/git/*' -path '*/bin/BBD-alert-kiosk-status.pl' -exec {} \; # Check for off-line kiosks
+05 7 * * * find /home/ubuntu/  -not -path '*/git/*' -path '*/bin/BBD-clean_sessions.pl' -exec {} \;     # Clean out expired sessions
+10 7 * * * find /home/ubuntu/  -not -path '*/git/*' -path '*/bin/BBD-membership-update.pl' -exec {} \;  # Update membership status to ASK_RENEWAL and EXPIRED
+15 7 * * * find /home/ubuntu/  -not -path '*/git/*' -path '*/bin/site-backup' -exec {} \;               # Backup web pages, CGIs and bbd_members DB
