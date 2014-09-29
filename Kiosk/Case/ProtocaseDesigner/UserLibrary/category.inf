@@ -1,0 +1,9 @@
+# Protocase FileTreeCategory
+id: library
+partnumber: library
+readOnly: false
+verified: true
+manufacturer: Protocase
+description: The root library for Protocase Designer
+name: library
+version: 5

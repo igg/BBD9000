@@ -1,0 +1,73 @@
+Thing2D:
+  name: SmartIO
+  version: 7.5
+  manufacturer: BBDC
+  partnumber: SmartIOv3.3
+  ID: a0222551-a40e-4f4f-a41f-1a49da38fe55
+  verified: false
+  Bounds: {width: '5.400', height: '4.000', x: '-0.250', y: '-0.25'}
+  Attachment2Ds:
+  - PEM:
+      type: PEM
+      name: BSO4-440-16 4-40 - .165  by .500 400 series Standoff
+      version: 7.5
+      description: |-
+        BSO4-440-16 4-40 - .165  by .500 400 series Standoff
+        Blind Threaded Standoffs for Stainless Steel
+        Standard
+        Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+      partnumber: BSO4-440-16
+      ID: 'PEM Standoff: BSO4-440-16'
+      verified: true
+      OriginX: '0.0'
+      OriginY: '0.0'
+      onSameSide: false
+      inLibrary: byID
+  - PEM:
+      type: PEM
+      name: BSO4-440-16 4-40 - .165  by .500 400 series Standoff
+      version: 7.5
+      description: |-
+        BSO4-440-16 4-40 - .165  by .500 400 series Standoff
+        Blind Threaded Standoffs for Stainless Steel
+        Standard
+        Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+      partnumber: BSO4-440-16
+      ID: 'PEM Standoff: BSO4-440-16'
+      verified: true
+      OriginX: '0.0'
+      OriginY: '3.5'
+      onSameSide: false
+      inLibrary: byID
+  - PEM:
+      type: PEM
+      name: BSO4-440-16 4-40 - .165  by .500 400 series Standoff
+      version: 7.5
+      description: |-
+        BSO4-440-16 4-40 - .165  by .500 400 series Standoff
+        Blind Threaded Standoffs for Stainless Steel
+        Standard
+        Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+      partnumber: BSO4-440-16
+      ID: 'PEM Standoff: BSO4-440-16'
+      verified: true
+      OriginX: '4.9'
+      OriginY: '3.5'
+      onSameSide: false
+      inLibrary: byID
+  - PEM:
+      type: PEM
+      name: BSO4-440-16 4-40 - .165  by .500 400 series Standoff
+      version: 7.5
+      description: |-
+        BSO4-440-16 4-40 - .165  by .500 400 series Standoff
+        Blind Threaded Standoffs for Stainless Steel
+        Standard
+        Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+      partnumber: BSO4-440-16
+      ID: 'PEM Standoff: BSO4-440-16'
+      verified: true
+      OriginX: '4.9'
+      OriginY: '0.0'
+      onSameSide: false
+      inLibrary: byID

@@ -1,0 +1,44 @@
+Thing2D:
+  name: PIR
+  version: 7.5
+  description: Passive infra-red motion sensor
+  manufacturer: Panasonic
+  partnumber: Napion AMN11111
+  ID: 2230ba8f-44c3-43b4-8672-aa60308e8f5b
+  verified: false
+  Bounds: {width: '1.600', height: '1.600', x: '-0.80', y: '-0.80'}
+  Attachment2Ds:
+  - Circle: {radius: '0.3125', type: CUTOUT, name: circle, version: 7.5, ID: 049aa3c4-8bae-4aff-9189-913b24a6ac76,
+      verified: false, layer: Default, OriginX: '0.0', OriginY: '0.0', onSameSide: true}
+  - PEM:
+      type: PEM
+      name: BSO4-440-12 4-40 - .165  by .375 400 series Standoff
+      version: 7.5
+      description: |-
+        BSO4-440-12 4-40 - .165  by .375 400 series Standoff
+        Blind Threaded Standoffs for Stainless Steel
+        Standard
+        Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+      partnumber: BSO4-440-12
+      ID: 'PEM Standoff: BSO4-440-12'
+      verified: true
+      OriginX: '-0.55'
+      OriginY: '0.0'
+      onSameSide: false
+      inLibrary: byID
+  - PEM:
+      type: PEM
+      name: BSO4-440-12 4-40 - .165  by .375 400 series Standoff
+      version: 7.5
+      description: |-
+        BSO4-440-12 4-40 - .165  by .375 400 series Standoff
+        Blind Threaded Standoffs for Stainless Steel
+        Standard
+        Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+      partnumber: BSO4-440-12
+      ID: 'PEM Standoff: BSO4-440-12'
+      verified: true
+      OriginX: '0.55'
+      OriginY: '0.0'
+      onSameSide: false
+      inLibrary: byID

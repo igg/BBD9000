@@ -1,0 +1,249 @@
+Thing2D:
+  name: fastener cutouts - carriage bolts
+  version: 7.5
+  description: square cutouts for carriage bolts to attach back & flush-mount assembly
+  partnumber: fastener cutouts - carriage bolts
+  ID: bcde2943-e8a9-44f7-ac4b-8566eaeebc49
+  verified: false
+  Bounds: {width: '13', height: '11.12', x: '0.000', y: '0.000'}
+  Attachment2Ds:
+  - Thing2D:
+      name: carriage bolt cutout 10-24
+      version: 7.5
+      manufacturer: McMaster
+      partnumber: carriage bolt cutout 10-24
+      ID: 7f4956ec-301e-4c3c-8128-abe48a369624
+      verified: false
+      OriginX: '0.375'
+      OriginY: '0.375'
+      onSameSide: true
+      Bounds: {width: '.25', height: '.25', x: '-0.125', y: '-0.125'}
+      Attachment2Ds:
+      - Rectangle: {width: '0.21', height: '0.21', type: CUTOUT, name: rectangle,
+          version: 7.5, ID: be47c067-b954-4209-bc52-aa965bb35323, verified: false,
+          layer: Default, OriginX: '-0.105', OriginY: '-0.105', onSameSide: true}
+  - Thing2D:
+      name: carriage bolt cutout 10-24
+      version: 7.5
+      manufacturer: McMaster
+      partnumber: carriage bolt cutout 10-24
+      ID: 7f4956ec-301e-4c3c-8128-abe48a369624
+      verified: false
+      OriginX: '6.5'
+      OriginY: '0.375'
+      onSameSide: true
+      Bounds: {width: '.25', height: '.25', x: '-0.125', y: '-0.125'}
+      Attachment2Ds:
+      - Rectangle: {width: '0.21', height: '0.21', type: CUTOUT, name: rectangle,
+          version: 7.5, ID: be47c067-b954-4209-bc52-aa965bb35323, verified: false,
+          layer: Default, OriginX: '-0.105', OriginY: '-0.105', onSameSide: true}
+  - Thing2D:
+      name: carriage bolt cutout 10-24
+      version: 7.5
+      manufacturer: McMaster
+      partnumber: carriage bolt cutout 10-24
+      ID: 7f4956ec-301e-4c3c-8128-abe48a369624
+      verified: false
+      OriginX: '12.625'
+      OriginY: '0.375'
+      onSameSide: true
+      Bounds: {width: '.25', height: '.25', x: '-0.125', y: '-0.125'}
+      Attachment2Ds:
+      - Rectangle: {width: '0.21', height: '0.21', type: CUTOUT, name: rectangle,
+          version: 7.5, ID: be47c067-b954-4209-bc52-aa965bb35323, verified: false,
+          layer: Default, OriginX: '-0.105', OriginY: '-0.105', onSameSide: true}
+  - Thing2D:
+      name: carriage bolt cutout 10-24
+      version: 7.5
+      manufacturer: McMaster
+      partnumber: carriage bolt cutout 10-24
+      ID: a6306071-eff0-4af1-be01-c42bc835371b
+      verified: false
+      OriginX: '12.625'
+      OriginY: '5.56'
+      onSameSide: true
+      Bounds: {width: '.25', height: '.25', x: '-0.125', y: '-0.125'}
+      Attachment2Ds:
+      - Rectangle: {width: '0.21', height: '0.21', type: CUTOUT, name: rectangle,
+          version: 7.5, ID: dabbff23-5d3f-450f-afd2-7727574e68f0, verified: false,
+          layer: Default, OriginX: '-0.105', OriginY: '-0.105', onSameSide: true}
+  - Thing2D:
+      name: carriage bolt cutout 10-24
+      version: 7.5
+      manufacturer: McMaster
+      partnumber: carriage bolt cutout 10-24
+      ID: a6306071-eff0-4af1-be01-c42bc835371b
+      verified: false
+      OriginX: '12.625'
+      OriginY: '10.745'
+      onSameSide: true
+      Bounds: {width: '.25', height: '.25', x: '-0.125', y: '-0.125'}
+      Attachment2Ds:
+      - Rectangle: {width: '0.21', height: '0.21', type: CUTOUT, name: rectangle,
+          version: 7.5, ID: dabbff23-5d3f-450f-afd2-7727574e68f0, verified: false,
+          layer: Default, OriginX: '-0.105', OriginY: '-0.105', onSameSide: true}
+  - Thing2D:
+      name: carriage bolt cutout 10-24
+      version: 7.5
+      manufacturer: McMaster
+      partnumber: carriage bolt cutout 10-24
+      ID: a6306071-eff0-4af1-be01-c42bc835371b
+      verified: false
+      OriginX: '6.5'
+      OriginY: '10.745'
+      onSameSide: true
+      Bounds: {width: '.25', height: '.25', x: '-0.125', y: '-0.125'}
+      Attachment2Ds:
+      - Rectangle: {width: '0.21', height: '0.21', type: CUTOUT, name: rectangle,
+          version: 7.5, ID: dabbff23-5d3f-450f-afd2-7727574e68f0, verified: false,
+          layer: Default, OriginX: '-0.105', OriginY: '-0.105', onSameSide: true}
+  - Thing2D:
+      name: carriage bolt cutout 10-24
+      version: 7.5
+      manufacturer: McMaster
+      partnumber: carriage bolt cutout 10-24
+      ID: a6306071-eff0-4af1-be01-c42bc835371b
+      verified: false
+      OriginX: '0.375'
+      OriginY: '10.745'
+      onSameSide: true
+      Bounds: {width: '.25', height: '.25', x: '-0.125', y: '-0.125'}
+      Attachment2Ds:
+      - Rectangle: {width: '0.21', height: '0.21', type: CUTOUT, name: rectangle,
+          version: 7.5, ID: dabbff23-5d3f-450f-afd2-7727574e68f0, verified: false,
+          layer: Default, OriginX: '-0.105', OriginY: '-0.105', onSameSide: true}
+  - Thing2D:
+      name: carriage bolt cutout 10-24
+      version: 7.5
+      manufacturer: McMaster
+      partnumber: carriage bolt cutout 10-24
+      ID: 452f2042-1879-494c-a538-45e871aaa46d
+      verified: false
+      OriginX: '0.375'
+      OriginY: '5.56'
+      onSameSide: true
+      Bounds: {width: '.25', height: '.25', x: '-0.125', y: '-0.125'}
+      Attachment2Ds:
+      - Rectangle: {width: '0.21', height: '0.21', type: CUTOUT, name: rectangle,
+          version: 7.5, ID: c180779e-4b1d-4ac4-8360-c8986408b9b4, verified: false,
+          layer: Default, OriginX: '-0.105', OriginY: '-0.105', onSameSide: true}
+  - Thing2D:
+      name: carriage bolt cutout 10-24
+      version: 7.5
+      manufacturer: McMaster
+      partnumber: carriage bolt cutout 10-24
+      ID: 35141733-0f10-413d-8fb6-9aca79b833b6
+      verified: false
+      OriginX: '3.8'
+      OriginY: '0.875'
+      onSameSide: true
+      Bounds: {width: '.25', height: '.25', x: '-0.125', y: '-0.125'}
+      Attachment2Ds:
+      - Rectangle: {width: '0.21', height: '0.21', type: CUTOUT, name: rectangle,
+          version: 7.5, ID: d4317856-9893-4530-9c9a-5825b29072b0, verified: false,
+          layer: Default, OriginX: '-0.105', OriginY: '-0.105', onSameSide: true}
+  - Thing2D:
+      name: carriage bolt cutout 10-24
+      version: 7.5
+      manufacturer: McMaster
+      partnumber: carriage bolt cutout 10-24
+      ID: 35141733-0f10-413d-8fb6-9aca79b833b6
+      verified: false
+      OriginX: '9.0'
+      OriginY: '0.875'
+      onSameSide: true
+      Bounds: {width: '.25', height: '.25', x: '-0.125', y: '-0.125'}
+      Attachment2Ds:
+      - Rectangle: {width: '0.21', height: '0.21', type: CUTOUT, name: rectangle,
+          version: 7.5, ID: d4317856-9893-4530-9c9a-5825b29072b0, verified: false,
+          layer: Default, OriginX: '-0.105', OriginY: '-0.105', onSameSide: true}
+  - Thing2D:
+      name: carriage bolt cutout 10-24
+      version: 7.5
+      manufacturer: McMaster
+      partnumber: carriage bolt cutout 10-24
+      ID: 35141733-0f10-413d-8fb6-9aca79b833b6
+      verified: false
+      OriginX: '9.0'
+      OriginY: '10.245'
+      onSameSide: true
+      Bounds: {width: '.25', height: '.25', x: '-0.125', y: '-0.125'}
+      Attachment2Ds:
+      - Rectangle: {width: '0.21', height: '0.21', type: CUTOUT, name: rectangle,
+          version: 7.5, ID: d4317856-9893-4530-9c9a-5825b29072b0, verified: false,
+          layer: Default, OriginX: '-0.105', OriginY: '-0.105', onSameSide: true}
+  - Thing2D:
+      name: carriage bolt cutout 10-24
+      version: 7.5
+      manufacturer: McMaster
+      partnumber: carriage bolt cutout 10-24
+      ID: 35141733-0f10-413d-8fb6-9aca79b833b6
+      verified: false
+      OriginX: '3.8'
+      OriginY: '10.245'
+      onSameSide: true
+      Bounds: {width: '.25', height: '.25', x: '-0.125', y: '-0.125'}
+      Attachment2Ds:
+      - Rectangle: {width: '0.21', height: '0.21', type: CUTOUT, name: rectangle,
+          version: 7.5, ID: d4317856-9893-4530-9c9a-5825b29072b0, verified: false,
+          layer: Default, OriginX: '-0.105', OriginY: '-0.105', onSameSide: true}
+  - Thing2D:
+      name: carriage bolt cutout 10-24
+      version: 7.5
+      manufacturer: McMaster
+      partnumber: carriage bolt cutout 10-24
+      ID: 35141733-0f10-413d-8fb6-9aca79b833b6
+      verified: false
+      OriginX: '0.875'
+      OriginY: '7.7'
+      onSameSide: true
+      Bounds: {width: '.25', height: '.25', x: '-0.125', y: '-0.125'}
+      Attachment2Ds:
+      - Rectangle: {width: '0.21', height: '0.21', type: CUTOUT, name: rectangle,
+          version: 7.5, ID: d4317856-9893-4530-9c9a-5825b29072b0, verified: false,
+          layer: Default, OriginX: '-0.105', OriginY: '-0.105', onSameSide: true}
+  - Thing2D:
+      name: carriage bolt cutout 10-24
+      version: 7.5
+      manufacturer: McMaster
+      partnumber: carriage bolt cutout 10-24
+      ID: 35141733-0f10-413d-8fb6-9aca79b833b6
+      verified: false
+      OriginX: '0.875'
+      OriginY: '3.15'
+      onSameSide: true
+      Bounds: {width: '.25', height: '.25', x: '-0.125', y: '-0.125'}
+      Attachment2Ds:
+      - Rectangle: {width: '0.21', height: '0.21', type: CUTOUT, name: rectangle,
+          version: 7.5, ID: d4317856-9893-4530-9c9a-5825b29072b0, verified: false,
+          layer: Default, OriginX: '-0.105', OriginY: '-0.105', onSameSide: true}
+  - Thing2D:
+      name: carriage bolt cutout 10-24
+      version: 7.5
+      manufacturer: McMaster
+      partnumber: carriage bolt cutout 10-24
+      ID: 35141733-0f10-413d-8fb6-9aca79b833b6
+      verified: false
+      OriginX: '12.125'
+      OriginY: '3.15'
+      onSameSide: true
+      Bounds: {width: '.25', height: '.25', x: '-0.125', y: '-0.125'}
+      Attachment2Ds:
+      - Rectangle: {width: '0.21', height: '0.21', type: CUTOUT, name: rectangle,
+          version: 7.5, ID: d4317856-9893-4530-9c9a-5825b29072b0, verified: false,
+          layer: Default, OriginX: '-0.105', OriginY: '-0.105', onSameSide: true}
+  - Thing2D:
+      name: carriage bolt cutout 10-24
+      version: 7.5
+      manufacturer: McMaster
+      partnumber: carriage bolt cutout 10-24
+      ID: 35141733-0f10-413d-8fb6-9aca79b833b6
+      verified: false
+      OriginX: '12.125'
+      OriginY: '7.7'
+      onSameSide: true
+      Bounds: {width: '.25', height: '.25', x: '-0.125', y: '-0.125'}
+      Attachment2Ds:
+      - Rectangle: {width: '0.21', height: '0.21', type: CUTOUT, name: rectangle,
+          version: 7.5, ID: d4317856-9893-4530-9c9a-5825b29072b0, verified: false,
+          layer: Default, OriginX: '-0.105', OriginY: '-0.105', onSameSide: true}

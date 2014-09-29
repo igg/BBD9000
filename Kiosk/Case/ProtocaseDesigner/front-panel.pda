@@ -1,0 +1,856 @@
+# Protocase Designer Configuration 
+Assembly:
+  designer: {'Sep 20, 2014 8:27:37 PM EDT': '4.4.6 Jul29,14', 'Sep 21, 2014 11:23:58 PM EDT': '4.4.6
+      Jul29,14', 'Sep 21, 2014 11:35:17 PM EDT': '4.4.6 Jul29,14', 'Sep 21, 2014 11:41:33 PM EDT': '4.4.6
+      Jul29,14', 'Sep 21, 2014 12:17:05 PM EDT': '4.4.6 Jul29,14', 'Sep 21, 2014 1:00:44 AM EDT': '4.4.6
+      Jul29,14', 'Sep 21, 2014 1:04:39 AM EDT': '4.4.6 Jul29,14', 'Sep 21, 2014 1:59:38 AM EDT': '4.4.6
+      Jul29,14', 'Sep 21, 2014 4:58:11 PM EDT': '4.4.6 Jul29,14', 'Sep 21, 2014 5:01:03 PM EDT': '4.4.6
+      Jul29,14', 'Sep 21, 2014 5:29:19 PM EDT': '4.4.6 Jul29,14', 'Sep 21, 2014 5:57:44 PM EDT': '4.4.6
+      Jul29,14', 'Sep 22, 2014 1:35:52 AM EDT': '4.4.6 Jul29,14', 'Sep 22, 2014 1:46:25 AM EDT': '4.4.6
+      Jul29,14', 'Sep 22, 2014 1:49:45 AM EDT': '4.4.6 Jul29,14', 'Sep 28, 2014 4:02:55 PM EDT': '4.4.6
+      Jul29,14', 'Sep 28, 2014 4:12:19 PM EDT': '4.4.6 Jul29,14', 'Sep 28, 2014 5:31:07 PM EDT': '4.4.6
+      Jul29,14', 'Sep 29, 2014 10:06:32 AM EDT': '4.4.6 Jul29,14'}
+  QuotedUnits: INCHES
+  DesignID: Rounded Panel Template
+  name: Rounded Panel
+  version: 7.5
+  description: A Flat Panel with Rounded Corners
+  manufacturer: Protocase
+  partnumber: Rounded Panel Template
+  ID: 717b526c-0dc0-4e19-99ee-da25e79090fd
+  verified: true
+  Parser:
+    verified: false
+    version: 7.5
+    id: 64bcb96c-98e2-45ce-aae6-36a7cfb053f5
+    partnumber: 64bcb96c-98e2-45ce-aae6-36a7cfb053f5
+    manufacturer: ''
+    name: f8248482-3914-49a1-a22f-d8e91f0f3fdf
+    Parameters:
+    - {name: Width, default: '13.0', description: the width of the panel, template: true,
+      min: '1'}
+    - {name: Height, default: '11.12', description: the height of the panel, template: true,
+      min: '1'}
+    - {name: Corner Radius, default: '0.4', description: the radius of the corners,
+      template: true, min: '0', max: '30'}
+    - {name: Thickness, default: '14', description: the thickness of the box, template: true,
+      units: MetalThickness}
+    - {name: MetalType, default: Stainless Steel, description: the type of metal used,
+      template: true, units: MetalType}
+    - {name: Default Color, default: No Finish, description: the color of the top,
+      template: true, units: MetalColor}
+    Constraints:
+    - {formula: Corner Radius LEQ (2*Height), message: Radius must be less than or equal to half Height}
+    - {formula: Corner Radius LEQ (2*Width), message: Radius must be less than or equal to half Width}
+  revision: '4'
+  revisionList:
+  - {name: FaceFeatureTransfer, baseRevision: '3', from: Front Panel, to: Panel}
+  Transforms:
+    View3D: {invertY: '1', invertZ: '1', shiftX: -Corner Radius, shiftY: Height, shiftZ: Thickness}
+  Components:
+  - Part:
+      name: Panel
+      version: 7.5
+      ID: bd3629b2-15a4-49a6-b09d-90b74e18018f
+      template: true
+      verified: true
+      Parser:
+        verified: false
+        version: 7.5
+        id: 9f4f73a1-9653-4cba-9493-29b34e9dceca
+        partnumber: 9f4f73a1-9653-4cba-9493-29b34e9dceca
+        manufacturer: ''
+        name: 93b1f27f-4b8a-47ea-a3f2-d854d733eae4
+        Parameters:
+        - {name: Width, default: Width, description: Width of the panel}
+        - {name: Height, default: Height, description: Height of the panel}
+        - {name: Corner Radius, default: Corner Radius, description: Radius of the Corners}
+        - {name: Thickness, default: Thickness, description: Thickness of the panel}
+        - {name: MetalType, default: MetalType, description: Metal Type}
+        - {name: Default Color, default: Default Color, description: Color of the panel}
+        Parser:
+          id: 9f4f73a1-9653-4cba-9493-29b34e9dceca
+          partnumber: 9f4f73a1-9653-4cba-9493-29b34e9dceca
+          manufacturer: ''
+          name: 586c4d82-bde1-4061-8312-dd83c629c93e
+          Parameters:
+          - {name: sqrt32r, default: 0.866025403784439*(Corner Radius), description: sin(60degrees)}
+      MetalInfo: {material: MetalType, color: Default Color, thickness: Thickness}
+      Connections:
+      - {className: Absolute}
+      Components:
+      - PathFace:
+          layers: [Default]
+          name: Panel
+          version: 7.5
+          ID: fbda9b23-9d4c-4b86-bb13-ba8366e7b944
+          verified: true
+          pickable: true
+          BaseProfile:
+            type: CONSTRUCT
+            name: ''
+            version: '7.5'
+            ID: 6d7a7f8d-e2bf-4f01-9f7a-cfa14e1f8928
+            verified: true
+            layer: Default
+            pathSegments:
+            - Line: [Width-2*(Corner Radius), '0.0']
+            - CircleArc3:
+                end: [(Corner Radius), (Corner Radius)]
+                mid: [(Corner Radius)/2, (Corner Radius) - sqrt32r]
+            - Line: ['0', Height - 2* (Corner Radius)]
+            - CircleArc3:
+                end: [-Corner Radius, Corner Radius]
+                mid: [-(Corner Radius)/2, sqrt32r]
+            - Line: [-Width+2*(Corner Radius), '0.0']
+            - CircleArc3:
+                end: [-(Corner Radius), -(Corner Radius)]
+                mid: [-(Corner Radius)/2, '- (Corner Radius) + sqrt32r']
+            - Line: ['0', -Height + 2 * (Corner Radius)]
+            - CircleArc3:
+                end: [((((((((((((Corner Radius))-(0.0))-(0.0))-(0.0))-(0.0))-(0.0))-(0.0))-(0.0))-(0.0))-(0.0))-(0.0))-(0.0),
+                  (((((((((((-(Corner Radius))-(0.0))-(0.0))-(0.0))-(3.3306690738754696E-16))-(3.3306690738754696E-16))-(3.3306690738754696E-16))-(3.3306690738754696E-16))-(3.3306690738754696E-16))-(3.3306690738754696E-16))-(3.3306690738754696E-16))-(3.3306690738754696E-16)]
+                mid: [(Corner Radius)/2, -sqrt32r]
+          FaceCoordinateTransform:
+            Origin: [-Corner Radius, Height]
+            xDir: ['1.0', '0.0']
+            yDir: ['0.0', '-1.0']
+          Connections:
+          - {className: Absolute}
+          Attachment2Ds:
+          - Thing2D:
+              name: PSU mount
+              version: 7.5
+              description: Generic G10 area; PSU, cable clamp, GND lug, etc.
+              partnumber: PSU mount
+              ID: bfe167cf-3287-4200-8e2b-0846bce9733e
+              verified: false
+              OriginX: '2.3631125673356075'
+              OriginY: '7.213704942154526'
+              onSameSide: true
+              scaleFactorY: '-1.0'
+              Bounds: {width: '3', height: '5', x: '-1.500', y: '-2.500'}
+              Attachment2Ds:
+              - PEM:
+                  type: PEM
+                  name: BSO4-440-12 4-40 - .165  by .375 400 series Standoff
+                  version: 7.5
+                  description: |-
+                    BSO4-440-12 4-40 - .165  by .375 400 series Standoff
+                    Blind Threaded Standoffs for Stainless Steel
+                    Standard
+                    Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+                  partnumber: BSO4-440-12
+                  ID: 'PEM Standoff: BSO4-440-12'
+                  verified: true
+                  OriginX: '1.125'
+                  OriginY: '2.25'
+                  onSameSide: false
+                  inLibrary: byID
+              - PEM:
+                  type: PEM
+                  name: BSO4-440-12 4-40 - .165  by .375 400 series Standoff
+                  version: 7.5
+                  description: |-
+                    BSO4-440-12 4-40 - .165  by .375 400 series Standoff
+                    Blind Threaded Standoffs for Stainless Steel
+                    Standard
+                    Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+                  partnumber: BSO4-440-12
+                  ID: 'PEM Standoff: BSO4-440-12'
+                  verified: true
+                  OriginX: '-1.125'
+                  OriginY: '2.25'
+                  onSameSide: false
+                  inLibrary: byID
+              - PEM:
+                  type: PEM
+                  name: BSO4-440-12 4-40 - .165  by .375 400 series Standoff
+                  version: 7.5
+                  description: |-
+                    BSO4-440-12 4-40 - .165  by .375 400 series Standoff
+                    Blind Threaded Standoffs for Stainless Steel
+                    Standard
+                    Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+                  partnumber: BSO4-440-12
+                  ID: 'PEM Standoff: BSO4-440-12'
+                  verified: true
+                  OriginX: '-1.125'
+                  OriginY: '-2.25'
+                  onSameSide: false
+                  inLibrary: byID
+              - PEM:
+                  type: PEM
+                  name: BSO4-440-12 4-40 - .165  by .375 400 series Standoff
+                  version: 7.5
+                  description: |-
+                    BSO4-440-12 4-40 - .165  by .375 400 series Standoff
+                    Blind Threaded Standoffs for Stainless Steel
+                    Standard
+                    Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+                  partnumber: BSO4-440-12
+                  ID: 'PEM Standoff: BSO4-440-12'
+                  verified: true
+                  OriginX: '1.125'
+                  OriginY: '-2.25'
+                  onSameSide: false
+                  inLibrary: byID
+          - PEM:
+              type: PEM
+              name: FH4-832-10 8-32 - .163  by .625 400 series Stud
+              version: 7.5
+              description: |-
+                FH4-832-10 8-32 - .163  by .625 400 series Stud
+                Flush-Head Self-Clinching Stud for Stainless Steel
+                Standard
+                Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+              partnumber: FH4-832-10
+              ID: 'PEM Stud: FH4-832-10'
+              verified: true
+              OriginX: '1.8000000000000003'
+              OriginY: '3.369999999999999'
+              onSameSide: false
+              inLibrary: byID
+          - DimensionLines:
+              endPt: ['0.0', Height]
+              perpPt: [-2-Corner Radius, '0']
+              lineThickness: '1.0'
+              fontSize: '40.0'
+              type: BUILD_SHEET
+              name: line
+              version: 7.5
+              ID: aed44400-3a7e-448f-b826-b66dd802023a
+              template: true
+              verified: true
+              OriginX: '0.0'
+              OriginY: '0.0'
+              onSameSide: true
+          - DimensionLines:
+              endPt: [Width, '0.0']
+              perpPt: ['0', 2 + Corner Radius]
+              lineThickness: '1.0'
+              fontSize: '40.0'
+              type: BUILD_SHEET
+              name: line
+              version: 7.5
+              ID: 1ce96d67-2ee3-4fdb-a18c-367bf0c26bda
+              template: true
+              verified: true
+              OriginX: -Corner Radius
+              OriginY: Height - Corner Radius
+              onSameSide: true
+          - Thing2D:
+              name: SmartIO
+              version: 7.5
+              manufacturer: BBDC
+              partnumber: SmartIOv3.3
+              ID: ff582483-d352-4a19-a70f-78a32e46ad5f
+              verified: false
+              OriginX: '3.954664286465606'
+              OriginY: '8.772102192626024'
+              onSameSide: true
+              scaleFactorY: '-1.0'
+              Bounds: {width: '5.400', height: '4.000', x: '-0.250', y: '-0.25'}
+              Attachment2Ds:
+              - PEM:
+                  type: PEM
+                  name: BSO4-440-16 4-40 - .165  by .500 400 series Standoff
+                  version: 7.5
+                  description: |-
+                    BSO4-440-16 4-40 - .165  by .500 400 series Standoff
+                    Blind Threaded Standoffs for Stainless Steel
+                    Standard
+                    Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+                  partnumber: BSO4-440-16
+                  ID: 'PEM Standoff: BSO4-440-16'
+                  verified: true
+                  OriginX: '4.9'
+                  OriginY: '0.0'
+                  onSameSide: false
+                  inLibrary: byID
+              - PEM:
+                  type: PEM
+                  name: BSO4-440-16 4-40 - .165  by .500 400 series Standoff
+                  version: 7.5
+                  description: |-
+                    BSO4-440-16 4-40 - .165  by .500 400 series Standoff
+                    Blind Threaded Standoffs for Stainless Steel
+                    Standard
+                    Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+                  partnumber: BSO4-440-16
+                  ID: 'PEM Standoff: BSO4-440-16'
+                  verified: true
+                  OriginX: '4.9'
+                  OriginY: '3.5'
+                  onSameSide: false
+                  inLibrary: byID
+              - PEM:
+                  type: PEM
+                  name: BSO4-440-16 4-40 - .165  by .500 400 series Standoff
+                  version: 7.5
+                  description: |-
+                    BSO4-440-16 4-40 - .165  by .500 400 series Standoff
+                    Blind Threaded Standoffs for Stainless Steel
+                    Standard
+                    Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+                  partnumber: BSO4-440-16
+                  ID: 'PEM Standoff: BSO4-440-16'
+                  verified: true
+                  OriginX: '0.0'
+                  OriginY: '3.5'
+                  onSameSide: false
+                  inLibrary: byID
+              - PEM:
+                  type: PEM
+                  name: BSO4-440-16 4-40 - .165  by .500 400 series Standoff
+                  version: 7.5
+                  description: |-
+                    BSO4-440-16 4-40 - .165  by .500 400 series Standoff
+                    Blind Threaded Standoffs for Stainless Steel
+                    Standard
+                    Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+                  partnumber: BSO4-440-16
+                  ID: 'PEM Standoff: BSO4-440-16'
+                  verified: true
+                  OriginX: '0.0'
+                  OriginY: '0.0'
+                  onSameSide: false
+                  inLibrary: byID
+          - Rectangle: {width: '0.47', height: '9.2', type: EXCLUSION, name: rectangle,
+              version: 7.5, ID: a4c827a1-270d-4b6b-af63-429c404a9eca, verified: false,
+              layer: Default, OriginX: '0.5599999999999999', OriginY: '10.16', onSameSide: true,
+              scaleFactorY: '-1.0'}
+          - Rectangle: {width: '0.47', height: '9.2', type: EXCLUSION, name: rectangle,
+              version: 7.5, ID: 38591ee5-c9f8-4cf9-958c-33e0524a0e75, verified: false,
+              layer: Default, OriginX: '11.17', OriginY: '10.16', onSameSide: true,
+              scaleFactorY: '-1.0'}
+          - Rectangle: {width: '11.08', height: '0.47', type: EXCLUSION, name: rectangle,
+              version: 7.5, ID: b5610366-dff2-4511-9069-6c12ffc9b49c, verified: false,
+              layer: Default, OriginX: '0.5599999999999999', OriginY: '10.16', onSameSide: true,
+              scaleFactorY: '-1.0'}
+          - Rectangle: {width: '11.08', height: '0.47', type: EXCLUSION, name: rectangle,
+              version: 7.5, ID: 5d311283-d1c4-4b89-b66d-fed8c8c91e0d, verified: false,
+              layer: Default, OriginX: '0.5599999999999999', OriginY: '1.4299999999999997',
+              onSameSide: true, scaleFactorY: '-1.0'}
+          - Thing2D:
+              name: PIR
+              version: 7.5
+              description: Passive infra-red motion sensor
+              manufacturer: Panasonic
+              partnumber: Napion AMN11111
+              ID: b3bc9a05-a800-4287-943d-07332f5d963d
+              verified: false
+              OriginX: '6.1'
+              OriginY: '4.369999999999999'
+              onSameSide: true
+              scaleFactorY: '-1.0'
+              Bounds: {width: '1.600', height: '1.600', x: '-0.80', y: '-0.80'}
+              Attachment2Ds:
+              - Circle: {radius: '0.3125', type: CUTOUT, name: circle, version: 7.5,
+                  ID: 293f8531-923b-4970-8ecf-5eebeb27edd8, verified: false, layer: Default,
+                  OriginX: '0.0', OriginY: '0.0', onSameSide: true}
+              - PEM:
+                  type: PEM
+                  name: BSO4-440-12 4-40 - .165  by .375 400 series Standoff
+                  version: 7.5
+                  description: |-
+                    BSO4-440-12 4-40 - .165  by .375 400 series Standoff
+                    Blind Threaded Standoffs for Stainless Steel
+                    Standard
+                    Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+                  partnumber: BSO4-440-12
+                  ID: 'PEM Standoff: BSO4-440-12'
+                  verified: true
+                  OriginX: '-0.55'
+                  OriginY: '0.0'
+                  onSameSide: false
+                  inLibrary: byID
+              - PEM:
+                  type: PEM
+                  name: BSO4-440-12 4-40 - .165  by .375 400 series Standoff
+                  version: 7.5
+                  description: |-
+                    BSO4-440-12 4-40 - .165  by .375 400 series Standoff
+                    Blind Threaded Standoffs for Stainless Steel
+                    Standard
+                    Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+                  partnumber: BSO4-440-12
+                  ID: 'PEM Standoff: BSO4-440-12'
+                  verified: true
+                  OriginX: '0.55'
+                  OriginY: '0.0'
+                  onSameSide: false
+                  inLibrary: byID
+          - Thing2D:
+              name: MSR
+              version: 7.5
+              manufacturer: IDTech
+              partnumber: Omni WCR3227
+              ID: 317f56d1-8005-46b6-ba66-688ce9e9cbc7
+              verified: false
+              OriginX: '1.85'
+              OriginY: '7.319999999999999'
+              onSameSide: true
+              scaleFactorY: '-1.0'
+              Bounds: {width: '1.5', height: '5.000', x: '-0.750', y: '-2.500'}
+              Attachment2Ds:
+              - Circle: {radius: '0.1', type: CUTOUT, name: circle, version: 7.5,
+                  ID: 6797b7de-0766-4ae3-8706-68a940078580, verified: false, layer: Default,
+                  OriginX: '0.456', OriginY: '2.326', onSameSide: true}
+              - Circle: {radius: '0.07', type: CUTOUT, name: circle, version: 7.5,
+                  ID: e79dfb58-e0b4-41de-a8f1-a1f647c28405, verified: false, layer: Default,
+                  OriginX: '0.0', OriginY: '-2.245', onSameSide: true}
+              - Circle: {radius: '0.07', type: CUTOUT, name: circle, version: 7.5,
+                  ID: 4f3aedc0-410d-4917-928b-8b78d7f79c3e, verified: false, layer: Default,
+                  OriginX: '0.0', OriginY: '2.245', onSameSide: true}
+          - Thing2D:
+              name: keypad-PEM
+              version: 7.5
+              description: Greyhill 12-key membrane keypad
+              manufacturer: Greyhill
+              partnumber: 88AB2-152
+              ID: 968932f5-9bde-48ea-b4ca-d411ab3744cd
+              verified: false
+              OriginX: '9.764210429944491'
+              OriginY: '7.007340013875729'
+              onSameSide: true
+              scaleFactorY: '-1.0'
+              Bounds: {width: '2.800', height: '3.500', x: '-1.400', y: '-1.750'}
+              Attachment2Ds:
+              - PEM:
+                  type: PEM
+                  name: FH4-440-6 4-40 - .111  by .375 400 series Stud
+                  version: 7.5
+                  description: |-
+                    FH4-440-6 4-40 - .111  by .375 400 series Stud
+                    Flush-Head Self-Clinching Stud for Stainless Steel
+                    Standard
+                    finish: ZI
+                    Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+                  partnumber: FH4-440-6
+                  ID: 'PEM Stud: FH4-440-6'
+                  verified: true
+                  OriginX: '1.1145732575000002'
+                  OriginY: '-1.4820649596965416'
+                  onSameSide: false
+                  inLibrary: byID
+              - PEM:
+                  type: PEM
+                  name: FH4-440-6 4-40 - .111  by .375 400 series Stud
+                  version: 7.5
+                  description: |-
+                    FH4-440-6 4-40 - .111  by .375 400 series Stud
+                    Flush-Head Self-Clinching Stud for Stainless Steel
+                    Standard
+                    finish: ZI
+                    Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+                  partnumber: FH4-440-6
+                  ID: 'PEM Stud: FH4-440-6'
+                  verified: true
+                  OriginX: '-1.1254267425'
+                  OriginY: '-1.4820649596965416'
+                  onSameSide: false
+                  inLibrary: byID
+              - PEM:
+                  type: PEM
+                  name: FH4-440-6 4-40 - .111  by .375 400 series Stud
+                  version: 7.5
+                  description: |-
+                    FH4-440-6 4-40 - .111  by .375 400 series Stud
+                    Flush-Head Self-Clinching Stud for Stainless Steel
+                    Standard
+                    finish: ZI
+                    Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+                  partnumber: FH4-440-6
+                  ID: 'PEM Stud: FH4-440-6'
+                  verified: true
+                  OriginX: '1.1145732575000002'
+                  OriginY: '1.4579350403034583'
+                  onSameSide: false
+                  inLibrary: byID
+              - PEM:
+                  type: PEM
+                  name: FH4-440-6 4-40 - .111  by .375 400 series Stud
+                  version: 7.5
+                  description: |-
+                    FH4-440-6 4-40 - .111  by .375 400 series Stud
+                    Flush-Head Self-Clinching Stud for Stainless Steel
+                    Standard
+                    finish: ZI
+                    Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+                  partnumber: FH4-440-6
+                  ID: 'PEM Stud: FH4-440-6'
+                  verified: true
+                  OriginX: '-1.1254267425'
+                  OriginY: '1.4579350403034583'
+                  onSameSide: false
+                  inLibrary: byID
+              - CompositePath:
+                  type: CUTOUT
+                  name: Trim Path
+                  version: '7.5'
+                  ID: 3bd71fa7-19d5-451b-a47c-318de0dc971d
+                  verified: false
+                  layer: Default
+                  OriginX: '-1.0004267426'
+                  OriginY: '1.1829350403034584'
+                  onSameSide: true
+                  pathSegments:
+                  - Line: ['0.0', '-2.39']
+                  - CircleArc3:
+                      end: ['0.1499999999999999', '-0.1499999999999999']
+                      mid: ['0.04393398282565359', '-0.10606601717434637']
+                  - Line: ['1.69', '0.0']
+                  - CircleArc3:
+                      end: ['0.1499999999999999', '0.14999999999540092']
+                      mid: ['0.10606601727635634', '0.04393398282039189']
+                  - Line: ['0.0', '2.390000000004599']
+                  - CircleArc3:
+                      end: ['-0.1499999999999999', '0.14999999999540092']
+                      mid: ['-0.04393398280915939', '0.1060660171894936']
+                  - Line: ['-1.69', '0.0']
+                  - CircleArc3:
+                      end: [(-0.1499999999999999)-(-8.326672684688674E-17), (-0.14999999999540092)-(-4.599071123934095E-12)]
+                      mid: ['-0.10606601714837396', '-0.0439339828483738']
+          - Thing2D:
+              name: fastener cutouts - bolts&PEM
+              version: 7.5
+              description: Carriage bolt cutouts
+              partnumber: Carriage bolt cutouts
+              ID: 64fa0a61-0164-46ea-b283-2f2c370adbc0
+              verified: false
+              OriginX: '-0.4'
+              OriginY: '11.12'
+              onSameSide: true
+              scaleFactorY: '-1.0'
+              Bounds: {width: '13.000', height: '11.120', x: '0.000', y: '0.000'}
+              Attachment2Ds:
+              - PEM:
+                  type: PEM
+                  name: FH4-832-10 8-32 - .163  by .625 400 series Stud
+                  version: 7.5
+                  description: |-
+                    FH4-832-10 8-32 - .163  by .625 400 series Stud
+                    Flush-Head Self-Clinching Stud for Stainless Steel
+                    Standard
+                    Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+                  partnumber: FH4-832-10
+                  ID: 'PEM Stud: FH4-832-10'
+                  verified: true
+                  OriginX: '9.0'
+                  OriginY: '10.245'
+                  onSameSide: false
+                  inLibrary: byID
+              - PEM:
+                  type: PEM
+                  name: FH4-832-10 8-32 - .163  by .625 400 series Stud
+                  version: 7.5
+                  description: |-
+                    FH4-832-10 8-32 - .163  by .625 400 series Stud
+                    Flush-Head Self-Clinching Stud for Stainless Steel
+                    Standard
+                    Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+                  partnumber: FH4-832-10
+                  ID: 'PEM Stud: FH4-832-10'
+                  verified: true
+                  OriginX: '0.875'
+                  OriginY: '7.7'
+                  onSameSide: false
+                  inLibrary: byID
+              - PEM:
+                  type: PEM
+                  name: FH4-832-10 8-32 - .163  by .625 400 series Stud
+                  version: 7.5
+                  description: |-
+                    FH4-832-10 8-32 - .163  by .625 400 series Stud
+                    Flush-Head Self-Clinching Stud for Stainless Steel
+                    Standard
+                    Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+                  partnumber: FH4-832-10
+                  ID: 'PEM Stud: FH4-832-10'
+                  verified: true
+                  OriginX: '0.875'
+                  OriginY: '3.15'
+                  onSameSide: false
+                  inLibrary: byID
+              - PEM:
+                  type: PEM
+                  name: FH4-832-10 8-32 - .163  by .625 400 series Stud
+                  version: 7.5
+                  description: |-
+                    FH4-832-10 8-32 - .163  by .625 400 series Stud
+                    Flush-Head Self-Clinching Stud for Stainless Steel
+                    Standard
+                    Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+                  partnumber: FH4-832-10
+                  ID: 'PEM Stud: FH4-832-10'
+                  verified: true
+                  OriginX: '3.8'
+                  OriginY: '0.875'
+                  onSameSide: false
+                  inLibrary: byID
+              - PEM:
+                  type: PEM
+                  name: FH4-832-10 8-32 - .163  by .625 400 series Stud
+                  version: 7.5
+                  description: |-
+                    FH4-832-10 8-32 - .163  by .625 400 series Stud
+                    Flush-Head Self-Clinching Stud for Stainless Steel
+                    Standard
+                    Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+                  partnumber: FH4-832-10
+                  ID: 'PEM Stud: FH4-832-10'
+                  verified: true
+                  OriginX: '9.0'
+                  OriginY: '0.875'
+                  onSameSide: false
+                  inLibrary: byID
+              - PEM:
+                  type: PEM
+                  name: FH4-832-10 8-32 - .163  by .625 400 series Stud
+                  version: 7.5
+                  description: |-
+                    FH4-832-10 8-32 - .163  by .625 400 series Stud
+                    Flush-Head Self-Clinching Stud for Stainless Steel
+                    Standard
+                    Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+                  partnumber: FH4-832-10
+                  ID: 'PEM Stud: FH4-832-10'
+                  verified: true
+                  OriginX: '12.125'
+                  OriginY: '3.15'
+                  onSameSide: false
+                  inLibrary: byID
+              - PEM:
+                  type: PEM
+                  name: FH4-832-10 8-32 - .163  by .625 400 series Stud
+                  version: 7.5
+                  description: |-
+                    FH4-832-10 8-32 - .163  by .625 400 series Stud
+                    Flush-Head Self-Clinching Stud for Stainless Steel
+                    Standard
+                    Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+                  partnumber: FH4-832-10
+                  ID: 'PEM Stud: FH4-832-10'
+                  verified: true
+                  OriginX: '12.125'
+                  OriginY: '7.7'
+                  onSameSide: false
+                  inLibrary: byID
+              - PEM:
+                  type: PEM
+                  name: FH4-832-10 8-32 - .163  by .625 400 series Stud
+                  version: 7.5
+                  description: |-
+                    FH4-832-10 8-32 - .163  by .625 400 series Stud
+                    Flush-Head Self-Clinching Stud for Stainless Steel
+                    Standard
+                    Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+                  partnumber: FH4-832-10
+                  ID: 'PEM Stud: FH4-832-10'
+                  verified: true
+                  OriginX: '3.8'
+                  OriginY: '10.245'
+                  onSameSide: false
+                  inLibrary: byID
+              - Thing2D:
+                  name: carriage bolt cutout 10-24
+                  version: 7.5
+                  manufacturer: McMaster
+                  partnumber: carriage bolt cutout 10-24
+                  ID: 677e30c5-e39f-4411-a6b3-0b862a40b9cc
+                  verified: false
+                  OriginX: '0.475'
+                  OriginY: '0.475'
+                  onSameSide: true
+                  Bounds: {width: '.25', height: '.25', x: '-0.125', y: '-0.125'}
+                  Attachment2Ds:
+                  - Rectangle: {width: '0.21', height: '0.21', type: CUTOUT, name: rectangle,
+                      version: 7.5, ID: 65119f01-1d2d-4205-bdba-c9ca96d49ce7, verified: false,
+                      layer: Default, OriginX: '-0.105', OriginY: '-0.105', onSameSide: true}
+              - Thing2D:
+                  name: carriage bolt cutout 10-24
+                  version: 7.5
+                  manufacturer: McMaster
+                  partnumber: carriage bolt cutout 10-24
+                  ID: dfdd4f59-9025-40e1-98a4-57503663b48e
+                  verified: false
+                  OriginX: '6.5'
+                  OriginY: '0.475'
+                  onSameSide: true
+                  Bounds: {width: '.25', height: '.25', x: '-0.125', y: '-0.125'}
+                  Attachment2Ds:
+                  - Rectangle: {width: '0.21', height: '0.21', type: CUTOUT, name: rectangle,
+                      version: 7.5, ID: 74c39801-1cd0-4ada-8a9f-458468b7d04a, verified: false,
+                      layer: Default, OriginX: '-0.105', OriginY: '-0.105', onSameSide: true}
+              - Thing2D:
+                  name: carriage bolt cutout 10-24
+                  version: 7.5
+                  manufacturer: McMaster
+                  partnumber: carriage bolt cutout 10-24
+                  ID: 33250672-1b71-4798-b62b-ea4e2cc1fb45
+                  verified: false
+                  OriginX: '12.525'
+                  OriginY: '0.475'
+                  onSameSide: true
+                  Bounds: {width: '.25', height: '.25', x: '-0.125', y: '-0.125'}
+                  Attachment2Ds:
+                  - Rectangle: {width: '0.21', height: '0.21', type: CUTOUT, name: rectangle,
+                      version: 7.5, ID: 29733aec-bee8-497d-a425-ed12a52c3dd6, verified: false,
+                      layer: Default, OriginX: '-0.105', OriginY: '-0.105', onSameSide: true}
+              - Thing2D:
+                  name: carriage bolt cutout 10-24
+                  version: 7.5
+                  manufacturer: McMaster
+                  partnumber: carriage bolt cutout 10-24
+                  ID: e3256113-5c42-4754-9bc0-b737700047a0
+                  verified: false
+                  OriginX: '12.525'
+                  OriginY: '5.56'
+                  onSameSide: true
+                  Bounds: {width: '.25', height: '.25', x: '-0.125', y: '-0.125'}
+                  Attachment2Ds:
+                  - Rectangle: {width: '0.21', height: '0.21', type: CUTOUT, name: rectangle,
+                      version: 7.5, ID: d496cb15-118a-4a06-b405-31dcc5e69caf, verified: false,
+                      layer: Default, OriginX: '-0.105', OriginY: '-0.105', onSameSide: true}
+              - Thing2D:
+                  name: carriage bolt cutout 10-24
+                  version: 7.5
+                  manufacturer: McMaster
+                  partnumber: carriage bolt cutout 10-24
+                  ID: 016195d3-b132-4c8b-aa74-ae1467cc09d4
+                  verified: false
+                  OriginX: '12.525'
+                  OriginY: '10.695'
+                  onSameSide: true
+                  Bounds: {width: '.25', height: '.25', x: '-0.125', y: '-0.125'}
+                  Attachment2Ds:
+                  - Rectangle: {width: '0.21', height: '0.21', type: CUTOUT, name: rectangle,
+                      version: 7.5, ID: 2de33263-b471-44ca-ab55-3526592d3d38, verified: false,
+                      layer: Default, OriginX: '-0.105', OriginY: '-0.105', onSameSide: true}
+              - Thing2D:
+                  name: carriage bolt cutout 10-24
+                  version: 7.5
+                  manufacturer: McMaster
+                  partnumber: carriage bolt cutout 10-24
+                  ID: 43290575-adda-4393-a4f9-c0742d29d75a
+                  verified: false
+                  OriginX: '6.5'
+                  OriginY: '10.695'
+                  onSameSide: true
+                  Bounds: {width: '.25', height: '.25', x: '-0.125', y: '-0.125'}
+                  Attachment2Ds:
+                  - Rectangle: {width: '0.21', height: '0.21', type: CUTOUT, name: rectangle,
+                      version: 7.5, ID: d1fbcecc-9d2e-47eb-8eb3-f6dddac18bbc, verified: false,
+                      layer: Default, OriginX: '-0.105', OriginY: '-0.105', onSameSide: true}
+              - Thing2D:
+                  name: carriage bolt cutout 10-24
+                  version: 7.5
+                  manufacturer: McMaster
+                  partnumber: carriage bolt cutout 10-24
+                  ID: e1b90017-b251-45a7-8e8c-8f240e1b63de
+                  verified: false
+                  OriginX: '0.475'
+                  OriginY: '10.645'
+                  onSameSide: true
+                  Bounds: {width: '.25', height: '.25', x: '-0.125', y: '-0.125'}
+                  Attachment2Ds:
+                  - Rectangle: {width: '0.21', height: '0.21', type: CUTOUT, name: rectangle,
+                      version: 7.5, ID: 95de9517-e6cb-42d9-b848-80644b145693, verified: false,
+                      layer: Default, OriginX: '-0.105', OriginY: '-0.105', onSameSide: true}
+              - Thing2D:
+                  name: carriage bolt cutout 10-24
+                  version: 7.5
+                  manufacturer: McMaster
+                  partnumber: carriage bolt cutout 10-24
+                  ID: 111748d2-3275-444a-a4dc-83f3b3e85278
+                  verified: false
+                  OriginX: '0.475'
+                  OriginY: '5.56'
+                  onSameSide: true
+                  Bounds: {width: '.25', height: '.25', x: '-0.125', y: '-0.125'}
+                  Attachment2Ds:
+                  - Rectangle: {width: '0.21', height: '0.21', type: CUTOUT, name: rectangle,
+                      version: 7.5, ID: b6525470-01d7-47d5-b342-a83728c78ab5, verified: false,
+                      layer: Default, OriginX: '-0.105', OriginY: '-0.105', onSameSide: true}
+          - Thing2D:
+              name: LCD 2x20-PEM
+              version: 7.5
+              description: 2x20 LCD display
+              manufacturer: Newhaven DIsplay
+              partnumber: NHD-0220JZ
+              ID: e5214a60-9940-49e3-9cd9-24d8045c4a4b
+              verified: false
+              OriginX: '3.2070000000000003'
+              OriginY: '3.5199999999999996'
+              onSameSide: true
+              scaleFactorY: '-1.0'
+              Bounds: {width: '7.386', height: '2.986', x: '-0.800', y: '-0.800'}
+              Attachment2Ds:
+              - Rectangle: {width: '5.786', height: '1.386', type: CUTOUT, name: rectangle,
+                  version: 7.5, ID: 7abbeca8-5107-4567-ac0e-c45a23ec6064, verified: false,
+                  layer: Default, OriginX: '0.0', OriginY: '0.0', onSameSide: true}
+              - PEM:
+                  type: PEM
+                  name: BSO4-440-16 4-40 - .165  by .500 400 series Standoff
+                  version: 7.5
+                  description: |-
+                    BSO4-440-16 4-40 - .165  by .500 400 series Standoff
+                    Blind Threaded Standoffs for Stainless Steel
+                    Standard
+                    Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+                  partnumber: BSO4-440-16
+                  ID: 'PEM Standoff: BSO4-440-16'
+                  verified: true
+                  OriginX: '6.317'
+                  OriginY: '1.756'
+                  onSameSide: false
+                  inLibrary: byID
+              - PEM:
+                  type: PEM
+                  name: BSO4-440-16 4-40 - .165  by .500 400 series Standoff
+                  version: 7.5
+                  description: |-
+                    BSO4-440-16 4-40 - .165  by .500 400 series Standoff
+                    Blind Threaded Standoffs for Stainless Steel
+                    Standard
+                    Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+                  partnumber: BSO4-440-16
+                  ID: 'PEM Standoff: BSO4-440-16'
+                  verified: true
+                  OriginX: '-0.611'
+                  OriginY: '1.756'
+                  onSameSide: false
+                  inLibrary: byID
+              - PEM:
+                  type: PEM
+                  name: BSO4-440-16 4-40 - .165  by .500 400 series Standoff
+                  version: 7.5
+                  description: |-
+                    BSO4-440-16 4-40 - .165  by .500 400 series Standoff
+                    Blind Threaded Standoffs for Stainless Steel
+                    Standard
+                    Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+                  partnumber: BSO4-440-16
+                  ID: 'PEM Standoff: BSO4-440-16'
+                  verified: true
+                  OriginX: '6.317'
+                  OriginY: '-0.37'
+                  onSameSide: false
+                  inLibrary: byID
+              - PEM:
+                  type: PEM
+                  name: BSO4-440-16 4-40 - .165  by .500 400 series Standoff
+                  version: 7.5
+                  description: |-
+                    BSO4-440-16 4-40 - .165  by .500 400 series Standoff
+                    Blind Threaded Standoffs for Stainless Steel
+                    Standard
+                    Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+                  partnumber: BSO4-440-16
+                  ID: 'PEM Standoff: BSO4-440-16'
+                  verified: true
+                  OriginX: '-0.611'
+                  OriginY: '-0.37'
+                  onSameSide: false
+                  inLibrary: byID

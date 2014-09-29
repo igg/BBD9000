@@ -1,0 +1,257 @@
+Thing2D:
+  name: fastener cutouts - bolts&PEM
+  version: 7.5
+  description: Carriage bolt cutouts
+  partnumber: Carriage bolt cutouts
+  ID: a2602e41-36d5-4a61-be0e-2bd7e960718d
+  verified: false
+  Bounds: {width: '13.000', height: '11.120', x: '0.000', y: '0.000'}
+  Attachment2Ds:
+  - Thing2D:
+      name: carriage bolt cutout 10-24
+      version: 7.5
+      manufacturer: McMaster
+      partnumber: carriage bolt cutout 10-24
+      ID: d1cf3a69-1d10-4bf8-837d-5d1e545dac2e
+      verified: false
+      OriginX: '0.475'
+      OriginY: '5.56'
+      onSameSide: true
+      Bounds: {width: '.25', height: '.25', x: '-0.125', y: '-0.125'}
+      Attachment2Ds:
+      - Rectangle: {width: '0.21', height: '0.21', type: CUTOUT, name: rectangle,
+          version: 7.5, ID: ddae5511-ff86-480b-896c-267a03e0af58, verified: false,
+          layer: Default, OriginX: '-0.105', OriginY: '-0.105', onSameSide: true}
+  - Thing2D:
+      name: carriage bolt cutout 10-24
+      version: 7.5
+      manufacturer: McMaster
+      partnumber: carriage bolt cutout 10-24
+      ID: d1cf3a69-1d10-4bf8-837d-5d1e545dac2e
+      verified: false
+      OriginX: '0.475'
+      OriginY: '10.645'
+      onSameSide: true
+      Bounds: {width: '.25', height: '.25', x: '-0.125', y: '-0.125'}
+      Attachment2Ds:
+      - Rectangle: {width: '0.21', height: '0.21', type: CUTOUT, name: rectangle,
+          version: 7.5, ID: ddae5511-ff86-480b-896c-267a03e0af58, verified: false,
+          layer: Default, OriginX: '-0.105', OriginY: '-0.105', onSameSide: true}
+  - Thing2D:
+      name: carriage bolt cutout 10-24
+      version: 7.5
+      manufacturer: McMaster
+      partnumber: carriage bolt cutout 10-24
+      ID: d1cf3a69-1d10-4bf8-837d-5d1e545dac2e
+      verified: false
+      OriginX: '6.5'
+      OriginY: '10.695'
+      onSameSide: true
+      Bounds: {width: '.25', height: '.25', x: '-0.125', y: '-0.125'}
+      Attachment2Ds:
+      - Rectangle: {width: '0.21', height: '0.21', type: CUTOUT, name: rectangle,
+          version: 7.5, ID: ddae5511-ff86-480b-896c-267a03e0af58, verified: false,
+          layer: Default, OriginX: '-0.105', OriginY: '-0.105', onSameSide: true}
+  - Thing2D:
+      name: carriage bolt cutout 10-24
+      version: 7.5
+      manufacturer: McMaster
+      partnumber: carriage bolt cutout 10-24
+      ID: d1cf3a69-1d10-4bf8-837d-5d1e545dac2e
+      verified: false
+      OriginX: '12.525'
+      OriginY: '10.695'
+      onSameSide: true
+      Bounds: {width: '.25', height: '.25', x: '-0.125', y: '-0.125'}
+      Attachment2Ds:
+      - Rectangle: {width: '0.21', height: '0.21', type: CUTOUT, name: rectangle,
+          version: 7.5, ID: ddae5511-ff86-480b-896c-267a03e0af58, verified: false,
+          layer: Default, OriginX: '-0.105', OriginY: '-0.105', onSameSide: true}
+  - Thing2D:
+      name: carriage bolt cutout 10-24
+      version: 7.5
+      manufacturer: McMaster
+      partnumber: carriage bolt cutout 10-24
+      ID: d1cf3a69-1d10-4bf8-837d-5d1e545dac2e
+      verified: false
+      OriginX: '12.525'
+      OriginY: '5.56'
+      onSameSide: true
+      Bounds: {width: '.25', height: '.25', x: '-0.125', y: '-0.125'}
+      Attachment2Ds:
+      - Rectangle: {width: '0.21', height: '0.21', type: CUTOUT, name: rectangle,
+          version: 7.5, ID: ddae5511-ff86-480b-896c-267a03e0af58, verified: false,
+          layer: Default, OriginX: '-0.105', OriginY: '-0.105', onSameSide: true}
+  - Thing2D:
+      name: carriage bolt cutout 10-24
+      version: 7.5
+      manufacturer: McMaster
+      partnumber: carriage bolt cutout 10-24
+      ID: d1cf3a69-1d10-4bf8-837d-5d1e545dac2e
+      verified: false
+      OriginX: '12.525'
+      OriginY: '0.475'
+      onSameSide: true
+      Bounds: {width: '.25', height: '.25', x: '-0.125', y: '-0.125'}
+      Attachment2Ds:
+      - Rectangle: {width: '0.21', height: '0.21', type: CUTOUT, name: rectangle,
+          version: 7.5, ID: ddae5511-ff86-480b-896c-267a03e0af58, verified: false,
+          layer: Default, OriginX: '-0.105', OriginY: '-0.105', onSameSide: true}
+  - Thing2D:
+      name: carriage bolt cutout 10-24
+      version: 7.5
+      manufacturer: McMaster
+      partnumber: carriage bolt cutout 10-24
+      ID: d1cf3a69-1d10-4bf8-837d-5d1e545dac2e
+      verified: false
+      OriginX: '6.5'
+      OriginY: '0.475'
+      onSameSide: true
+      Bounds: {width: '.25', height: '.25', x: '-0.125', y: '-0.125'}
+      Attachment2Ds:
+      - Rectangle: {width: '0.21', height: '0.21', type: CUTOUT, name: rectangle,
+          version: 7.5, ID: ddae5511-ff86-480b-896c-267a03e0af58, verified: false,
+          layer: Default, OriginX: '-0.105', OriginY: '-0.105', onSameSide: true}
+  - Thing2D:
+      name: carriage bolt cutout 10-24
+      version: 7.5
+      manufacturer: McMaster
+      partnumber: carriage bolt cutout 10-24
+      ID: d1cf3a69-1d10-4bf8-837d-5d1e545dac2e
+      verified: false
+      OriginX: '0.475'
+      OriginY: '0.475'
+      onSameSide: true
+      Bounds: {width: '.25', height: '.25', x: '-0.125', y: '-0.125'}
+      Attachment2Ds:
+      - Rectangle: {width: '0.21', height: '0.21', type: CUTOUT, name: rectangle,
+          version: 7.5, ID: ddae5511-ff86-480b-896c-267a03e0af58, verified: false,
+          layer: Default, OriginX: '-0.105', OriginY: '-0.105', onSameSide: true}
+  - PEM:
+      type: PEM
+      name: FH4-832-10 8-32 - .163  by .625 400 series Stud
+      version: 7.5
+      description: |-
+        FH4-832-10 8-32 - .163  by .625 400 series Stud
+        Flush-Head Self-Clinching Stud for Stainless Steel
+        Standard
+        Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+      partnumber: FH4-832-10
+      ID: 'PEM Stud: FH4-832-10'
+      verified: true
+      OriginX: '3.8'
+      OriginY: '10.245'
+      onSameSide: false
+      inLibrary: byID
+  - PEM:
+      type: PEM
+      name: FH4-832-10 8-32 - .163  by .625 400 series Stud
+      version: 7.5
+      description: |-
+        FH4-832-10 8-32 - .163  by .625 400 series Stud
+        Flush-Head Self-Clinching Stud for Stainless Steel
+        Standard
+        Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+      partnumber: FH4-832-10
+      ID: 'PEM Stud: FH4-832-10'
+      verified: true
+      OriginX: '12.125'
+      OriginY: '7.7'
+      onSameSide: false
+      inLibrary: byID
+  - PEM:
+      type: PEM
+      name: FH4-832-10 8-32 - .163  by .625 400 series Stud
+      version: 7.5
+      description: |-
+        FH4-832-10 8-32 - .163  by .625 400 series Stud
+        Flush-Head Self-Clinching Stud for Stainless Steel
+        Standard
+        Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+      partnumber: FH4-832-10
+      ID: 'PEM Stud: FH4-832-10'
+      verified: true
+      OriginX: '12.125'
+      OriginY: '3.15'
+      onSameSide: false
+      inLibrary: byID
+  - PEM:
+      type: PEM
+      name: FH4-832-10 8-32 - .163  by .625 400 series Stud
+      version: 7.5
+      description: |-
+        FH4-832-10 8-32 - .163  by .625 400 series Stud
+        Flush-Head Self-Clinching Stud for Stainless Steel
+        Standard
+        Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+      partnumber: FH4-832-10
+      ID: 'PEM Stud: FH4-832-10'
+      verified: true
+      OriginX: '9.0'
+      OriginY: '0.875'
+      onSameSide: false
+      inLibrary: byID
+  - PEM:
+      type: PEM
+      name: FH4-832-10 8-32 - .163  by .625 400 series Stud
+      version: 7.5
+      description: |-
+        FH4-832-10 8-32 - .163  by .625 400 series Stud
+        Flush-Head Self-Clinching Stud for Stainless Steel
+        Standard
+        Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+      partnumber: FH4-832-10
+      ID: 'PEM Stud: FH4-832-10'
+      verified: true
+      OriginX: '3.8'
+      OriginY: '0.875'
+      onSameSide: false
+      inLibrary: byID
+  - PEM:
+      type: PEM
+      name: FH4-832-10 8-32 - .163  by .625 400 series Stud
+      version: 7.5
+      description: |-
+        FH4-832-10 8-32 - .163  by .625 400 series Stud
+        Flush-Head Self-Clinching Stud for Stainless Steel
+        Standard
+        Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+      partnumber: FH4-832-10
+      ID: 'PEM Stud: FH4-832-10'
+      verified: true
+      OriginX: '0.875'
+      OriginY: '3.15'
+      onSameSide: false
+      inLibrary: byID
+  - PEM:
+      type: PEM
+      name: FH4-832-10 8-32 - .163  by .625 400 series Stud
+      version: 7.5
+      description: |-
+        FH4-832-10 8-32 - .163  by .625 400 series Stud
+        Flush-Head Self-Clinching Stud for Stainless Steel
+        Standard
+        Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+      partnumber: FH4-832-10
+      ID: 'PEM Stud: FH4-832-10'
+      verified: true
+      OriginX: '0.875'
+      OriginY: '7.7'
+      onSameSide: false
+      inLibrary: byID
+  - PEM:
+      type: PEM
+      name: FH4-832-10 8-32 - .163  by .625 400 series Stud
+      version: 7.5
+      description: |-
+        FH4-832-10 8-32 - .163  by .625 400 series Stud
+        Flush-Head Self-Clinching Stud for Stainless Steel
+        Standard
+        Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+      partnumber: FH4-832-10
+      ID: 'PEM Stud: FH4-832-10'
+      verified: true
+      OriginX: '9.0'
+      OriginY: '10.245'
+      onSameSide: false
+      inLibrary: byID

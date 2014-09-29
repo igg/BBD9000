@@ -1,0 +1,105 @@
+Thing2D:
+  name: keypad-PEM
+  version: 7.5
+  description: Greyhill 12-key membrane keypad
+  manufacturer: Greyhill
+  partnumber: 88AB2-152
+  ID: 380c5d69-8871-428b-83b0-080405a533c9
+  verified: false
+  Bounds: {width: '2.800', height: '3.500', x: '-1.400', y: '-1.750'}
+  Attachment2Ds:
+  - CompositePath:
+      type: CUTOUT
+      name: Trim Path
+      version: '7.5'
+      ID: c04856d1-97b3-45f7-b48e-28f05654e294
+      verified: false
+      layer: Default
+      OriginX: '-1.0004267426'
+      OriginY: '1.1829350403034584'
+      onSameSide: true
+      pathSegments:
+      - Line: ['0.0', '-2.39']
+      - CircleArc3:
+          end: ['0.1499999999999999', '-0.1499999999999999']
+          mid: ['0.04393398282565359', '-0.10606601717434637']
+      - Line: ['1.69', '0.0']
+      - CircleArc3:
+          end: ['0.1499999999999999', '0.14999999999540092']
+          mid: ['0.10606601727635634', '0.04393398282039189']
+      - Line: ['0.0', '2.390000000004599']
+      - CircleArc3:
+          end: ['-0.1499999999999999', '0.14999999999540092']
+          mid: ['-0.04393398280915939', '0.1060660171894936']
+      - Line: ['-1.69', '0.0']
+      - CircleArc3:
+          end: [(-0.1499999999999999)-(-8.326672684688674E-17), (-0.14999999999540092)-(-4.599071123934095E-12)]
+          mid: ['-0.10606601714837396', '-0.0439339828483738']
+  - PEM:
+      type: PEM
+      name: FH4-440-6 4-40 - .111  by .375 400 series Stud
+      version: 7.5
+      description: |-
+        FH4-440-6 4-40 - .111  by .375 400 series Stud
+        Flush-Head Self-Clinching Stud for Stainless Steel
+        Standard
+        finish: ZI
+        Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+      partnumber: FH4-440-6
+      ID: 'PEM Stud: FH4-440-6'
+      verified: true
+      OriginX: '-1.1254267425'
+      OriginY: '1.4579350403034583'
+      onSameSide: false
+      inLibrary: byID
+  - PEM:
+      type: PEM
+      name: FH4-440-6 4-40 - .111  by .375 400 series Stud
+      version: 7.5
+      description: |-
+        FH4-440-6 4-40 - .111  by .375 400 series Stud
+        Flush-Head Self-Clinching Stud for Stainless Steel
+        Standard
+        finish: ZI
+        Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+      partnumber: FH4-440-6
+      ID: 'PEM Stud: FH4-440-6'
+      verified: true
+      OriginX: '1.1145732575000002'
+      OriginY: '1.4579350403034583'
+      onSameSide: false
+      inLibrary: byID
+  - PEM:
+      type: PEM
+      name: FH4-440-6 4-40 - .111  by .375 400 series Stud
+      version: 7.5
+      description: |-
+        FH4-440-6 4-40 - .111  by .375 400 series Stud
+        Flush-Head Self-Clinching Stud for Stainless Steel
+        Standard
+        finish: ZI
+        Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+      partnumber: FH4-440-6
+      ID: 'PEM Stud: FH4-440-6'
+      verified: true
+      OriginX: '-1.1254267425'
+      OriginY: '-1.4820649596965416'
+      onSameSide: false
+      inLibrary: byID
+  - PEM:
+      type: PEM
+      name: FH4-440-6 4-40 - .111  by .375 400 series Stud
+      version: 7.5
+      description: |-
+        FH4-440-6 4-40 - .111  by .375 400 series Stud
+        Flush-Head Self-Clinching Stud for Stainless Steel
+        Standard
+        finish: ZI
+        Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+      partnumber: FH4-440-6
+      ID: 'PEM Stud: FH4-440-6'
+      verified: true
+      OriginX: '1.1145732575000002'
+      OriginY: '-1.4820649596965416'
+      onSameSide: false
+      inLibrary: byID

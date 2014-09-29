@@ -1,0 +1,15 @@
+Thing2D:
+  name: MSR
+  version: 7.5
+  manufacturer: IDTech
+  partnumber: Omni WCR3227
+  ID: 43f54e0b-e23b-4b3c-8cea-696d6c2ebfb6
+  verified: false
+  Bounds: {width: '1.5', height: '5.000', x: '-0.750', y: '-2.500'}
+  Attachment2Ds:
+  - Circle: {radius: '0.07', type: CUTOUT, name: circle, version: 7.5, ID: 2adbfbd9-1a91-47d0-be58-a2706b0f0b55,
+      verified: false, layer: Default, OriginX: '0.0', OriginY: '2.245', onSameSide: true}
+  - Circle: {radius: '0.07', type: CUTOUT, name: circle, version: 7.5, ID: 5f3bee92-5c84-48b7-a883-ba2c020dfb5e,
+      verified: false, layer: Default, OriginX: '0.0', OriginY: '-2.245', onSameSide: true}
+  - Circle: {radius: '0.1', type: CUTOUT, name: circle, version: 7.5, ID: e3fb934d-d22d-4a19-963f-1127e97b87df,
+      verified: false, layer: Default, OriginX: '0.456', OriginY: '2.326', onSameSide: true}

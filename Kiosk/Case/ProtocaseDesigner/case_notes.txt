@@ -1,0 +1,34 @@
+Units in Inches
+PIR motion sensor grommet thickness: 0.308, O.D.:0.873
+
+panel thickness: 0.078 (14 ga)
+PCB thickness: 0.063
+10-24 nut thickness: 0.125
+ 8-32 nut thickness: 0.125
+ 4-40 nut thickness: 0.09375
+4,6,8,10 washer thickness: 0.02 - 0.04
+
+PIR standoff: 0.375
+	stud: 1/2 grommet thickness+ 1/2 panel thickness + nut thickness + board thickness + washer:0.396 (.356 no washer)
+		0.375 stud without washer
+	standoff: 1/2 grommet thickness+ 1/2 panel thickness: 0.193
+
+rear enclosure lip thickness: 0.25
+	z-bar thickness: .125
+	stud: panel thickness + enclosure lip thickness + z-bar thickness + nut + washer: 0.618 (use 0.625)
+
+keypad lip thickness: 0.125
+	stud: panel thickness + keypad lip + board + washer + nut = 0.406 (0.366 no washer)
+	standoff: panel thickness + keypad lip = 0.203
+
+PSU:
+Amazon: E-Goal 12V 2A DC Universal Regulated Switching Power Supply (not UL) - $7.64
+Automation Direct: Rhino PSS12-035 $17.75
+  98x97x38 hole/slot 90 @ 98x38
+Jameco Mean Well RS-25-12 $11.49
+  79+13 x 51 x 28.  M3 66.5 @ 79+13x28; M3 55 @ 79+13x51
+
+
+Protocase:
+2: $261.24/2 = $130.62 - second costs $75.80
+1: $167.44 + $18 ship = $185.44

@@ -1,0 +1,73 @@
+Thing2D:
+  name: PSU mount
+  version: 7.5
+  description: Generic G10 area; PSU, cable clamp, GND lug, etc.
+  partnumber: PSU mount
+  ID: 988b859b-e45e-4b33-9eab-e2126b14f55b
+  verified: false
+  Bounds: {width: '3', height: '5', x: '-1.500', y: '-2.500'}
+  Attachment2Ds:
+  - PEM:
+      type: PEM
+      name: BSO4-440-12 4-40 - .165  by .375 400 series Standoff
+      version: 7.5
+      description: |-
+        BSO4-440-12 4-40 - .165  by .375 400 series Standoff
+        Blind Threaded Standoffs for Stainless Steel
+        Standard
+        Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+      partnumber: BSO4-440-12
+      ID: 'PEM Standoff: BSO4-440-12'
+      verified: true
+      OriginX: '1.125'
+      OriginY: '2.25'
+      onSameSide: false
+      inLibrary: byID
+  - PEM:
+      type: PEM
+      name: BSO4-440-12 4-40 - .165  by .375 400 series Standoff
+      version: 7.5
+      description: |-
+        BSO4-440-12 4-40 - .165  by .375 400 series Standoff
+        Blind Threaded Standoffs for Stainless Steel
+        Standard
+        Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+      partnumber: BSO4-440-12
+      ID: 'PEM Standoff: BSO4-440-12'
+      verified: true
+      OriginX: '-1.125'
+      OriginY: '2.25'
+      onSameSide: false
+      inLibrary: byID
+  - PEM:
+      type: PEM
+      name: BSO4-440-12 4-40 - .165  by .375 400 series Standoff
+      version: 7.5
+      description: |-
+        BSO4-440-12 4-40 - .165  by .375 400 series Standoff
+        Blind Threaded Standoffs for Stainless Steel
+        Standard
+        Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+      partnumber: BSO4-440-12
+      ID: 'PEM Standoff: BSO4-440-12'
+      verified: true
+      OriginX: '-1.125'
+      OriginY: '-2.25'
+      onSameSide: false
+      inLibrary: byID
+  - PEM:
+      type: PEM
+      name: BSO4-440-12 4-40 - .165  by .375 400 series Standoff
+      version: 7.5
+      description: |-
+        BSO4-440-12 4-40 - .165  by .375 400 series Standoff
+        Blind Threaded Standoffs for Stainless Steel
+        Standard
+        Compatibility: Stainless, Cold Rolled Steel, Galvanized Steel,  Aluminum
+      partnumber: BSO4-440-12
+      ID: 'PEM Standoff: BSO4-440-12'
+      verified: true
+      OriginX: '1.125'
+      OriginY: '-2.25'
+      onSameSide: false
+      inLibrary: byID

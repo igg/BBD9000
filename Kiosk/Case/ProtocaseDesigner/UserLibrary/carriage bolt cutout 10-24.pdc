@@ -1,0 +1,12 @@
+Thing2D:
+  name: carriage bolt cutout 10-24
+  version: 7.5
+  manufacturer: McMaster
+  partnumber: carriage bolt cutout 10-24
+  ID: 8a22e492-c29f-4c5d-9128-3c1a4581b547
+  verified: false
+  Bounds: {width: '.25', height: '.25', x: '-0.125', y: '-0.125'}
+  Attachment2Ds:
+  - Rectangle: {width: '0.21', height: '0.21', type: CUTOUT, name: rectangle, version: 7.5,
+      ID: 3a32d50e-30e9-4849-8c5b-76bfc927eb77, verified: false, layer: Default, OriginX: '-0.105',
+      OriginY: '-0.105', onSameSide: true}
