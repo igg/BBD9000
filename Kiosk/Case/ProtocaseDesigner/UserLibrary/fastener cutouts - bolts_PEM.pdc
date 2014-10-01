@@ -45,7 +45,7 @@ Thing2D:
       ID: d1cf3a69-1d10-4bf8-837d-5d1e545dac2e
       verified: false
       OriginX: '6.5'
-      OriginY: '10.695'
+      OriginY: '10.645'
       onSameSide: true
       Bounds: {width: '.25', height: '.25', x: '-0.125', y: '-0.125'}
       Attachment2Ds:
@@ -60,7 +60,7 @@ Thing2D:
       ID: d1cf3a69-1d10-4bf8-837d-5d1e545dac2e
       verified: false
       OriginX: '12.525'
-      OriginY: '10.695'
+      OriginY: '10.645'
       onSameSide: true
       Bounds: {width: '.25', height: '.25', x: '-0.125', y: '-0.125'}
       Attachment2Ds:

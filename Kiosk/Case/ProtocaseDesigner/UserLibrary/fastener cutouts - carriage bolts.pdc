@@ -14,8 +14,8 @@ Thing2D:
       partnumber: carriage bolt cutout 10-24
       ID: 7f4956ec-301e-4c3c-8128-abe48a369624
       verified: false
-      OriginX: '0.375'
-      OriginY: '0.375'
+      OriginX: '0.475'
+      OriginY: '0.475'
       onSameSide: true
       Bounds: {width: '.25', height: '.25', x: '-0.125', y: '-0.125'}
       Attachment2Ds:
@@ -30,7 +30,7 @@ Thing2D:
       ID: 7f4956ec-301e-4c3c-8128-abe48a369624
       verified: false
       OriginX: '6.5'
-      OriginY: '0.375'
+      OriginY: '0.475'
       onSameSide: true
       Bounds: {width: '.25', height: '.25', x: '-0.125', y: '-0.125'}
       Attachment2Ds:
@@ -44,8 +44,8 @@ Thing2D:
       partnumber: carriage bolt cutout 10-24
       ID: 7f4956ec-301e-4c3c-8128-abe48a369624
       verified: false
-      OriginX: '12.625'
-      OriginY: '0.375'
+      OriginX: '12.525'
+      OriginY: '0.475'
       onSameSide: true
       Bounds: {width: '.25', height: '.25', x: '-0.125', y: '-0.125'}
       Attachment2Ds:
@@ -59,7 +59,7 @@ Thing2D:
       partnumber: carriage bolt cutout 10-24
       ID: a6306071-eff0-4af1-be01-c42bc835371b
       verified: false
-      OriginX: '12.625'
+      OriginX: '12.525'
       OriginY: '5.56'
       onSameSide: true
       Bounds: {width: '.25', height: '.25', x: '-0.125', y: '-0.125'}
@@ -74,8 +74,8 @@ Thing2D:
       partnumber: carriage bolt cutout 10-24
       ID: a6306071-eff0-4af1-be01-c42bc835371b
       verified: false
-      OriginX: '12.625'
-      OriginY: '10.745'
+      OriginX: '12.525'
+      OriginY: '10.645'
       onSameSide: true
       Bounds: {width: '.25', height: '.25', x: '-0.125', y: '-0.125'}
       Attachment2Ds:
@@ -90,7 +90,7 @@ Thing2D:
       ID: a6306071-eff0-4af1-be01-c42bc835371b
       verified: false
       OriginX: '6.5'
-      OriginY: '10.745'
+      OriginY: '10.645'
       onSameSide: true
       Bounds: {width: '.25', height: '.25', x: '-0.125', y: '-0.125'}
       Attachment2Ds:
@@ -104,8 +104,8 @@ Thing2D:
       partnumber: carriage bolt cutout 10-24
       ID: a6306071-eff0-4af1-be01-c42bc835371b
       verified: false
-      OriginX: '0.375'
-      OriginY: '10.745'
+      OriginX: '0.475'
+      OriginY: '10.645'
       onSameSide: true
       Bounds: {width: '.25', height: '.25', x: '-0.125', y: '-0.125'}
       Attachment2Ds:
@@ -119,7 +119,7 @@ Thing2D:
       partnumber: carriage bolt cutout 10-24
       ID: 452f2042-1879-494c-a538-45e871aaa46d
       verified: false
-      OriginX: '0.375'
+      OriginX: '0.475'
       OriginY: '5.56'
       onSameSide: true
       Bounds: {width: '.25', height: '.25', x: '-0.125', y: '-0.125'}
