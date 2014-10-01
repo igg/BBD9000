@@ -30,5 +30,6 @@ Jameco Mean Well RS-25-12 $11.49
 
 
 Protocase:
-2: $261.24/2 = $130.62 - second costs $75.80
-1: $167.44 + $18 ship = $185.44
+2: $262.61/2 = $131.31 - second costs $76.97
+1: $167.64 + $18 ship = $185.64
+
