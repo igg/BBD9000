@@ -1,5 +1,6 @@
 AM1084-8-hole Panel Changes, Original -> v2
-PC104 turned 180
+PC104 turned 180 for V2a.
+N.B.: The new SmartIO board does not use a PC104 form-factor, making these changes irrelevant
 ------------------------------------
 MTN: Cutout-Circle
 Moved Y +0.125"
