@@ -19,8 +19,8 @@ Thing2D:
       partnumber: BSO4-440-12
       ID: 'PEM Standoff: BSO4-440-12'
       verified: true
-      OriginX: '1.125'
-      OriginY: '2.25'
+      OriginX: '1.0'
+      OriginY: '2.125'
       onSameSide: false
       inLibrary: byID
   - PEM:
@@ -35,8 +35,8 @@ Thing2D:
       partnumber: BSO4-440-12
       ID: 'PEM Standoff: BSO4-440-12'
       verified: true
-      OriginX: '-1.125'
-      OriginY: '2.25'
+      OriginX: '-1.0'
+      OriginY: '2.125'
       onSameSide: false
       inLibrary: byID
   - PEM:
@@ -51,8 +51,8 @@ Thing2D:
       partnumber: BSO4-440-12
       ID: 'PEM Standoff: BSO4-440-12'
       verified: true
-      OriginX: '-1.125'
-      OriginY: '-2.25'
+      OriginX: '-1.0'
+      OriginY: '-2.125'
       onSameSide: false
       inLibrary: byID
   - PEM:
@@ -67,7 +67,7 @@ Thing2D:
       partnumber: BSO4-440-12
       ID: 'PEM Standoff: BSO4-440-12'
       verified: true
-      OriginX: '1.125'
-      OriginY: '-2.25'
+      OriginX: '1.0'
+      OriginY: '-2.125'
       onSameSide: false
       inLibrary: byID
