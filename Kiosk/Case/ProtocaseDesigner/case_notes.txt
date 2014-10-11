@@ -1,7 +1,7 @@
 Units in Inches
 PIR motion sensor grommet thickness: 0.308, O.D.:0.873
 
-panel thickness: 0.078 (14 ga)
+panel thickness: 0.078 (14 ga), 11.12 x 13, 0.4 radius corners
 PCB thickness: 0.063
 10-24 nut thickness: 0.125
  8-32 nut thickness: 0.125
