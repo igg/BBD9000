@@ -25,6 +25,37 @@
 	<!-- TMPL_VAR ESCAPE=HTML NAME=ERROR -->
 	</div>
 <!-- /TMPL_IF -->
+
+<h3>
+Current Kiosk Information
+</h3>
+<table class="data">
+<thead class="data">
+	<tr>
+		<td class="data">Location</td>
+		<td class="data">Capacity</td>
+		<td class="data">Available</td>
+		<td class="data">Type</td>
+		<td class="data">Price</td>
+		<td class="data">Last Checkin</td>
+	</tr>
+</thead>
+<!-- TMPL_LOOP NAME=kiosks -->
+	<tr class="data">
+		<td class="data"><!-- TMPL_VAR ESCAPE=HTML NAME=k_name --></td>
+		<td class="data" align="right"><!-- TMPL_VAR ESCAPE=HTML NAME=k_capacity --></td>
+		<td class="data" align="right"><!-- TMPL_VAR ESCAPE=HTML NAME=k_available --></td>
+		<td class="data" align="left"><!-- TMPL_VAR ESCAPE=HTML NAME=k_type --></td>
+		<td class="data" align="right"><!-- TMPL_VAR ESCAPE=HTML NAME=k_price --></td>
+		<td class="data"><!-- TMPL_VAR ESCAPE=HTML NAME=k_last_checkin --></td>
+	</tr>
+<!-- /TMPL_LOOP -->
+</table>
+<hr>
+<br>
+
+
+
 <h3>
 View <!-- TMPL_VAR NAME=popup_purchase_types --> purchases from
 <input name="p_from" type="text" size="10" onclick="javascript:p_from_cal.popup();" readonly value="<!-- TMPL_VAR NAME=p_from -->">

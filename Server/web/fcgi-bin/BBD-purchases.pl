@@ -134,10 +134,12 @@ use constant GET_N_LAST_PURCHASES => <<SQL;
 SQL
 
 
-use constant GET_KIOSK_INFO => <<SQL;
-	SELECT kiosk_id, name, timezone
+use constant GET_KIOSK_INFO => <<"SQL";
+	SELECT kiosk_id, name, fuel_capacity, fuel_avail, fuel_price, fuel_type, UNIX_TIMESTAMP(last_checkin), timezone
 	FROM kiosks
+	ORDER BY name
 SQL
+
 
 
 use Scalar::Util qw(looks_like_number);
@@ -190,20 +192,6 @@ sub do_request {
 	}
 
 ####
-# Gather kiosk info - needed for timezones and proper time display
-	my ($kiosk_id,$k_name,$k_tz);
-	my $sth = $DBH->prepare(GET_KIOSK_INFO) or die "Could not prepare handle";
-	$sth->execute( );
-	$sth->bind_columns (\$kiosk_id,\$k_name,\$k_tz);
-	while($sth->fetch()) {
-		$kiosks{$k_name} = {
-			kiosk_id => $kiosk_id,
-			name => $k_name,
-			tz => $k_tz,
-		};
-	}
-
-####
 # Process CGI params
 
 	$p_from = $BBD->safeCGIparam('p_from');
@@ -233,11 +221,40 @@ sub do_request {
 
 sub show_form {
 
+	my @kiosk_tmpl_loop = ();
 	my @transactions = ();
-	my ($m_name,$timestamp,$k_name,$item,$s_quantity,$s_per_item,$s_amount,$s_credit,$c_amount,$c_auth_code,$c_gwy_trans_id);
+	my ($m_name,$timestamp,$item,$s_quantity,$s_per_item,$s_amount,$s_credit,$c_amount,$c_auth_code,$c_gwy_trans_id);
 	my $show_name;
 	my $sth;
-	
+
+
+	# Gather kiosk info
+	my ($kiosk_id,$k_name,$k_capacity,$k_fuel_avail,$k_fuel_price,$k_fuel_type,$k_last_checkin,$k_tz);
+	$sth = $DBH->prepare(GET_KIOSK_INFO) or die "Could not prepare handle";
+	$sth->execute( );
+	$sth->bind_columns (\$kiosk_id,\$k_name,\$k_capacity,\$k_fuel_avail,\$k_fuel_price,\$k_fuel_type,\$k_last_checkin,\$k_tz);
+	while($sth->fetch()) {
+		$kiosks{$kiosk_id} = {
+			name => $k_name,
+			capacity => $k_capacity,
+			fuel_avail => $k_fuel_avail,
+			fuel_price => $k_fuel_price,
+			fuel_type => $k_fuel_type,
+			tz => $k_tz,
+			last_checkin => $k_last_checkin,
+		};
+
+		push (@kiosk_tmpl_loop,{
+			k_name => $k_name,
+			k_capacity => sprintf ('%.0f',$k_capacity),
+			k_available => sprintf ('%.2f',$k_fuel_avail),
+			k_price => sprintf ('$%.2f',$k_fuel_price),
+			k_type => $k_fuel_type,
+			k_last_checkin => $BBD->epoch_to_ISOdatetime ($k_last_checkin,$k_tz),
+		});
+	}
+
+
 	# Should collect data for past 30 days regardless of $p_from and $p_to.
 	# populate table based on p_from and p_to, but calculate totals for
 	# the indicated timespan, $past_7 and $past_30.
@@ -344,6 +361,7 @@ sub show_form {
 
 
 	$BBD->{TEMPLATE}->param(
+		kiosks => \@kiosk_tmpl_loop,
 		show_name => $show_name,
 		transactions => \@transactions,
 		p_from => $BBD->epoch_to_ISOdate ($p_from),
