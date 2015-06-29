@@ -26,7 +26,7 @@ mysqladmin -u root password $ROOT_PASS
 # The root user credentials defined above will be used to make the new user
 DB_CNF="${ROOT_DIR}/priv/DB_CONF.cnf"
 # Generate a MySQL user for the server to connect as
-DB_USER="${DB_BASE}-srv"
+DB_USER="${DB_USER_BASE}-srv"
 DB_PASS=$(apg -n 1 -a 1 -m 16 -M NCL)
 
 mysql --user=root --password=$ROOT_PASS mysql <<EOF

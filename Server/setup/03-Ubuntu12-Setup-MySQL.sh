@@ -52,7 +52,7 @@ CNF_FILENAME="DB_CONF.cnf"
 CNF_FILE="${ROOT_DIR}/priv/${CNF_FILENAME}"
 if [ ! -f ${CNF_FILE} ]; then
 	# Generate a MySQL user for the server to connect as
-	DB_USER="${DB_BASE}-srv"
+	DB_USER="${DB_USER_BASE}-srv"
 	echo "Generating new credentials in ${CNF_FILE} for read/write user ${DB_USER}"
 	DB_PASS=$(apg -n 1 -a 1 -m 16 -M NCL)
 	echo "...creating new DB user ${DB_USER}"

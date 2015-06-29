@@ -21,6 +21,9 @@ ROOT_DIR=$( dirname "$BIN_DIR" )
 # coop-specific variables
 COOP_NAME="Test Coop"
 DB_BASE="test"
+# This should be less 12 characters or less
+# Standard users for this database will be created ending in -srv for the server, -ro for read-only, etc.
+DB_USER_BASE="${DB_BASE}"
 DOMAIN="${DB_BASE}.bbd9000.com"
 DB_NAME="${DB_BASE}_members"
 DB_CNF="${ROOT_DIR}/priv/DB_CONF.cnf"

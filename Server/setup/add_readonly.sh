@@ -17,7 +17,7 @@ CNF_FILENAME="DB_READONLY.cnf"
 CNF_FILE="${ROOT_DIR}/priv/${CNF_FILENAME}"
 if [ ! -f ${CNF_FILE} ]; then
 	# Generate a MySQL user for the server to connect as
-	DB_USER="${DB_BASE}-ro"
+	DB_USER="${DB_USER_BASE}-ro"
 	echo "Generating new credentials in ${CNF_FILE} for readonly user ${DB_USER}"
 	DB_PASS=$(apg -n 1 -a 1 -m 16 -M NCL)
 	# We're using the home directory's DB connection to do this
