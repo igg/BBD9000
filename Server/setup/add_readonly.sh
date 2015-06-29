@@ -12,6 +12,9 @@ ROOT_DIR=$( dirname "$BIN_DIR" )
 # File with site-specific variables
 source ${ROOT_DIR}/setup/coop_defs.sh
 
+# We need the administrator user to add new users
+eval DB_CNF="~/priv/DB_BACKUP.cnf"
+
 # Make a readonly account for this DB
 CNF_FILENAME="DB_READONLY.cnf"
 CNF_FILE="${ROOT_DIR}/priv/${CNF_FILENAME}"
