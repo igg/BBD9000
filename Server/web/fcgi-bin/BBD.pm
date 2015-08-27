@@ -1158,8 +1158,9 @@ sub safeCGIstring {
 	my ($self,$param) = @_;
 	return undef unless defined $param;
 	return $param unless
-		$param =~ /((\%3C)|<)[^\n]+((\%3E)|>)/ix         # CSS Attack
-		or $param =~ /(\%27)|(\')|(\-\-)|(\%23)|(\#)/ix  # SQL Injection
+		$param =~ /((\%3C)|<)[^\n]+((\%3E)|>)/ix     # CSS Attack
+		or $param =~ /(\%27)|(\-\-)|(\%23)|(\#)/ix   # SQL Injection. N.B.: Single quotes allowed!
+		# The rest of SQL injection is handled by virtue of using placeholders ('?') and variable binding.
 	;
 	return undef;
 }
