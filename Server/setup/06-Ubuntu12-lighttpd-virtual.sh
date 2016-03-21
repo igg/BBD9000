@@ -30,7 +30,8 @@ cat > "${ROOT_DIR}/setup/lighttpd-virt.conf" <<EOF
 	}
 	alias.url = ( "/cgi-bin/" => var.fcgi,
               "/fcgi-bin/" => var.fcgi )
-	server.errorlog             = var.logs + "lighttpd.error.log"
+        # keep the main server's error log.  There is only one log file in lighttpd (not one per virt host)
+        # server.errorlog             = var.logs + "lighttpd.error.log"
 	accesslog.filename          = var.logs + "lighttpd.access.log"
 	fastcgi.server = ( ".pl" => ((
 		"bin-path"        => var.fcgi + "disp.pl",
