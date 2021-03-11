@@ -26,7 +26,7 @@ x_type=AUTH_ONLY
 x_track2="$tracks[1]"
 x_amount=1.0
 
-curl -v --trace --trace-ascii -X POST -F "x_cpversion=${x_cpversion}" -F "x_login=${x_login}" \
+curl --trace -X POST -F "x_cpversion=${x_cpversion}" -F "x_login=${x_login}" \
   -F x_market_type="${x_market_type}" -F "x_device_type=${x_device_type}" -F "x_tran_key=${x_tran_key}" \
   -F "x_type=${x_type}" -F "x_track2=${x_track2}" -F "x_amount=${x_amount}" \
   "${CC_URL}"
