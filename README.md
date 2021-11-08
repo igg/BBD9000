@@ -11,7 +11,7 @@ the hardware components of a fuel station:
     Pump, fuel meter, display, keypad, credit-card reader, electric strike, motion detector, lights, etc.
     * Serial interface to an ARM SBC in the kiosk running Linux that manages secure internet communication with the hosted
 Coop Management Software. An off-the-shelf Linux ARM SBC is used; the ARM SBC itself is not part of this project.
-    * Schematics and board layouts using [KiCad](http://www.kicad-pcb.org) in `BBD9000/Kiosk/SmartIO/hardware/v3.3/`
+    * Schematics and board layouts using [KiCad](http://www.kicad.org) in `BBD9000/Kiosk/SmartIO/hardware/v3.3/`
 * Design files for secure outdoor mounting arrangements, 12 V standalone operations, etc.
 
 ### Kiosk Software:
